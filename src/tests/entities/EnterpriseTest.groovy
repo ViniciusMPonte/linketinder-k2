@@ -1,5 +1,6 @@
-package entities
+package tests.entities
 
+import entities.Enterprise
 import tests.mocks.UsersMock
 
 class EnterpriseTest {

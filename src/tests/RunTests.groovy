@@ -1,8 +1,8 @@
 package tests
 
-import entities.CandidateTest
-import entities.EnterpriseTest
-import managers.UserManagerTest
+import tests.entities.CandidateTest
+import tests.entities.EnterpriseTest
+import tests.managers.UserManagerTest
 
 
 static void main(String[] args) {

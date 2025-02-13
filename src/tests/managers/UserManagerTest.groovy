@@ -1,13 +1,14 @@
-package managers
+package tests.managers
 
 import entities.Candidate
 import entities.Enterprise
+import managers.UserManager
 import tests.utils.FakeScanner
 import tests.mocks.UsersMock
 
 class UserManagerTest {
 
-    static def boolean successfulRegisterEnterprise() {
+    static boolean successfulRegisterEnterprise() {
         //Arrange
         Scanner fakeInput = new FakeScanner(
                 UsersMock.getCorrectEntriesToCreateOneEnterprise()
@@ -22,7 +23,7 @@ class UserManagerTest {
         return enterprisesList.size() == 1 && enterprisesList.get(0) instanceof Enterprise
     }
 
-    static def boolean validateSkillsRegisterEnterprise() {
+    static boolean validateSkillsRegisterEnterprise() {
         //Arrange
         Scanner fakeInput = new FakeScanner(
                 UsersMock.getWrongEntriesToCreateOneEnterprise()
@@ -37,7 +38,7 @@ class UserManagerTest {
         return enterprisesList.size() == 1 && enterprisesList.get(0) instanceof Enterprise
     }
 
-    static def boolean successfulRegisterCandidate() {
+    static boolean successfulRegisterCandidate() {
         //Arrange
         Scanner fakeInput = new FakeScanner(
                 UsersMock.getCorrectEntriesToCreateOneCandidate()
@@ -52,7 +53,7 @@ class UserManagerTest {
         return candidatesList.size() == 1 && candidatesList.get(0) instanceof Candidate
     }
 
-    static def boolean validateSkillsRegisterCandidate() {
+    static boolean validateSkillsRegisterCandidate() {
         //Arrange
         Scanner fakeInput = new FakeScanner(
                 UsersMock.getWrongEntriesToCreateOneCandidate()
@@ -67,7 +68,7 @@ class UserManagerTest {
         return candidatesList.size() == 1 && candidatesList.get(0) instanceof Candidate
     }
 
-    static def boolean successfulRemoveCandidate() {
+    static boolean successfulRemoveCandidate() {
         //Arrange
         List<Candidate> candidatesList = UsersMock.getCandidatesList()
         Scanner fakeInput = new FakeScanner(["wrong", candidatesList.get(0).getName()]).fakeInput
@@ -80,7 +81,7 @@ class UserManagerTest {
         return candidatesList.empty
     }
 
-    static def boolean successfulRemoveEnterprise() {
+    static boolean successfulRemoveEnterprise() {
         //Arrange
         List<Enterprise> enterpriseList = UsersMock.getEnterpriseList()
         Scanner fakeInput = new FakeScanner(["wrong", enterpriseList.get(0).getName()]).fakeInput

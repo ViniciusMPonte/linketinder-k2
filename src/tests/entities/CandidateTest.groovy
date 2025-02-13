@@ -1,5 +1,6 @@
-package entities
+package tests.entities
 
+import entities.Candidate
 import tests.mocks.UsersMock
 
 class CandidateTest {
