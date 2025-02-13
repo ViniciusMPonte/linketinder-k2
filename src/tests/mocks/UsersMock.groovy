@@ -107,4 +107,17 @@ class UsersMock {
                 skills     : ["Java", "Groovy", "JavaScript"]
         ]
     }
+
+    static getEnterpriseValidParameters(){
+        return [
+                name       : "TechCorp Solutions",
+                email      : "contato@techcorp.com",
+                country    : "Brasil",
+                state      : "SP",
+                cep        : "01000-000",
+                description: "Empresa especializada em tecnologia e soluções digitais.",
+                cnpj       : "12.345.678/0001-99",
+                skills     : ["Java", "Groovy", "JavaScript"]
+        ]
+    }
 }
