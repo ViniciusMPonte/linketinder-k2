@@ -22,6 +22,21 @@ class UserManagerTest {
         return enterprisesList.size() == 1 && enterprisesList.get(0) instanceof Enterprise
     }
 
+    static def boolean validateSkillsRegisterEnterprise() {
+        //Arrange
+        Scanner fakeInput = new FakeScanner(
+                UsersMock.getWrongEntriesToCreateOneEnterprise()
+        ).fakeInput
+        List<Enterprise> enterprisesList = []
+
+        //Act
+        UserManager.registerEnterprise(fakeInput, enterprisesList)
+        fakeInput.close()
+
+        //Assert
+        return enterprisesList.size() == 1 && enterprisesList.get(0) instanceof Enterprise
+    }
+
     static def boolean successfulRegisterCandidate() {
         //Arrange
         Scanner fakeInput = new FakeScanner(
@@ -36,5 +51,22 @@ class UserManagerTest {
         //Assert
         return candidatesList.size() == 1 && candidatesList.get(0) instanceof Candidate
     }
+
+    static def boolean validateSkillsRegisterCandidate() {
+        //Arrange
+        Scanner fakeInput = new FakeScanner(
+                UsersMock.getWrongEntriesToCreateOneCandidate()
+        ).fakeInput
+        List<Candidate> candidatesList = []
+
+        //Act
+        UserManager.registerCandidate(fakeInput, candidatesList)
+        fakeInput.close()
+
+        //Assert
+        return candidatesList.size() == 1 && candidatesList.get(0) instanceof Candidate
+    }
+
+
 }
 
