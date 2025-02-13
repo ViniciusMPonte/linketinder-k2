@@ -23,7 +23,7 @@ class UserManagerTest {
         return enterprisesList.size() == 1 && enterprisesList.get(0) instanceof Enterprise
     }
 
-    static boolean validateSkillsRegisterEnterprise() {
+    static boolean validateParametersRegisterEnterprise() {
         //Arrange
         Scanner fakeInput = new FakeScanner(
                 UsersMock.getWrongEntriesToCreateOneEnterprise()
@@ -53,7 +53,7 @@ class UserManagerTest {
         return candidatesList.size() == 1 && candidatesList.get(0) instanceof Candidate
     }
 
-    static boolean validateSkillsRegisterCandidate() {
+    static boolean validateParametersRegisterCandidate() {
         //Arrange
         Scanner fakeInput = new FakeScanner(
                 UsersMock.getWrongEntriesToCreateOneCandidate()

@@ -34,9 +34,9 @@ static void main(String[] args) {
 
     //UserManager - register
     result.add((UserManagerTest.successfulRegisterEnterprise() ? "[PASSED]" : "[FAILED]") + " UserManagerTest.successfulRegisterEnterprise")
-    result.add((UserManagerTest.validateSkillsRegisterEnterprise() ? "[PASSED]" : "[FAILED]") + " UserManagerTest.validateSkillsRegisterEnterprise")
+    result.add((UserManagerTest.validateParametersRegisterEnterprise() ? "[PASSED]" : "[FAILED]") + " UserManagerTest.validateParametersRegisterEnterprise")
     result.add((UserManagerTest.successfulRegisterCandidate() ? "[PASSED]" : "[FAILED]") + " UserManagerTest.successfulRegisterCandidate")
-    result.add((UserManagerTest.validateSkillsRegisterCandidate() ? "[PASSED]" : "[FAILED]") + " UserManagerTest.validateSkillsRegisterCandidate")
+    result.add((UserManagerTest.validateParametersRegisterCandidate() ? "[PASSED]" : "[FAILED]") + " UserManagerTest.validateParametersRegisterCandidate")
 
     //UserManager - remove
     result.add((UserManagerTest.successfulRemoveCandidate() ? "[PASSED]" : "[FAILED]") + " UserManagerTest.successfulRemoveCandidate")
