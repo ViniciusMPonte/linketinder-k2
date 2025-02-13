@@ -11,6 +11,9 @@ static void main(String[] args) {
     println test.successfulRegisterCandidate() ? "passou" : "falhou"
     println test.validateSkillsRegisterCandidate() ? "passou" : "falhou"
 
+    println test.successfulRemoveCandidate() ? "passou" : "falhou"
+    println test.successfulRemoveEnterprise() ? "passou" : "falhou"
+
 
     //print "\033[H\033[2J"
 }

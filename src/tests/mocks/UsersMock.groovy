@@ -1,8 +1,11 @@
 package tests.mocks
 
+import entities.Candidate
+import entities.Enterprise
+
 class UsersMock {
 
-    static  getCorrectEntriesToCreateOneEnterprise() {
+    static getCorrectEntriesToCreateOneEnterprise() {
         return [
                 "TechCorp Solutions",
                 "contato@techcorp.com",
@@ -15,7 +18,7 @@ class UsersMock {
         ]
     }
 
-    static  getWrongEntriesToCreateOneEnterprise() {
+    static getWrongEntriesToCreateOneEnterprise() {
         return [
                 "TechCorp Solutions",
                 "contato@techcorp.com",
@@ -30,7 +33,7 @@ class UsersMock {
         ]
     }
 
-    static  getCorrectEntriesToCreateOneCandidate() {
+    static getCorrectEntriesToCreateOneCandidate() {
         return [
                 "Alice",
                 "alice@example.com",
@@ -44,7 +47,7 @@ class UsersMock {
         ]
     }
 
-    static  getWrongEntriesToCreateOneCandidate() {
+    static getWrongEntriesToCreateOneCandidate() {
         return [
                 "Alice",
                 "alice@example.com",
@@ -57,6 +60,37 @@ class UsersMock {
                 "",
                 "Wrong Skills, Validate",
                 "Java, Groovy, JavaScript"
+        ]
+    }
+
+    static getCandidatesList() {
+        return [
+                new Candidate(
+                        name: "Alice",
+                        email: "alice@example.com",
+                        country: "Brasil",
+                        state: "SP",
+                        cep: "10000-000",
+                        description: "Desenvolvedora back-end apaixonada por código limpo e boas práticas.",
+                        age: 20,
+                        cpf: "111.222.333-44",
+                        skills: ["Java", "Groovy", "JavaScript"]
+                )
+        ]
+    }
+
+    static getEnterpriseList() {
+        return [
+                new Enterprise(
+                        name: "TechCorp Solutions",
+                        email: "contato@techcorp.com",
+                        country: "Brasil",
+                        state: "SP",
+                        cep: "01000-000",
+                        description: "Empresa especializada em tecnologia e soluções digitais.",
+                        cnpj: "12.345.678/0001-99",
+                        skills: ["Java", "Groovy", "JavaScript"]
+                )
         ]
     }
 }

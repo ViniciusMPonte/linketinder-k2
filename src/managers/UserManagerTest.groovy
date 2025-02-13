@@ -67,6 +67,32 @@ class UserManagerTest {
         return candidatesList.size() == 1 && candidatesList.get(0) instanceof Candidate
     }
 
+    static def boolean successfulRemoveCandidate() {
+        //Arrange
+        List<Candidate> candidatesList = UsersMock.getCandidatesList()
+        Scanner fakeInput = new FakeScanner(["wrong", candidatesList.get(0).getName()]).fakeInput
+
+        //Act
+        UserManager.removeCandidate(fakeInput, candidatesList)
+        fakeInput.close()
+
+        //Assert
+        return candidatesList.empty
+    }
+
+    static def boolean successfulRemoveEnterprise() {
+        //Arrange
+        List<Enterprise> enterpriseList = UsersMock.getEnterpriseList()
+        Scanner fakeInput = new FakeScanner(["wrong", enterpriseList.get(0).getName()]).fakeInput
+
+        //Act
+        UserManager.removeEnterprise(fakeInput, enterpriseList)
+        fakeInput.close()
+
+        //Assert
+        return enterpriseList.empty
+    }
+
 
 }
 
