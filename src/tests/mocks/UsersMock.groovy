@@ -93,4 +93,18 @@ class UsersMock {
                 )
         ]
     }
+
+    static getCandidateValidParameters(){
+        return [
+                name       : "Alice",
+                email      : "alice@example.com",
+                country    : "Brasil",
+                state      : "SP",
+                cep        : "10000-000",
+                description: "Desenvolvedora back-end apaixonada por código limpo e boas práticas.",
+                age        : 20,
+                cpf        : "111.222.333-44",
+                skills     : ["Java", "Groovy", "JavaScript"]
+        ]
+    }
 }
