@@ -72,7 +72,7 @@ git clone [URL_DO_SEU_REPOSITORIO]
 Navegue até o diretório do projeto clonado:
 
 ```bash
-cd linketinder
+cd src
 ```
 
 ### 3. Execute a aplicação ou os testes
