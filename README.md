@@ -73,12 +73,18 @@ Navegue até o diretório do projeto clonado:
 cd linketinder
 ```
 
-### 3. Execute a aplicação
+### 3. Execute a aplicação ou os testes
 
 Inicie a aplicação com o seguinte comando:
 
 ```bash
 groovy Main.groovy
+```
+
+Para os testes unitários, inicie com o seguinte comando:
+
+```bash
+groovy ./tests/RunTests.groovy
 ```
 
 ### 4. Primeiros passos após a execução
