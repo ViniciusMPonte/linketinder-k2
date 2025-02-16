@@ -4,7 +4,7 @@ import entities.Candidate
 import entities.Enterprise
 
 import managers.UserManager
-import services.MatchService
+import services.CompatibilityService
 
 class Cli {
 
@@ -12,7 +12,7 @@ class Cli {
         println """
         === Menu Principal ===
         1. Listar Usuários
-        2. Listar Matches
+        2. Listar Compartibilidade Empresa/Candidatos
         3. Cadastrar
         4. Deletar
         0. Sair
@@ -25,7 +25,7 @@ class Cli {
                 listMenu(input, candidatesList, enterprisesList)
                 break
             case "2":
-                println MatchService.formatAllEnterprisesMatchList(candidatesList, enterprisesList)
+                println CompatibilityService.formatAllEnterprisesMatchList(candidatesList, enterprisesList)
                 break
             case "3":
                 registerMenu(input, candidatesList, enterprisesList)

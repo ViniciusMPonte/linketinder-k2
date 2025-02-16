@@ -2,7 +2,7 @@
 
 O projeto Linketinder é uma aplicação desenvolvida em Groovy por **Vinícius Menezes Pontes**, cujo objetivo é facilitar a conexão entre empresas e candidatos cujas competências sejam compatíveis. A plataforma permite que empresas definam as habilidades desejadas para suas vagas e que candidatos com essas qualificações tenham maior visibilidade, aumentando as chances de um alinhamento eficiente no processo seletivo.
 
-Além das funcionalidades básicas, como listar, cadastrar e excluir usuários (empresas e candidatos), o sistema também oferece a opção de "Listar Matches". Nessa funcionalidade, cada empresa cadastrada terá uma lista de candidatos classificados por ordem de compatibilidade. Quanto maior o número de competências em comum, maior será a posição do candidato no ranking da empresa.
+Além das funcionalidades básicas, como listar, cadastrar e excluir usuários (empresas e candidatos), o sistema também oferece a opção de "Listar Compartibilidade Empresa/Candidatos". Nessa funcionalidade, cada empresa cadastrada terá uma lista de candidatos classificados por ordem de compatibilidade. Quanto maior o número de competências em comum, maior será a posição do candidato no ranking da empresa.
 
 ## Estrutura
 ### 📂 **data** - Dados estáticos
@@ -10,8 +10,8 @@ Além das funcionalidades básicas, como listar, cadastrar e excluir usuários (
 - `EnterprisesData`: Armazena dados estáticos de Empresas (apenas para testes)
 
 ### 📂 **entities** - Entidades
-- `Candidate`: Classe resonsável por métodos e parametros da entidade Candidato
-- `Enterprise`: Classe resonsável por métodos e parametros da entidade Empresa
+- `Candidate`: Classe responsável por métodos e parâmetros da entidade Candidato
+- `Enterprise`: Classe responsável por métodos e parâmetros da entidade Empresa
 - `User`: Interface base para usuários do sistema (candidatos e empresas)
 - `SkillsList`: Define e valida as competências técnicas
 
@@ -19,7 +19,7 @@ Além das funcionalidades básicas, como listar, cadastrar e excluir usuários (
 - `UserManager`: Controla operações de CRUD para usuários (criação/exclusão)
 
 ### 📂 **services** - Lógica de negócios
-- `MatchService`: Implementa algoritmo de compatibilidade entre candidatos e vagas
+- `CompatibilityService`: Implementa algoritmo de compatibilidade entre candidatos e vagas
 
 ### 📂 **utils** - Utilitários
 - `GenericUtils`: Oferece funções auxiliares para processamento genérico
@@ -27,8 +27,30 @@ Além das funcionalidades básicas, como listar, cadastrar e excluir usuários (
 ### 📂 **view** - Interface do usuário
 - `Cli`: Implementa a interface de linha de comando (CLI) interativa
 
-### ⚙️ **Main_groovy** - Ponto de entrada
+### ⚙️ **Main.groovy** - Ponto de entrada
 - Classe principal que inicia a aplicação
+
+## Estrutura - Testes Unitários
+
+### 📂 **tests** - Testes unitários
+- `RunTests`: Ponto de entrada para execução dos testes
+
+### 📂 **tests.entities** - Testes do package entities
+- `CandidateTest`: testes de todos os métodos da classe Candidate
+- `EnterpriseTest`: testes de todos os métodos da classe Enterprise
+
+### 📂 **tests.managers** - Testes do package managers
+- `UserManagerTest`: testes de todos os métodos da classe UserManager
+
+### 📂 **tests.mocks** - Mocks para os testes
+- `UsersMock`: disponibiliza dados válidos e inválidos para testar as entidades Candidate e Enterprise
+
+### 📂 **tests.utils** - Utilitários para testes
+- `FakeScanner`: Simula entradas do usuário
+
+### ⚙️ **./tests/RunTests** - Ponto de entrada
+- Classe principal que inicia os testes unitários
+
 
 ## Pré-requisitos
 - Java JDK 8+ instalado

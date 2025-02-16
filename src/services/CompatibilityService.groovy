@@ -3,7 +3,7 @@ package services
 import entities.Candidate
 import entities.Enterprise
 
-class MatchService {
+class CompatibilityService {
 
     def static enterpriseMatchList(Enterprise enterprise, List<Candidate> candidatesList) {
 
