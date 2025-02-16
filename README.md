@@ -4,6 +4,8 @@ O projeto Linketinder é uma aplicação desenvolvida em Groovy por **Vinícius 
 
 Além das funcionalidades básicas, como listar, cadastrar e excluir usuários (empresas e candidatos), o sistema também oferece a opção de "Listar Compartibilidade Empresa/Candidatos". Nessa funcionalidade, cada empresa cadastrada terá uma lista de candidatos classificados por ordem de compatibilidade. Quanto maior o número de competências em comum, maior será a posição do candidato no ranking da empresa.
 
+No sistema, existe uma estrutura de testes unitários que garante a qualidade do código. O package tests contém o RunTests, ponto de entrada para a execução dos testes, e subpackages que avaliam as entidades (Candidate e Enterprise), o gerenciador de usuários (UserManager), além de oferecer mocks e utilitários, como o FakeScanner, para simular interações.
+
 ## Estrutura
 ### 📂 **data** - Dados estáticos
 - `CandidatesData`: Armazena dados estáticos de candidatos (apenas para testes)
