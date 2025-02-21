@@ -1,7 +1,7 @@
 ### IntelliJ IDEA ###
 out/
 !**/src/main/**/out/
-!**/src/test/**/out/
+!frontend/src/components/**/out/
 lib/
 .idea/
 linketinder.iml
@@ -16,7 +16,7 @@ linketinder.iml
 .sts4-cache
 bin/
 !**/src/main/**/bin/
-!**/src/test/**/bin/
+!frontend/src/components/**/bin/
 
 ### NetBeans ###
 /nbproject/private/
