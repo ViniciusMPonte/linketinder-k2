@@ -5,6 +5,11 @@ import {Candidate} from "./entities/Candidate";
 import DatabaseManager from "./data/DatabaseManager";
 import NavigationManager from "./navegation/NavigationManager";
 import Chart from "./components/Chart";
+import {Employment} from "./entities/Employment";
+import LoginManager from "./services/LoginManager";
+
+const dbManager = new DatabaseManager()
+console.log(dbManager)
 
 // CandidatesData.getInfos().forEach(candidate => {
 //         const cardComponent = new Card(candidate.params, 'candidate');
@@ -90,3 +95,13 @@ import Chart from "./components/Chart";
 
 const navigationManager = new NavigationManager()
 navigationManager.router()
+
+let logIn = new LoginManager()
+
+if (dbManager.enterprises !== null) {
+    logIn.logIn(dbManager.enterprises[0])
+}
+
+console.log(logIn.loggedIn)
+
+//logIn.logOut()

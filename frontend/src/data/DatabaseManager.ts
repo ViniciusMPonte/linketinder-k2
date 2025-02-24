@@ -17,7 +17,11 @@ export default class DatabaseManager {
         }
 
         if (!localStorage.getItem('db_employments')) {
-            localStorage.setItem('db_employments', JSON.stringify(EmploymentsData.getInfos()))
+            this.enterprises
+
+            if(this.enterprises == null) return
+            const enterpriseIds = this.enterprises.map(enterprise => enterprise.id)
+            localStorage.setItem('db_employments', JSON.stringify(EmploymentsData.getInfos(enterpriseIds)))
         }
     }
 

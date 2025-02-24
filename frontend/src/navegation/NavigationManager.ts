@@ -17,6 +17,9 @@ export default class NavigationManager {
             case '/enterprise/candidates-list.html':
                 this.buildEnterpriseCandidatesList()
                 break;
+            case '/candidate/employments-list.html':
+                this.buildCandidateEmploymentsList()
+                break;
             default:
                 console.log('Rota não encontrada: Página 404');
                 break;
@@ -119,6 +122,15 @@ export default class NavigationManager {
         dbManager.candidates.forEach(candidate => {
                 const cardComponent = new Card(candidate.params, 'candidate');
                 this.innerHTMLInject(document.querySelector('#candidates-list'), cardComponent.getCard());
+            }
+        )
+    }
+
+    buildCandidateEmploymentsList(){
+        if (dbManager.employments == null) return
+        dbManager.employments.forEach(employment => {
+                const cardComponent = new Card(employment.params, 'employment', employment.enterpriseId);
+                this.innerHTMLInject(document.querySelector('#employments-list'), cardComponent.getCard());
             }
         )
     }
