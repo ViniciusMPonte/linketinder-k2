@@ -1,18 +1,23 @@
 import {CandidateConfig} from "../entities/Candidate";
+import {EmploymentConfig} from "../entities/Employment";
 
 export default class Card {
 
-    private name: string = '';
-    private email: string = '';
-    private country: string = '';
-    private state: string = '';
-    private cep: string = '';
-    private skills: string[] = [];
-    private description: string = '';
-    private cpf: string = '';
-    private age: number = 0;
+    name: string = '';
+    email: string = '';
+    country: string = '';
+    state: string = '';
+    cep: string = '';
+    skills: string[] = [];
+    description: string = '';
+    cpf: string = '';
+    age: number = 0;
 
-    constructor(config: CandidateConfig) {
+    forEntity: string = 'candidate'
+
+    constructor(config: CandidateConfig, forEntity: string) {
+        if (forEntity) this.forEntity = forEntity;
+
         if (config.name) this.name = config.name
         if (config.country) this.country = config.country
         if (config.state) this.state = config.state
@@ -36,7 +41,8 @@ export default class Card {
         <div class="card">
             <div class="card-body">
                 <div class="d-flex align-items-center">
-                    <i class="bi bi-person-fill fs-1 me-2"></i>
+                    ${this.forEntity === 'candidate' ?'<i class="bi bi-person-fill fs-1 me-2"></i>':''}
+                    ${this.forEntity === 'employment' ?'<i class="bi bi-building-fill fs-1 me-2"></i>':''}
                     <h5 class="card-title">${name}</h5>
                 </div>
                 <div class="d-flex align-items-center">
@@ -50,7 +56,8 @@ export default class Card {
         }
                 <p class="card-text">${description}</p>
                 <div class="d-grid">
-                    <button class="btn btn-primary" type="button">Curtir candidato</button>
+                    ${this.forEntity === 'candidate' ? '<button class="btn btn-primary" type="button">Curtir candidato</button>' : ''}
+                    ${this.forEntity === 'employment' ? '<button class="btn btn-primary" type="button">Curtir Vaga</button>' : ''}
                 </div>
             </div>
         </div>

@@ -1,11 +1,19 @@
 import Card from './components/Card';
 import CandidatesData from "./data/CandidatesData";
+import EmploymentsData from "./data/EmploymentsData";
 import {Candidate} from "./entities/Candidate";
 import DatabaseManager from "./data/DatabaseManager";
 import NavigationManager from "./navegation/NavigationManager";
+import {Employment} from "./entities/Employment";
 
 CandidatesData.getInfos().forEach(candidate => {
-        const cardComponent = new Card(candidate.params);
+        const cardComponent = new Card(candidate.params, 'candidate');
+        innerHTMLInject(document.querySelector('.container.card-flex-container'), cardComponent.getCard());
+    }
+)
+
+EmploymentsData.getInfos().forEach(employment => {
+        const cardComponent = new Card(employment.params, 'employment');
         innerHTMLInject(document.querySelector('.container.card-flex-container'), cardComponent.getCard());
     }
 )
