@@ -12,12 +12,12 @@ export default class DatabaseManager {
             localStorage.setItem('db_candidates', JSON.stringify(CandidatesData.getInfos()))
         }
 
-        if (!localStorage.getItem('db_enterprise')) {
-            localStorage.setItem('db_enterprise', JSON.stringify(EnterprisesData.getInfos()))
+        if (!localStorage.getItem('db_enterprises')) {
+            localStorage.setItem('db_enterprises', JSON.stringify(EnterprisesData.getInfos()))
         }
 
-        if (!localStorage.getItem('db_employment')) {
-            localStorage.setItem('db_employment', JSON.stringify(EmploymentsData.getInfos()))
+        if (!localStorage.getItem('db_employments')) {
+            localStorage.setItem('db_employments', JSON.stringify(EmploymentsData.getInfos()))
         }
     }
 
@@ -80,13 +80,13 @@ export default class DatabaseManager {
     }
 
     set enterprises(enterprises: Enterprise[]) {
-        localStorage.setItem('db_enterprise', JSON.stringify(enterprises))
+        localStorage.setItem('db_enterprises', JSON.stringify(enterprises))
     }
 
     get enterprises(): Enterprise[] | null {
         let enterprisesData: Enterprise[] | null = null;
 
-        const storedEnterprise = localStorage.getItem('db_enterprise');
+        const storedEnterprise = localStorage.getItem('db_enterprises');
         if (storedEnterprise) {
             enterprisesData = JSON.parse(storedEnterprise) as Enterprise[];
         }

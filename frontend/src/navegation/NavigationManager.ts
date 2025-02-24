@@ -1,5 +1,7 @@
 import {Candidate, CandidateConfig} from "../entities/Candidate"
 import {Enterprise, EnterpriseConfig} from "../entities/Enterprise"
+import {Employment, EmploymentConfig} from "../entities/Employment"
+
 import DatabaseManager from "../data/DatabaseManager"
 const dbManager = new DatabaseManager()
 
@@ -53,6 +55,28 @@ export default class NavigationManager {
             }
 
             dbManager.addEnterprise(new Enterprise(newEnterpriseData))
+
+            alert('Cadastro realizado com sucesso!')
+        })
+
+    }
+
+    activeEmploymentCreateFormListener() {
+
+        const form = document.querySelector('.card-body')
+        if (!form) return
+        const formBtn = document.querySelector('.card-body #create-employment-btn')
+        if (!formBtn) return
+
+        formBtn.addEventListener('click', (event) => {
+            event.preventDefault()
+            const newEmploymentData: EmploymentConfig = {
+                name: (document.getElementById('employment-name-input') as HTMLInputElement)?.value || '',
+                description: (document.getElementById('employment-description-input') as HTMLInputElement)?.value || '',
+                skills: (document.getElementById('employment-skills-input') as HTMLInputElement)?.value?.split(', ') || [],
+            }
+
+            dbManager.addEmployment(new Employment(newEmploymentData))
 
             alert('Cadastro realizado com sucesso!')
         })
