@@ -5,7 +5,29 @@ import {Employment, EmploymentConfig} from "../entities/Employment"
 import DatabaseManager from "../data/DatabaseManager"
 const dbManager = new DatabaseManager()
 
+import Chart from "../components/Chart";
+import Card from "../components/Card";
+
+
 export default class NavigationManager {
+
+    router(): void {
+        const path = window.location.pathname;
+        switch (path) {
+            case '/enterprise/candidates-list.html':
+                this.buildEnterpriseCandidatesList()
+                break;
+            default:
+                console.log('Rota não encontrada: Página 404');
+                break;
+        }
+    }
+
+    innerHTMLInject(tag: HTMLElement | null, output: string): void {
+        if (tag) {
+            tag.innerHTML += output
+        }
+    }
 
     activeCandidateCreateFormListener() {
 
@@ -29,7 +51,7 @@ export default class NavigationManager {
             }
 
             dbManager.addCandidate(new Candidate(newCandidateData))
-            
+
             alert('Cadastro realizado com sucesso!')
         })
 
@@ -83,4 +105,21 @@ export default class NavigationManager {
 
     }
 
+    buildEnterpriseCandidatesList() {
+        let chartTag = document.getElementById('myChart') as HTMLCanvasElement
+        if (chartTag) {
+            if (dbManager.candidates == null) return
+            let skillCounts = Chart.countCandidateSkills(dbManager.candidates)
+            let keys= Object.keys(skillCounts)
+            let values = Object.values(skillCounts)
+            Chart.build(chartTag, keys, values);
+        }
+
+        if (dbManager.candidates == null) return
+        dbManager.candidates.forEach(candidate => {
+                const cardComponent = new Card(candidate.params, 'candidate');
+                this.innerHTMLInject(document.querySelector('#candidates-list'), cardComponent.getCard());
+            }
+        )
+    }
 }
