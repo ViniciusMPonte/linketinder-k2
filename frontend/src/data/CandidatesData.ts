@@ -16,7 +16,8 @@ export default class CandidatesData {
     static getInfos(): Candidate[] {
         return [
             new Candidate(
-                {                        name: "Alice",
+                {
+                    name: "Alice",
                     email: "alice@example.com",
                     country: "Brasil",
                     state: "SP",
