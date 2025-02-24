@@ -1,4 +1,5 @@
 import {Candidate, CandidateConfig} from "../entities/Candidate"
+import {Enterprise, EnterpriseConfig} from "../entities/Enterprise"
 import DatabaseManager from "../data/DatabaseManager"
 const dbManager = new DatabaseManager()
 
@@ -27,6 +28,32 @@ export default class NavigationManager {
 
             dbManager.addCandidate(new Candidate(newCandidateData))
             
+            alert('Cadastro realizado com sucesso!')
+        })
+
+    }
+
+    activeEnterpriseCreateFormListener() {
+
+        const form = document.querySelector('.card-body')
+        if (!form) return
+        const formBtn = document.querySelector('.card-body #create-enterprise-btn')
+        if (!formBtn) return
+
+        formBtn.addEventListener('click', (event) => {
+            event.preventDefault()
+            const newEnterpriseData: EnterpriseConfig = {
+                name: (document.getElementById('enterprise-name-input') as HTMLInputElement)?.value || '',
+                email: (document.getElementById('enterprise-email-input') as HTMLInputElement)?.value || '',
+                country: (document.getElementById('enterprise-country-input') as HTMLInputElement)?.value || '',
+                state: (document.getElementById('enterprise-state-input') as HTMLInputElement)?.value || '',
+                cep: (document.getElementById('enterprise-cep-input') as HTMLInputElement)?.value || '',
+                description: (document.getElementById('enterprise-description-input') as HTMLInputElement)?.value || '',
+                cnpj: (document.getElementById('enterprise-cnpj-input') as HTMLInputElement)?.value || '',
+            }
+
+            dbManager.addEnterprise(new Enterprise(newEnterpriseData))
+
             alert('Cadastro realizado com sucesso!')
         })
 

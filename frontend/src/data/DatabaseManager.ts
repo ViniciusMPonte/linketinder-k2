@@ -80,13 +80,13 @@ export default class DatabaseManager {
     }
 
     set enterprises(enterprises: Enterprise[]) {
-        localStorage.setItem('db_candidates', JSON.stringify(enterprises))
+        localStorage.setItem('db_enterprise', JSON.stringify(enterprises))
     }
 
     get enterprises(): Enterprise[] | null {
         let enterprisesData: Enterprise[] | null = null;
 
-        const storedEnterprise = localStorage.getItem('db_candidates');
+        const storedEnterprise = localStorage.getItem('db_enterprise');
         if (storedEnterprise) {
             enterprisesData = JSON.parse(storedEnterprise) as Enterprise[];
         }

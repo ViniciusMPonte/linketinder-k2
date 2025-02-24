@@ -66,3 +66,4 @@ dbManager.updateCandidate(teste.id, {name: 'Deu Certo'})
 
 const navigationManager = new NavigationManager()
 navigationManager.activeCandidateCreateFormListener()
+navigationManager.activeEnterpriseCreateFormListener()
