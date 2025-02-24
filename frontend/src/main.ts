@@ -4,7 +4,7 @@ import EmploymentsData from "./data/EmploymentsData";
 import {Candidate} from "./entities/Candidate";
 import DatabaseManager from "./data/DatabaseManager";
 import NavigationManager from "./navegation/NavigationManager";
-import {Employment} from "./entities/Employment";
+import {initChart} from "./components/Chart";
 
 CandidatesData.getInfos().forEach(candidate => {
         const cardComponent = new Card(candidate.params, 'candidate');
@@ -76,3 +76,11 @@ const navigationManager = new NavigationManager()
 navigationManager.activeCandidateCreateFormListener()
 navigationManager.activeEnterpriseCreateFormListener()
 navigationManager.activeEmploymentCreateFormListener()
+
+
+
+
+let test = document.getElementById('myChart') as HTMLCanvasElement
+if (test){
+    initChart(test, ['test1', 'test2', 'Yellow', 'Green', 'Purple', 'Orange'], [12, 19, 3, 5, 2, 3]);
+}
