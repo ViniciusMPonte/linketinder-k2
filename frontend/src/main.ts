@@ -2,6 +2,7 @@ import Card from './components/Card';
 import CandidatesData from "./data/CandidatesData";
 import {Candidate} from "./entities/Candidate";
 import DatabaseManager from "./data/DatabaseManager";
+import NavigationManager from "./navegation/NavigationManager";
 
 CandidatesData.getInfos().forEach(candidate => {
         const cardComponent = new Card(candidate.params);
@@ -61,3 +62,7 @@ console.log(getTest)
 if (dbManager.candidates != null) dbManager.removeCandidate(dbManager.candidates[0].id)
 
 dbManager.updateCandidate(teste.id, {name: 'Deu Certo'})
+
+
+const navigationManager = new NavigationManager()
+navigationManager.activeCandidateCreateFormListener()
