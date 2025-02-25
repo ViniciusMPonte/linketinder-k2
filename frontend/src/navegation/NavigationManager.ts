@@ -11,6 +11,7 @@ const loginManager = new LoginManager()
 
 import Chart from "../components/Chart";
 import Card from "../components/Card";
+import {ProfileEnterprise, ProfileCandidate} from "../components/Profile";
 
 
 export default class NavigationManager {
@@ -19,22 +20,31 @@ export default class NavigationManager {
         const path = window.location.pathname;
         switch (path) {
             case '/candidate/register-candidate.html':
-                if(!this.redirectIfLogged()) this.activeCandidateCreateFormListener()
+                if (!this.redirectIfLogged()) this.activeCandidateCreateFormListener()
                 break;
             case '/enterprise/register-enterprise.html':
-                if(!this.redirectIfLogged()) this.activeEnterpriseCreateFormListener()
+                if (!this.redirectIfLogged()) this.activeEnterpriseCreateFormListener()
                 break;
             case '/enterprise/register-employment.html':
                 this.activeEmploymentCreateFormListener()
                 break;
             case '/candidate/login-candidate.html':
-                if(!this.redirectIfLogged()) this.activeCandidateLoginFormListener()
+                if (!this.redirectIfLogged()) this.activeCandidateLoginFormListener()
                 break;
             case '/enterprise/login-enterprise.html':
-                if(!this.redirectIfLogged()) this.activeEnterpriseLoginFormListener()
+                if (!this.redirectIfLogged()) this.activeEnterpriseLoginFormListener()
                 break;
             case '/enterprise/candidates-list.html':
                 this.buildEnterpriseCandidatesList()
+                break;
+            case '/enterprise/profile.html':
+                this.buildEnterpriseProfile()
+                break;
+            case '/candidate/profile.html':
+                this.buildCandidateProfile()
+                break;
+            case '/enterprise/my-employments.html':
+                this.buildEnterpriseMyEmploymentsList()
                 break;
             case '/candidate/employments-list.html':
                 this.buildCandidateEmploymentsList()
@@ -152,15 +162,20 @@ export default class NavigationManager {
 
         formBtn.addEventListener('click', (event) => {
             event.preventDefault()
+
+            let enterpriseLogged: Enterprise = loginManager.loggedIn as Enterprise
+            let enterpriseId: number = enterpriseLogged.id
+
             const newEmploymentData: EmploymentConfig = {
                 name: (document.getElementById('employment-name-input') as HTMLInputElement)?.value || '',
                 description: (document.getElementById('employment-description-input') as HTMLInputElement)?.value || '',
                 skills: (document.getElementById('employment-skills-input') as HTMLInputElement)?.value?.split(', ') || [],
+                enterpriseId: enterpriseId
             }
 
             dbManager.addEmployment(new Employment(newEmploymentData))
-
             alert('Cadastro realizado com sucesso!')
+            window.location.href = '/enterprise/candidates-list.html';
         })
 
     }
@@ -248,6 +263,49 @@ export default class NavigationManager {
                 this.innerHTMLInject(document.querySelector('#employments-list'), cardComponent.getCard());
             }
         )
+    }
+
+    buildEnterpriseMyEmploymentsList() {
+
+        if (!loginManager.isEnterprise) {
+            window.location.href = '/enterprise/register-enterprise.html';
+            return
+        }
+
+        let enterpriseLogged: Enterprise = loginManager.loggedIn as Enterprise
+        let enterpriseId: number = enterpriseLogged.id
+
+        if (dbManager.employments == null) return
+        dbManager.employments.forEach(employment => {
+                if (employment.enterpriseId == enterpriseId) {
+                    const cardComponent = new Card(employment.params, 'employment', employment.enterpriseId);
+                    this.innerHTMLInject(document.querySelector('#employments-list'), cardComponent.getCard(false));
+                }
+            }
+        )
+    }
+
+
+    buildEnterpriseProfile() {
+        if (!loginManager.isEnterprise) {
+            window.location.href = '/enterprise/register-enterprise.html';
+            return
+        }
+
+        let enterpriseLogged: Enterprise = loginManager.loggedIn as Enterprise
+        let profileEnterprise = new ProfileEnterprise(enterpriseLogged)
+        this.innerHTMLInject(document.querySelector('#enterprise-profile'), profileEnterprise.get());
+    }
+
+    buildCandidateProfile() {
+        if (!loginManager.isCandidate) {
+            window.location.href = '/candidate/register-candidate.html';
+            return
+        }
+
+        let candidateLogged: Candidate = loginManager.loggedIn as Candidate
+        let profileCandidate = new ProfileCandidate(candidateLogged)
+        this.innerHTMLInject(document.querySelector('#candidate-profile'), profileCandidate.get());
     }
 
     redirectIfLogged(): boolean {

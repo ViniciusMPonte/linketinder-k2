@@ -46,7 +46,7 @@ export default class Card {
         }
     }
 
-    getCard(): string {
+    getCard(viewBtn:boolean = true): string {
 
         let name: string = this.name
         let state: string = this.state
@@ -73,8 +73,8 @@ export default class Card {
         }
                 <p class="card-text">${description}</p>
                 <div class="d-grid">
-                    ${this.forEntity === 'candidate' ? '<button class="btn btn-primary" type="button">Curtir candidato</button>' : ''}
-                    ${this.forEntity === 'employment' ? '<button class="btn btn-primary" type="button">Curtir Vaga</button>' : ''}
+                    ${this.forEntity === 'candidate' && viewBtn ? '<button class="btn btn-primary" type="button">Curtir candidato</button>' : ''}
+                    ${this.forEntity === 'employment' && viewBtn ? '<button class="btn btn-primary" type="button">Curtir Vaga</button>' : ''}
                 </div>
             </div>
         </div>
