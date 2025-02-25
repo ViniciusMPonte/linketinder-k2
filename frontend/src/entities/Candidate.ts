@@ -9,6 +9,8 @@ export interface CandidateConfig {
     description?: string,
     cpf?: string,
     age?: number,
+
+    password?: string
 }
 
 export class Candidate implements CandidateConfig {
@@ -22,6 +24,8 @@ export class Candidate implements CandidateConfig {
     description: string = '';
     cpf: string = '';
     age: number = 0;
+
+    password?: string = '';
 
 
     constructor(config: CandidateConfig) {
@@ -37,6 +41,7 @@ export class Candidate implements CandidateConfig {
         if (config.description) this.description = config.description;
         if (config.cpf) this.cpf = config.cpf;
         if (config.age) this.age = config.age;
+        if (config.password) this.password = config.password;
     }
 
 

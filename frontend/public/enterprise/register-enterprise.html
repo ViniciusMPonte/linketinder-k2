@@ -14,8 +14,8 @@
             integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
             crossorigin="anonymous"></script>
 
-    <link rel="stylesheet" href="css/style.css">
-    <script defer src="../dist/app.js"></script>
+    <link rel="stylesheet" href="../css/style.css">
+    <script defer src="../app.js"></script>
 
     <title>Title</title>
 </head>
@@ -28,79 +28,75 @@
                 <div class="card my-4">
                     <div class="row g-0">
                         <div class="col-xl-6 d-none d-xl-block">
-                            <img src="https://img.freepik.com/fotos-gratis/retrato-de-empresaria-sorridente-e-animada-sentada-com-laptop-faz-gestos-de-dedos-cruzados_1258-117498.jpg?t=st=1740049841~exp=1740053441~hmac=f99fe248f800d39e728ee09264f741abcd24cb3d1fda05abb40c2935e999a982&w=360"
+                            <img src="https://img.freepik.com/fotos-gratis/colegas-de-trabalho-de-acabamento-do-projeto_1098-1831.jpg?t=st=1740048466~exp=1740052066~hmac=b830b263817ccabf8b98e0ab5fae8d6134e992c6d28bcbe1df81372f7a08c337&w=360"
                                  alt="Sample photo" class="img-fluid object-fit-cover w-100 h-100"
                                  style="border-top-left-radius: .25rem; border-bottom-left-radius: .25rem;"/>
                         </div>
                         <div class="col-xl-6">
                             <div class="card-body p-md-5 text-black">
-                                <h3 class="mb-5">Cadastre-se</h3>
+                                <h3 class="mb-5">Cadastre sua empresa</h3>
 
                                 <div data-mdb-input-init class="form-outline mb-4">
-                                    <input type="text" id="candidate-name-input" class="form-control form-control-lg"/>
-                                    <label class="form-label" for="candidate-name-input">Nome</label>
+                                    <input type="text" id="enterprise-name-input" class="form-control form-control-lg"/>
+                                    <label class="form-label" for="enterprise-name-input">Nome</label>
                                 </div>
 
                                 <div data-mdb-input-init class="form-outline mb-4">
-                                    <input type="text" id="candidate-description-input" class="form-control form-control-lg"/>
-                                    <label class="form-label" for="candidate-description-input">Descrição</label>
+                                    <input type="text" id="enterprise-email-input" class="form-control form-control-lg"/>
+                                    <label class="form-label" for="enterprise-email-input">Email</label>
                                 </div>
 
                                 <div data-mdb-input-init class="form-outline mb-4">
-                                    <input type="text" id="candidate-skills-input" class="form-control form-control-lg"/>
-                                    <label class="form-label" for="candidate-skills-input">Habilidades (separe por virgula)</label>
+                                    <input type="password" id="enterprise-password-input" class="form-control form-control-lg"/>
+                                    <label class="form-label" for="enterprise-password-input">Senha</label>
                                 </div>
 
                                 <div data-mdb-input-init class="form-outline mb-4">
-                                    <input type="text" id="candidate-email-input" class="form-control form-control-lg"/>
-                                    <label class="form-label" for="candidate-email-input">Email</label>
+                                    <input type="text" id="enterprise-description-input" class="form-control form-control-lg"/>
+                                    <label class="form-label" for="enterprise-description-input">Descrição</label>
+                                </div>
+
+
+                                <div class="row">
+
+                                    <div class="col-md-6 mb-4">
+                                        <div data-mdb-input-init class="form-outline">
+                                            <input type="text" id="enterprise-country-input"
+                                                   class="form-control form-control-lg"/>
+                                            <label class="form-label" for="enterprise-country-input">País</label>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-6 mb-4">
+                                        <div data-mdb-input-init class="form-outline">
+                                            <input type="text" id="enterprise-state-input"
+                                                   class="form-control form-control-lg"/>
+                                            <label class="form-label" for="enterprise-state-input">Estado</label>
+                                        </div>
+
+                                    </div>
                                 </div>
 
                                 <div class="row">
 
                                     <div class="col-md-6 mb-4">
                                         <div data-mdb-input-init class="form-outline">
-                                            <input type="text" id="candidate-age-input"
+                                            <input type="text" id="enterprise-cep-input"
                                                    class="form-control form-control-lg"/>
-                                            <label class="form-label" for="candidate-age-input">Idade</label>
+                                            <label class="form-label" for="enterprise-cep-input">CEP</label>
                                         </div>
                                     </div>
 
                                     <div class="col-md-6 mb-4">
                                         <div data-mdb-input-init class="form-outline">
-                                            <input type="text" id="candidate-cpf-input"
+                                            <input type="text" id="enterprise-cnpj-input"
                                                    class="form-control form-control-lg"/>
-                                            <label class="form-label" for="candidate-cpf-input">CPF</label>
+                                            <label class="form-label" for="enterprise-cnpj-input">CNPJ</label>
                                         </div>
                                     </div>
 
                                 </div>
 
-                                <div class="row">
-
-                                    <div class="col-md-6 mb-4">
-                                        <div data-mdb-input-init class="form-outline">
-                                            <input type="text" id="candidate-country-input"
-                                                   class="form-control form-control-lg"/>
-                                            <label class="form-label" for="candidate-country-input">País</label>
-                                        </div>
-                                    </div>
-
-                                    <div class="col-md-6 mb-4">
-                                        <div data-mdb-input-init class="form-outline">
-                                            <input type="text" id="candidate-state-input"
-                                                   class="form-control form-control-lg"/>
-                                            <label class="form-label" for="candidate-state-input">Estado</label>
-                                        </div>
-
-                                    </div>
-                                </div>
-
-
-                                <div data-mdb-input-init class="form-outline mb-4">
-                                    <input type="text" id="candidate-cep-input" class="form-control form-control-lg"/>
-                                    <label class="form-label" for="candidate-cep-input">CEP</label>
-                                </div>
 
                                 <div class="d-flex justify-content-end pt-3">
                                     <button type="button" data-mdb-button-init data-mdb-ripple-init
@@ -108,7 +104,7 @@
                                     </button>
                                     <button type="button" data-mdb-button-init data-mdb-ripple-init
                                             class="btn btn-primary btn-lg ms-2"
-                                            id="create-candidate-btn"
+                                            id="create-enterprise-btn"
                                     >
                                         Cadastrar
                                     </button>

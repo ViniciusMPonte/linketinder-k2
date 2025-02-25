@@ -96,12 +96,3 @@ console.log(dbManager)
 const navigationManager = new NavigationManager()
 navigationManager.router()
 
-let logIn = new LoginManager()
-
-if (dbManager.enterprises !== null) {
-    logIn.logIn(dbManager.enterprises[0])
-}
-
-console.log(logIn.loggedIn)
-
-//logIn.logOut()

@@ -8,6 +8,8 @@ export interface EnterpriseConfig {
     employmentsId?: Number[],
     description?: string,
     cnpj?: string,
+
+    password?: string,
 }
 
 export class Enterprise implements EnterpriseConfig {
@@ -20,6 +22,8 @@ export class Enterprise implements EnterpriseConfig {
     employmentsId: Number[] = [];
     description: string = '';
     cnpj: string = '';
+
+    password?: string = '';
 
 
     constructor(config: EnterpriseConfig) {
@@ -34,6 +38,7 @@ export class Enterprise implements EnterpriseConfig {
         if (config.employmentsId) this.employmentsId = config.employmentsId;
         if (config.description) this.description = config.description;
         if (config.cnpj) this.cnpj = config.cnpj;
+        if (config.password) this.password = config.password;
     }
 
 

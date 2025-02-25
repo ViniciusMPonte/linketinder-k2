@@ -28,8 +28,12 @@ export default class LoginManager {
     }
 
     logIn(user: Candidate | Enterprise){
-        if (localStorage.getItem('logged_in') !== '{}') return
+        if (localStorage.getItem('logged_in') !== '{}') {
+            alert('Já há um usuário logado')
+            return
+        }
         localStorage.setItem('logged_in', JSON.stringify(user))
+        alert('Login realizado com sucesso!')
     }
 
     logOut(){
