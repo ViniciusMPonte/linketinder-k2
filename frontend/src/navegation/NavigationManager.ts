@@ -19,19 +19,19 @@ export default class NavigationManager {
         const path = window.location.pathname;
         switch (path) {
             case '/candidate/register-candidate.html':
-                this.activeCandidateCreateFormListener()
+                if(!this.redirectIfLogged()) this.activeCandidateCreateFormListener()
                 break;
             case '/enterprise/register-enterprise.html':
-                this.activeEnterpriseCreateFormListener()
+                if(!this.redirectIfLogged()) this.activeEnterpriseCreateFormListener()
                 break;
             case '/enterprise/register-employment.html':
                 this.activeEmploymentCreateFormListener()
                 break;
             case '/candidate/login-candidate.html':
-                this.activeCandidateLoginFormListener()
+                if(!this.redirectIfLogged()) this.activeCandidateLoginFormListener()
                 break;
             case '/enterprise/login-enterprise.html':
-                this.activeEnterpriseLoginFormListener()
+                if(!this.redirectIfLogged()) this.activeEnterpriseLoginFormListener()
                 break;
             case '/enterprise/candidates-list.html':
                 this.buildEnterpriseCandidatesList()
@@ -140,6 +140,11 @@ export default class NavigationManager {
 
     activeEmploymentCreateFormListener() {
 
+        if (!loginManager.isEnterprise) {
+            alert('`Precisa estar logado como empresa para acessar essa página`')
+            window.location.href = '/enterprise/login-enterprise.html';
+        }
+
         const form = document.querySelector('.card-body')
         if (!form) return
         const formBtn = document.querySelector('.card-body #create-employment-btn')
@@ -213,8 +218,8 @@ export default class NavigationManager {
                 alert('Usuário repetido')
             } else if (enterprisesFiltered.length == 1) {
                 loginManager.logIn(enterprisesFiltered[0])
-                window.location.href = '/enterprise/candidates-list.html';
             }
+            if (loginManager.isEnterprise) window.location.href = '/enterprise/candidates-list.html';
         })
     }
 
@@ -243,5 +248,15 @@ export default class NavigationManager {
                 this.innerHTMLInject(document.querySelector('#employments-list'), cardComponent.getCard());
             }
         )
+    }
+
+    redirectIfLogged(): boolean {
+        let ifLogged = false
+        if (loginManager.loggedIn) {
+            ifLogged = true
+            if (loginManager.isCandidate) window.location.href = '/candidate/employments-list.html';
+            if (loginManager.isEnterprise) window.location.href = '/enterprise/candidates-list.html';
+        }
+        return ifLogged
     }
 }

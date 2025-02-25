@@ -40,4 +40,14 @@ export default class LoginManager {
         localStorage.setItem('logged_in', JSON.stringify({}))
     }
 
+    get isCandidate(): boolean {
+        const user = this.loggedIn;
+        return user instanceof Candidate;
+    }
+
+    get isEnterprise(): boolean {
+        const user = this.loggedIn;
+        return user instanceof Enterprise;
+    }
+
 }
