@@ -21,38 +21,21 @@
 </head>
 <body>
 
-<div>
-    <canvas id="myChart"></canvas>
+<div class="container col-xxl-8 py-2 mb-5 m-0 bg-info" style="max-width: none;">
+    <div class="container">
+
+        <div class="col-lg-6">
+            <h1 class="text-light">Bem-vindo de volta...</h1>
+            <p class="lead text-light">Navegue para curtir as vagas.</p>
+        </div>
+
+    </div>
 </div>
 
 
 <div class="container card-flex-container" id="employments-list"></div>
 
-<script>
-    function startChart(tag, labels, data) {
 
-        const ctx = tag;
-
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: '# of Votes',
-                    data: data,
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    }
-</script>
 <script defer src="../app.js"></script>
 </body>
 </html>

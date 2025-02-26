@@ -21,11 +21,23 @@
 </head>
 <body>
 
-<div>
-    <canvas id="myChart"></canvas>
+<div class="container col-xxl-8 py-2 mb-5 m-0 bg-info" style="max-width: none;">
+    <div class="container">
+        <div class="row flex-lg-row align-items-center g-5 py-5">
+            <div class="col-lg-6">
+                <h1 class="text-light">Bem-vindo de volta...</h1>
+                <p class="lead text-light">Navegue para curtir os candidatos.<br>Ao lado está um gráfico das
+                    competências por candidatos.</p>
+            </div>
+            <div class="col-10 col-sm-8 col-lg-6 bg-light rounded-4">
+                <canvas id="myChart"></canvas>
+            </div>
+        </div>
+    </div>
 </div>
 
 
+<h1 class="container">Candidatos</h1>
 <div class="container card-flex-container" id="candidates-list"></div>
 
 <script>
@@ -38,7 +50,7 @@
             data: {
                 labels: labels,
                 datasets: [{
-                    label: '# of Votes',
+                    label: 'Candidatos',
                     data: data,
                     borderWidth: 1
                 }]

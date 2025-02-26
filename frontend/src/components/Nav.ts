@@ -1,8 +1,8 @@
 import LoginManager from "../services/LoginManager";
+
 const loginManager = new LoginManager()
 
 export default class Nav {
-
 
 
     constructor() {
@@ -21,9 +21,7 @@ export default class Nav {
                     </button>
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li class="nav-item">
-                                <a class="nav-link text-light active" aria-current="page" href="/">Home</a>
-                            </li>
+                            ${this.home}
                             ${this.candidateOptions}
                             ${this.enterpriseOptions}
                         </ul>
@@ -37,10 +35,10 @@ export default class Nav {
         `
     }
 
-    get loginAndRegisterOptions():string {
-        if(loginManager.loggedIn != null) return ''
+    get loginAndRegisterOptions(): string {
+        if (loginManager.loggedIn != null) return ''
 
-        return`
+        return `
                         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 pe-3">
                         
                             <li class="nav-item dropdown">
@@ -62,7 +60,7 @@ export default class Nav {
                                    aria-expanded="false">
                                     Login
                                 </a>
-                                <ul class="dropdown-menu">
+                                <ul class="dropdown-menu dropdown-menu-end">
                                     <li><a class="dropdown-item" href="/candidate/login-candidate.html">Candidato</a></li>
                                     <li>
                                         <hr class="dropdown-divider">
@@ -75,10 +73,10 @@ export default class Nav {
         `
     }
 
-    get candidateOptions():string {
+    get candidateOptions(): string {
         if (!loginManager.isCandidate) return ''
 
-        return`
+        return `
                             <li class="nav-item">
                                 <a class="nav-link text-light" aria-current="page" href="/candidate/employments-list.html">Vagas</a>
                             </li>
@@ -89,10 +87,10 @@ export default class Nav {
 
     }
 
-    get enterpriseOptions():string {
+    get enterpriseOptions(): string {
         if (!loginManager.isEnterprise) return ''
 
-        return`
+        return `
                             <li class="nav-item">
                                 <a class="nav-link text-light" aria-current="page" href="/enterprise/candidates-list.html">Candidatos</a>
                             </li>
@@ -103,7 +101,7 @@ export default class Nav {
                                    aria-expanded="false">
                                     Minhas Vagas
                                 </a>
-                                <ul class="dropdown-menu">
+                                <ul class="dropdown-menu dropdown-menu-end">
                                     <li><a class="dropdown-item" href="/enterprise/my-employments.html">Minhas Vagas</a></li>
                                     <li>
                                         <hr class="dropdown-divider">
@@ -121,12 +119,21 @@ export default class Nav {
 
     }
 
-    get logOut():string {
+    get logOut(): string {
         if (!loginManager.loggedIn) return ''
         return `
             <li class="nav-item">
                 <a id="logout-btn" class="nav-link text-light" aria-current="page" href="/">Log Out</a>
             </li>
+        `
+    }
+
+    get home(): string {
+        if (loginManager.loggedIn) return ''
+        return `
+        <li class="nav-item">
+            <a class="nav-link text-light active" aria-current="page" href="/">Home</a>
+        </li>
         `
     }
 

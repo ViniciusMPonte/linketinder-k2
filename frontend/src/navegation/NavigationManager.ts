@@ -25,6 +25,9 @@ export default class NavigationManager {
 
         const path = window.location.pathname;
         switch (path) {
+            case '/':
+                if (!this.redirectIfLogged()) this.activeCandidateCreateFormListener()
+                break;
             case '/candidate/register-candidate.html':
                 if (!this.redirectIfLogged()) this.activeCandidateCreateFormListener()
                 break;
@@ -73,12 +76,12 @@ export default class NavigationManager {
         }
     }
 
-    activeNavListener(){
+    activeNavListener() {
         const logOutBtn = document.querySelector('#logout-btn')
         if (!logOutBtn) return
 
         logOutBtn.addEventListener('click', (event) => {
-            if(loginManager.loggedIn) loginManager.logOut()
+            if (loginManager.loggedIn) loginManager.logOut()
         })
     }
 
@@ -281,7 +284,7 @@ export default class NavigationManager {
     buildCandidateEmploymentsList() {
         if (dbManager.employments == null) return
         dbManager.employments.forEach(employment => {
-            if (true) employment.name = '<span class="blur">Hidden Name<\span>'
+                if (true) employment.name = '<span class="blur">Hidden Name<\span>'
                 const cardComponent = new Card(employment.params, 'employment', employment.enterpriseId);
                 this.innerHTMLInject(document.querySelector('#employments-list'), cardComponent.getCard());
             }
@@ -299,13 +302,18 @@ export default class NavigationManager {
         let enterpriseId: number = enterpriseLogged.id
 
         if (dbManager.employments == null) return
+
+        let isEmptyEmployment = true
         dbManager.employments.forEach(employment => {
-                if (employment.enterpriseId == enterpriseId) {
-                    const cardComponent = new Card(employment.params, 'employment', employment.enterpriseId);
-                    this.innerHTMLInject(document.querySelector('#employments-list'), cardComponent.getCard(false));
-                }
+            if (employment.enterpriseId == enterpriseId) {
+                isEmptyEmployment = false
+                const cardComponent = new Card(employment.params, 'employment', employment.enterpriseId);
+                this.innerHTMLInject(document.querySelector('#employments-list'), cardComponent.getCard(false));
             }
-        )
+        })
+        if (isEmptyEmployment) {
+            this.innerHTMLInject(document.querySelector('#employments-list'), '<h1>Nenhuma vaga encontrada, crie uma vaga antes!</h1>');
+        }
     }
 
     buildEnterpriseProfile() {
