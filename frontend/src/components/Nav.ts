@@ -12,9 +12,9 @@ export default class Nav {
     get(): string {
 
         return `
-            <nav class="navbar navbar-expand-lg bg-body-tertiary">
+            <nav class="navbar navbar-expand-lg bg-info">
                 <div class="container-fluid">
-                    <a class="navbar-brand" href="#">Linketinder</a>
+                    <a class="navbar-brand text-light" href="#">Linketinder</a>
                     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
                             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
@@ -22,7 +22,7 @@ export default class Nav {
                     <div class="collapse navbar-collapse" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                             <li class="nav-item">
-                                <a class="nav-link active" aria-current="page" href="/">Home</a>
+                                <a class="nav-link text-light active" aria-current="page" href="/">Home</a>
                             </li>
                             ${this.candidateOptions}
                             ${this.enterpriseOptions}
@@ -44,7 +44,7 @@ export default class Nav {
                         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 pe-3">
                         
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                <a class="nav-link text-light dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                                    aria-expanded="false">
                                     Cadastrar
                                 </a>
@@ -58,7 +58,7 @@ export default class Nav {
                             </li>
             
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                <a class="nav-link text-light dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                                    aria-expanded="false">
                                     Login
                                 </a>
@@ -80,10 +80,10 @@ export default class Nav {
 
         return`
                             <li class="nav-item">
-                                <a class="nav-link" aria-current="page" href="/candidate/employments-list.html">Vagas</a>
+                                <a class="nav-link text-light" aria-current="page" href="/candidate/employments-list.html">Vagas</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" aria-current="page" href="/candidate/profile.html">Perfil</a>
+                                <a class="nav-link text-light" aria-current="page" href="/candidate/profile.html">Perfil</a>
                             </li>        
         `
 
@@ -94,12 +94,12 @@ export default class Nav {
 
         return`
                             <li class="nav-item">
-                                <a class="nav-link" aria-current="page" href="/enterprise/candidates-list.html">Candidatos</a>
+                                <a class="nav-link text-light" aria-current="page" href="/enterprise/candidates-list.html">Candidatos</a>
                             </li>
             
             
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                                <a class="nav-link text-light dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                                    aria-expanded="false">
                                     Minhas Vagas
                                 </a>
@@ -115,7 +115,7 @@ export default class Nav {
             
             
                             <li class="nav-item">
-                                <a class="nav-link" aria-current="page" href="/enterprise/profile.html">Perfil</a>
+                                <a class="nav-link text-light" aria-current="page" href="/enterprise/profile.html">Perfil</a>
                             </li>  
         `
 
@@ -125,7 +125,7 @@ export default class Nav {
         if (!loginManager.loggedIn) return ''
         return `
             <li class="nav-item">
-                <a id="logout-btn" class="nav-link" aria-current="page" href="/">Log Out</a>
+                <a id="logout-btn" class="nav-link text-light" aria-current="page" href="/">Log Out</a>
             </li>
         `
     }

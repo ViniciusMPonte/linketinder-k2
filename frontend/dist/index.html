@@ -16,125 +16,28 @@
 
     <link rel="stylesheet" href="css/style.css">
 
-    <title>Title</title>
+    <title>Linketinder</title>
 </head>
 <body>
 
-<div>
-    <canvas id="myChart"></canvas>
+<div class="container col-xxl-8 px-5 py-2 m-0 bg-info" style="max-width: none;">
+    <div class="row flex-lg-row-reverse align-items-center g-5 py-5">
+        <div class="col-10 col-sm-8 col-lg-6">
+            <img src="https://static.vecteezy.com/system/resources/previews/018/930/480/non_2x/linkedin-logo-linkedin-icon-transparent-free-png.png" class="d-block mx-lg-auto img-fluid" alt="Bootstrap Themes" width="700" height="500" loading="lazy">
+        </div>
+        <div class="col-lg-6">
+            <h1 class="display-5 fw-bold lh-1 mb-3 text-light">Linketinder: Encontre seu match profissional perfeito!</h1>
+            <p class="lead text-light">Cadastre-se, explore vagas e candidatos com gráficos interativos e perfis anônimos.</p>
+            <div class="d-grid gap-2 d-md-flex justify-content-md-start">
+
+                <a class="btn btn-primary btn-lg px-4 me-md-2" href="/candidate/register-candidate.html">Para candidatos</a>
+                <a class="btn btn-outline-light btn-lg px-4" href="/enterprise/register-enterprise.html">Para empresas</a>
+
+            </div>
+        </div>
+    </div>
 </div>
 
-
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-
-
-<script>
-    function startChart(tag, labels, data) {
-
-        const ctx = tag;
-
-        new Chart(ctx, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    label: '# of Votes',
-                    data: data,
-                    borderWidth: 1
-                }]
-            },
-            options: {
-                scales: {
-                    y: {
-                        beginAtZero: true
-                    }
-                }
-            }
-        });
-    }
-</script>
-
-
-
-<div class="container card-flex-container">
-
-
-    <div class="card">
-        <div class="card-body">
-            <div class="d-flex align-items-center">
-                <i class="bi bi-person-fill fs-1 me-2"></i>
-                <h5 class="card-title">hidden name</h5>
-            </div>
-            <div class="d-flex align-items-center">
-                <i class="bi bi-pin-map-fill  fs-6 me-2"></i>
-                <p class="m-0">São Paulo - BR</p>
-            </div>
-            <span class="badge text-bg-secondary">Javascript</span>
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-            <div class="d-grid">
-                <button class="btn btn-primary" type="button">Curtir candidato</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-body">
-            <div class="d-flex align-items-center">
-                <i class="bi bi-person-fill fs-1 me-2"></i>
-                <h5 class="card-title">hidden name</h5>
-            </div>
-            <div class="d-flex align-items-center">
-                <i class="bi bi-pin-map-fill  fs-6 me-2"></i>
-                <p class="m-0">São Paulo - BR</p>
-            </div>
-            <span class="badge text-bg-secondary">Javascript</span>
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-            <div class="d-grid">
-                <button class="btn btn-primary" type="button">Curtir candidato</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-body">
-            <div class="d-flex align-items-center">
-                <i class="bi bi-person-fill fs-1 me-2"></i>
-                <h5 class="card-title">hidden name</h5>
-            </div>
-            <div class="d-flex align-items-center">
-                <i class="bi bi-pin-map-fill  fs-6 me-2"></i>
-                <p class="m-0">São Paulo - BR</p>
-            </div>
-            <span class="badge text-bg-secondary">Javascript</span>
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-            <div class="d-grid">
-                <button class="btn btn-primary" type="button">Curtir candidato</button>
-            </div>
-        </div>
-    </div>
-
-    <div class="card">
-        <div class="card-body">
-            <div class="d-flex align-items-center">
-                <i class="bi bi-person-fill fs-1 me-2"></i>
-                <h5 class="card-title">hidden name</h5>
-            </div>
-            <div class="d-flex align-items-center">
-                <i class="bi bi-pin-map-fill  fs-6 me-2"></i>
-                <p class="m-0">São Paulo - BR</p>
-            </div>
-            <span class="badge text-bg-secondary">Javascript</span>
-            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-            <div class="d-grid">
-                <button class="btn btn-primary" type="button">Curtir candidato</button>
-            </div>
-        </div>
-    </div>
-
-
-</div>
 
     <script defer src="app.js"></script>
 </body>
