@@ -12,11 +12,17 @@ const loginManager = new LoginManager()
 import Chart from "../components/Chart";
 import Card from "../components/Card";
 import {ProfileEnterprise, ProfileCandidate} from "../components/Profile";
+import Nav from "../components/Nav";
 
+const nav = new Nav()
 
 export default class NavigationManager {
 
     router(): void {
+
+        this.insertNav()
+        this.activeNavListener()
+
         const path = window.location.pathname;
         switch (path) {
             case '/candidate/register-candidate.html':
@@ -55,10 +61,25 @@ export default class NavigationManager {
         }
     }
 
+    insertNav() {
+        const body = document.querySelector('body');
+        if (!body) return
+        body.insertAdjacentHTML('afterbegin', nav.get());
+    }
+
     innerHTMLInject(tag: HTMLElement | null, output: string): void {
         if (tag) {
             tag.innerHTML += output
         }
+    }
+
+    activeNavListener(){
+        const logOutBtn = document.querySelector('#logout-btn')
+        if (!logOutBtn) return
+
+        logOutBtn.addEventListener('click', (event) => {
+            if(loginManager.loggedIn) loginManager.logOut()
+        })
     }
 
     activeCandidateCreateFormListener() {
@@ -284,7 +305,6 @@ export default class NavigationManager {
             }
         )
     }
-
 
     buildEnterpriseProfile() {
         if (!loginManager.isEnterprise) {
