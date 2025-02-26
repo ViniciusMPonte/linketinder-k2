@@ -1,18 +1,6 @@
 import {Enterprise} from "../entities/Enterprise";
 
 export default class EnterprisesData {
-    static removeByName(name: string, enterpriseList: Enterprise[]): boolean {
-        const originalLength = enterpriseList.length;
-        enterpriseList.splice(
-            0,
-            enterpriseList.length,
-            ...enterpriseList.filter(
-                enterprise => enterprise.name !== name
-            )
-        );
-        return enterpriseList.length < originalLength;
-    }
-
     static getInfos(): Enterprise[] {
         return [
             new Enterprise(

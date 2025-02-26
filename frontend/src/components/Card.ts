@@ -1,6 +1,6 @@
 import {CandidateConfig} from "../entities/Candidate";
 import {EmploymentConfig} from "../entities/Employment";
-import DatabaseManager from "../data/DatabaseManager";
+import DatabaseManager from "../services/DatabaseManager";
 import {Enterprise} from "../entities/Enterprise";
 
 const dbManager = new DatabaseManager()

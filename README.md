@@ -1,4 +1,73 @@
-# Linketinder CLI
+# Linketinder
+README divido em duas partes, FRONTEND e BACKEND. Atualmente não há conexão entre ambas.
+
+# FRONTEND: Linketinder
+
+O Linketinder Frontend é uma aplicação web desenvolvida em TypeScript desenvolvida por **Vinícius Menezes Pontes** que permite a criação de perfis para candidatos e empresas, login, publicação de vagas e visualização de um gráfico de competências dos candidatos. O sistema inclui uma navbar dinâmica (baseada no tipo de usuário e estado de login), redirecionamentos para evitar acessos não autorizados e utiliza o `localStorage` como banco de dados local.
+
+---
+
+## **Funcionalidades Principais**
+- **Navbar Dinâmica**: Exibe opções específicas para candidatos, empresas ou usuários não logados.
+- **Gráfico de Competências**: Visualização gráfica das habilidades por candidatos.
+- **Banco de Dados Local**: Dados persistem no `localStorage` do navegador.
+- **Redirecionamentos Inteligentes**: Impede acesso a páginas restritas sem autenticação.
+
+---
+
+## **Estrutura do Projeto**
+
+- `main.ts`: Ponto de entrada.
+
+### 📂 **components** - Componentes de Interface
+- `Card.ts`: Componente reutilizável para exibir informações em cards (ex: candidatos, vagas).
+- `Chart.ts`: Componente que renderiza o gráfico de competências por candidatos.
+- `Nav.ts`: Navbar dinâmica que altera conforme o tipo de usuário (candidato/empresa) e estado de login.
+- `Profile.ts`: Página de perfil para visualização de dados de candidatos ou empresas.
+
+### 📂 **data** - Gerenciamento de Dados
+- `CandidatesData.ts`: Mock de exemplos de candidatos.
+- `EmploymentsData.ts`: Mock de exemplos de empresas.
+- `EnterprisesData.ts`: Mock de exemplos de vagas.
+
+### 📂 **entities** - Modelos das entidades
+- `Candidate.ts`: Define a estrutura de um candidato (ex: nome, habilidades, etc.).
+- `Employment.ts`: Define a estrutura de uma vaga (título, descrição, etc.).
+- `Enterprise.ts`: Define a estrutura de uma empresa (nome, CNPJ, etc.).
+
+### 📂 **services** - Serviços
+- `DatabaseManager.ts`: Serviço principal para interação com o `localStorage` (banco de dados local).
+- `NavigationManager.ts`: Gerencia rotas, redirecionamentos e valida acesso a páginas restritas.
+- `LoginManager.ts`: Gerencia o login.
+
+---
+
+## **Instalação e Execução**
+
+1. **Clone o repositório**:
+   ```bash
+   git clone https://github.com/ViniciusMPonte/linketinder-frontend-and-backend
+   ```
+
+2. **Instale as dependências**:
+   ```bash
+   npm install
+   ```
+
+3. **Compile o projeto**:
+   ```bash
+   npm run build
+   ```
+   *Será gerada a pasta `/frontend/dist` com os arquivos estáticos e o JavaScript compilado em `app.js`.*
+
+4. **Inicie a aplicação**:
+   ```bash
+   npm start
+      ```
+   
+---
+
+# BACKEND: Linketinder CLI
 
 O projeto Linketinder é uma aplicação desenvolvida em Groovy por **Vinícius Menezes Pontes**, cujo objetivo é facilitar a conexão entre empresas e candidatos cujas competências sejam compatíveis. A plataforma permite que empresas definam as habilidades desejadas para suas vagas e que candidatos com essas qualificações tenham maior visibilidade, aumentando as chances de um alinhamento eficiente no processo seletivo.
 
@@ -64,7 +133,7 @@ No sistema, existe uma estrutura de testes unitários que garante a qualidade do
 Abra o terminal e execute o comando abaixo:
 
 ```bash
-git clone [URL_DO_SEU_REPOSITORIO]
+git clone https://github.com/ViniciusMPonte/linketinder-frontend-and-backend
 ```
 
 ### 2. Acesse a pasta do projeto
@@ -72,7 +141,7 @@ git clone [URL_DO_SEU_REPOSITORIO]
 Navegue até o diretório do projeto clonado:
 
 ```bash
-cd src
+cd backend
 ```
 
 ### 3. Execute a aplicação ou os testes

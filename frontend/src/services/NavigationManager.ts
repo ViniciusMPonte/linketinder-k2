@@ -2,10 +2,10 @@ import {Candidate, CandidateConfig} from "../entities/Candidate"
 import {Enterprise, EnterpriseConfig} from "../entities/Enterprise"
 import {Employment, EmploymentConfig} from "../entities/Employment"
 
-import DatabaseManager from "../data/DatabaseManager"
+import DatabaseManager from "./DatabaseManager"
 
 const dbManager = new DatabaseManager()
-import LoginManager from "../services/LoginManager";
+import LoginManager from "./LoginManager";
 
 const loginManager = new LoginManager()
 

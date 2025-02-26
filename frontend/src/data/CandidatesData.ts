@@ -1,18 +1,6 @@
 import {Candidate} from "../entities/Candidate";
 
 export default class CandidatesData {
-    static removeByName(name: string, candidatesList: Candidate[]): boolean {
-        const originalLength = candidatesList.length;
-        candidatesList.splice(
-            0,
-            candidatesList.length,
-            ...candidatesList.filter(
-                candidate => candidate.name !== name
-            )
-        );
-        return candidatesList.length < originalLength;
-    }
-
     static getInfos(): Candidate[] {
         return [
             new Candidate(

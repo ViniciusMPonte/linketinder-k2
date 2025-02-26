@@ -1,9 +1,9 @@
 import {Candidate, CandidateConfig} from "../entities/Candidate";
-import CandidatesData from "./CandidatesData";
+import CandidatesData from "../data/CandidatesData";
 import {Enterprise, EnterpriseConfig} from "../entities/Enterprise";
-import EnterprisesData from "./EnterprisesData";
+import EnterprisesData from "../data/EnterprisesData";
 import {Employment, EmploymentConfig} from "../entities/Employment";
-import EmploymentsData from "./EmploymentsData";
+import EmploymentsData from "../data/EmploymentsData";
 
 
 export default class DatabaseManager {

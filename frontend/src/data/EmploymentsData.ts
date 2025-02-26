@@ -1,18 +1,6 @@
 import {Employment} from "../entities/Employment";
 
 export default class EmploymentsData {
-    static removeByName(name: string, employmentList: Employment[]): boolean {
-        const originalLength = employmentList.length;
-        employmentList.splice(
-            0,
-            employmentList.length,
-            ...employmentList.filter(
-                employment => employment.name !== name
-            )
-        );
-        return employmentList.length < originalLength;
-    }
-
     static getInfos(enterpriseIds: number[]): Employment[] {
         return [
             new Employment({
