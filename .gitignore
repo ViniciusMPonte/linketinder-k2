@@ -5,6 +5,7 @@ out/
 lib/
 .idea/
 linketinder.iml
+frontend/dist/*
 
 ### Eclipse ###
 .apt_generated
