@@ -35,7 +35,7 @@ export default class NavigationManager {
                 if (!this.redirectIfLogged()) this.activeEnterpriseCreateFormListener()
                 break;
             case '/enterprise/register-employment.html':
-                this.activeEmploymentCreateFormListener()
+                if (!this.redirectIfLogged()) this.activeEmploymentCreateFormListener()
                 break;
             case '/candidate/login-candidate.html':
                 if (!this.redirectIfLogged()) this.activeCandidateLoginFormListener()
@@ -44,19 +44,19 @@ export default class NavigationManager {
                 if (!this.redirectIfLogged()) this.activeEnterpriseLoginFormListener()
                 break;
             case '/enterprise/candidates-list.html':
-                this.buildEnterpriseCandidatesList()
+                if (!this.redirectIfNotLogged('enterprise')) this.buildEnterpriseCandidatesList()
                 break;
             case '/enterprise/profile.html':
-                this.buildEnterpriseProfile()
+                if (!this.redirectIfNotLogged('enterprise')) this.buildEnterpriseProfile()
                 break;
             case '/candidate/profile.html':
-                this.buildCandidateProfile()
+                if (!this.redirectIfNotLogged('candidate')) this.buildCandidateProfile()
                 break;
             case '/enterprise/my-employments.html':
-                this.buildEnterpriseMyEmploymentsList()
+                if (!this.redirectIfNotLogged('enterprise')) this.buildEnterpriseMyEmploymentsList()
                 break;
             case '/candidate/employments-list.html':
-                this.buildCandidateEmploymentsList()
+                if (!this.redirectIfNotLogged('candidate')) this.buildCandidateEmploymentsList()
                 break;
             default:
                 console.log('Rota não encontrada: Página 404');
@@ -353,6 +353,17 @@ export default class NavigationManager {
             if (loginManager.isCandidate) window.location.href = '/candidate/employments-list.html';
             if (loginManager.isEnterprise) window.location.href = '/enterprise/candidates-list.html';
         }
+        return ifLogged
+    }
+
+    redirectIfNotLogged(user:string): boolean {
+        let ifLogged = false
+
+        if(user == 'candidate' && loginManager.isCandidate) return ifLogged
+        if(user == 'enterprise' && loginManager.isEnterprise) return ifLogged
+
+        ifLogged = true
+        window.location.href = '/';
         return ifLogged
     }
 }
