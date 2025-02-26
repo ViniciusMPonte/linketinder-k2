@@ -271,6 +271,7 @@ export default class NavigationManager {
 
         if (dbManager.candidates == null) return
         dbManager.candidates.forEach(candidate => {
+                if (true) candidate.name = '<span class="blur">Hidden Name<\span>'
                 const cardComponent = new Card(candidate.params, 'candidate');
                 this.innerHTMLInject(document.querySelector('#candidates-list'), cardComponent.getCard());
             }
@@ -280,6 +281,7 @@ export default class NavigationManager {
     buildCandidateEmploymentsList() {
         if (dbManager.employments == null) return
         dbManager.employments.forEach(employment => {
+            if (true) employment.name = '<span class="blur">Hidden Name<\span>'
                 const cardComponent = new Card(employment.params, 'employment', employment.enterpriseId);
                 this.innerHTMLInject(document.querySelector('#employments-list'), cardComponent.getCard());
             }

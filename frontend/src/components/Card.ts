@@ -68,7 +68,7 @@ export default class Card {
                 </div>
                 ${
             skills.map(skill => {
-                return `<span class="badge text-bg-secondary">${skill}</span>`
+                return `<span class="badge text-bg-secondary me-2">${skill}</span>`
             }).join('')
         }
                 <p class="card-text">${description}</p>
