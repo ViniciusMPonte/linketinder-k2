@@ -24,6 +24,9 @@ export default class Nav {
                             ${this.home}
                             ${this.candidateOptions}
                             ${this.enterpriseOptions}
+                            <li class="nav-item">
+                                <a id="reset-db-btn" class="nav-link text-light" aria-current="page" href="/">Resetar DB</a>
+                            </li>
                         </ul>
                         <ul class="navbar-nav ms-auto mb-2 mb-lg-0 pe-3">
                         ${this.loginAndRegisterOptions}

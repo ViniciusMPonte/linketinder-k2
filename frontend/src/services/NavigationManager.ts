@@ -83,6 +83,14 @@ export default class NavigationManager {
         logOutBtn.addEventListener('click', (event) => {
             if (loginManager.loggedIn) loginManager.logOut()
         })
+
+        const resetDBBtn = document.querySelector('#reset-db-btn')
+        if (!resetDBBtn) return
+
+        resetDBBtn.addEventListener('click', (event) => {
+            if (loginManager.loggedIn) loginManager.logOut()
+            dbManager.reset()
+        })
     }
 
     activeCandidateCreateFormListener() {
