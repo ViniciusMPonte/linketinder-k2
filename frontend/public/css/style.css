@@ -21,6 +21,10 @@
     filter: blur(5px);
 }
 
+.hero-img {
+    border-radius: 76% 24% 72% 28% / 58% 60% 40% 42% ;
+}
+
 @media (max-width: 992px) {
     .card-flex-container > div {
         width: 100%;
