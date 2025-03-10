@@ -1,6 +1,7 @@
 import {Candidate, CandidateConfig} from "../entities/Candidate"
 import {Enterprise, EnterpriseConfig} from "../entities/Enterprise"
 import {Employment, EmploymentConfig} from "../entities/Employment"
+import ValidationForms from "./ValidationForms";
 
 import DatabaseManager from "./DatabaseManager"
 
@@ -121,6 +122,20 @@ export default class NavigationManager {
                 alert('Por favor, preencha todos os campos obrigatórios!');
                 return;
             }
+
+            let isItValid = true
+            for (const [key, value] of Object.entries(newCandidateData)) {
+                const validateKey: string = key as string
+                const result = ValidationForms.validate(validateKey, String(value));
+
+                console.log(validateKey, result)
+
+                if(!result){
+                    alert(ValidationForms.validationFailMessage(validateKey))
+                    isItValid = false
+                }
+            }
+            if (!isItValid) return
 
             let candidatesWithSameEmail = dbManager.candidates?.filter(candidate =>
                 candidate.email == newCandidateData.email
