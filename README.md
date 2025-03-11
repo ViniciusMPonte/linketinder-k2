@@ -39,7 +39,61 @@ O Linketinder Frontend é uma aplicação web desenvolvida em TypeScript desenvo
 - `DatabaseManager.ts`: Serviço principal para interação com o `localStorage` (banco de dados local).
 - `NavigationManager.ts`: Gerencia rotas, redirecionamentos e valida acesso a páginas restritas.
 - `LoginManager.ts`: Gerencia o login.
+- `ValidationForms`: Valida todos os formulários.
 
+---
+## Módulo de Validação de Formulários
+
+O módulo **ValidationForms** é uma classe utilitária, escrita em TypeScript, que centraliza a validação dos dados inseridos em formulários. Ele garante que as informações fornecidas pelos usuários estejam no formato esperado, contribuindo para a integridade dos dados.
+
+### Principais Funcionalidades
+
+- **Validação de Nome**  
+  Verifica se o nome possui pelo menos duas palavras, com a primeira letra maiúscula e permitindo caracteres acentuados.  
+  *Método*: `name(nome: string): boolean`
+
+- **Validação de Email**  
+  Confirma que o email segue um padrão básico de formatação.  
+  *Método*: `email(email: string): boolean`
+
+- **Validação de Senha**  
+  Garante que a senha contenha 6 ou mais caracteres sem espaços.  
+  *Método*: `password(password: string): boolean`
+
+- **Validação de Descrição**  
+  Assegura que a descrição contenha somente caracteres permitidos e seja composta por, no mínimo, duas palavras.  
+  *Método*: `description(description: string): boolean`
+
+- **Validação de Habilidades (Skills)**
+   - Utiliza uma lista pré-definida (`validSkills`) para validar as habilidades informadas.
+   - Separa as habilidades recebidas em uma string (usando vírgulas) e valida cada uma através de uma expressão regular gerada dinamicamente.  
+     *Método*: `skills(skills: string): boolean`
+
+- **Validação de Idade**  
+  Aceita idades entre 18 e 99 anos.  
+  *Método*: `age(age: string): boolean`
+
+- **Validação de CPF e CNPJ**  
+  Verifica os formatos específicos de CPF (`xxx.xxx.xxx-xx`) e CNPJ (`xx.xxx.xxx/xxxx-xx`).  
+  *Métodos*: `cpf(cpf: string): boolean` e `cnpj(cnpj: string): boolean`
+
+- **Validação de País, Estado e CEP**  
+  Confirma que os nomes de país e estado iniciem com letra maiúscula e que o CEP siga o padrão `xxxxx-xxx`.  
+  *Métodos*: `country(country: string): boolean`, `state(state: string): boolean` e `cep(cep: string): boolean`
+
+### Métodos Auxiliares
+
+- **Geração Dinâmica de Regex**  
+  O método `createRegexFromKeywords` recebe uma lista de palavras-chave (como as habilidades válidas) e retorna uma expressão regular customizada, que é utilizada para validar os campos de *skills*.
+
+- **Validação Genérica**  
+  O método `validate` permite a validação de um campo específico a partir de uma chave e do valor informado, direcionando para o método de validação apropriado.
+
+- **Mensagens de Erro Personalizadas**  
+  Três métodos específicos fornecem mensagens de falha de validação para diferentes contextos:
+   - `validationFailMessageCandidate`: para candidatos.
+   - `validationFailMessageEnterprise`: para empresas.
+   - `validationFailMessageEmployment`: para vagas/empregos.
 ---
 
 ## **Instalação e Execução**

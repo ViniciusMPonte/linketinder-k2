@@ -128,10 +128,8 @@ export default class NavigationManager {
                 const validateKey: string = key as string
                 const result = ValidationForms.validate(validateKey, String(value));
 
-                console.log(validateKey, result)
-
                 if(!result){
-                    alert(ValidationForms.validationFailMessage(validateKey))
+                    alert(ValidationForms.validationFailMessageCandidate(validateKey))
                     isItValid = false
                 }
             }
@@ -180,6 +178,18 @@ export default class NavigationManager {
                 return;
             }
 
+            let isItValid = true
+            for (const [key, value] of Object.entries(newEnterpriseData)) {
+                const validateKey: string = key as string
+                const result = ValidationForms.validate(validateKey, String(value));
+
+                if(!result){
+                    alert(ValidationForms.validationFailMessageEnterprise(validateKey))
+                    isItValid = false
+                }
+            }
+            if (!isItValid) return
+
             let enterprisesWithSameEmail = dbManager.enterprises?.filter(enterprise =>
                 enterprise.email == newEnterpriseData.email
             )
@@ -220,6 +230,19 @@ export default class NavigationManager {
                 enterpriseId: enterpriseId
             }
 
+            let isItValid = true
+            for (const [key, value] of Object.entries(newEmploymentData)) {
+                const validateKey: string = key as string
+                if(validateKey == 'enterpriseId') continue
+                const result = ValidationForms.validate(validateKey, String(value));
+
+                if(!result){
+                    alert(ValidationForms.validationFailMessageEmployment(validateKey))
+                    isItValid = false
+                }
+            }
+            if (!isItValid) return
+
             dbManager.addEmployment(new Employment(newEmploymentData))
             alert('Cadastro realizado com sucesso!')
             window.location.href = '/enterprise/candidates-list.html';
@@ -240,6 +263,18 @@ export default class NavigationManager {
                 email: (document.getElementById('candidate-email-input') as HTMLInputElement)?.value || '',
                 password: (document.getElementById('candidate-password-input') as HTMLInputElement)?.value || '',
             }
+
+            let isItValid = true
+            for (const [key, value] of Object.entries(loginCandidateData)) {
+                const validateKey: string = key as string
+                const result = ValidationForms.validate(validateKey, String(value));
+
+                if(!result){
+                    alert(ValidationForms.validationFailMessageCandidate(validateKey))
+                    isItValid = false
+                }
+            }
+            if (!isItValid) return
 
             let candidatesFiltered = dbManager.candidates?.filter(candidate =>
                 candidate.email == loginCandidateData.email && candidate.password == loginCandidateData.password
@@ -269,6 +304,18 @@ export default class NavigationManager {
                 email: (document.getElementById('enterprise-email-input') as HTMLInputElement)?.value || '',
                 password: (document.getElementById('enterprise-password-input') as HTMLInputElement)?.value || '',
             }
+
+            let isItValid = true
+            for (const [key, value] of Object.entries(loginEnterpriseData)) {
+                const validateKey: string = key as string
+                const result = ValidationForms.validate(validateKey, String(value));
+
+                if(!result){
+                    alert(ValidationForms.validationFailMessageEnterprise(validateKey))
+                    isItValid = false
+                }
+            }
+            if (!isItValid) return
 
             let enterprisesFiltered = dbManager.enterprises?.filter(enterprise =>
                 enterprise.email == loginEnterpriseData.email && enterprise.password == loginEnterpriseData.password
