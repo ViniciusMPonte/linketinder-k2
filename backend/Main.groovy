@@ -15,6 +15,7 @@ static void main(String[] args) {
 
         while (test.next()) {
             println "Email: " + test.getString("email")
+            println "id: " + test.getString("id")
         }
         conn.close()
     }
