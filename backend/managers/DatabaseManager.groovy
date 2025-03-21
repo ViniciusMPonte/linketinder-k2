@@ -1,6 +1,176 @@
 package managers
-import db.DatabaseConnection
+
+import java.sql.Connection
+import java.sql.SQLException
+
+import entities.NewCandidate
+import db.Queries
 
 class DatabaseManager {
 
+    Connection connection
+
+    DatabaseManager(Connection connection){
+        this.connection = connection
+    }
+
+    boolean saveNewCandidate(NewCandidate candidate) {
+        if (!candidate.isAllSet()) {
+            return false
+        }
+
+        // Desativa o auto-commit para controle manual
+        boolean originalAutoCommit = connection.autoCommit
+        connection.autoCommit = false
+
+        try {
+            // Executa a query completa (já inclui BEGIN e COMMIT)
+            connection.createStatement().withCloseable { statement ->
+                statement.execute(Queries.insertUsersTable(candidate))
+                if(!this.getPostalCodeId(candidate)){
+                    statement.execute(Queries.insertPostalCodesTable(candidate))
+                }
+                statement.execute(Queries.insertCandidatesTable(candidate))
+                statement.execute(Queries.insertCandidateSkillTable(candidate))
+            }
+
+            connection.commit() // Confirma transação
+            return true
+
+        } catch (SQLException e) {
+            connection.rollback() // Reverte em caso de erro
+            e.printStackTrace()
+            return false
+        } finally {
+            connection.autoCommit = originalAutoCommit // Restaura o auto-commit original
+        }
+    }
+
+    NewCandidate getCandidateById(int id) {
+        try {
+            // Usa withCloseable para fechar automaticamente Statement e ResultSet
+            return this.connection.createStatement().withCloseable { statement ->
+                statement.executeQuery(Queries.selectCandidateById(id)).withCloseable { resultSet ->
+                    if (resultSet.next()) {
+                        // Mapeia os dados (com tratamento de valores nulos)
+                        Map params = [
+                                id: resultSet.getInt("id"),
+                                email: resultSet.getString("email"),
+                                password: resultSet.getString("password"),
+                                name: resultSet.getString("name"),
+                                description: resultSet.getString("description"),
+                                cpf: resultSet.getString("cpf"),
+                                birthday: resultSet.getDate("birthday"),
+                                country: resultSet.getString("country"),
+                                state: resultSet.getString("state"),
+                                postalCode: resultSet.getString("postalCode"),
+                                skills: resultSet.getString("skills")?.replaceAll(/[{}]/, '')?.split(',')?.toList() ?: []
+                        ]
+                        return new NewCandidate(params)
+                    } else {
+                        return null
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
+    boolean updateCandidate(NewCandidate original, NewCandidate updated) {
+        if (!original || !updated || !updated.isAllSet()) {
+            return false
+        }
+
+        if (!this.hasDifferences(original, updated)) {
+            return false // Nenhuma alteração necessária
+        }
+
+        boolean originalAutoCommit = connection.autoCommit
+        connection.autoCommit = false
+
+        try {
+            connection.createStatement().withCloseable { statement ->
+                statement.execute(Queries.updateUsersTable(original, updated))
+                if(!this.getPostalCodeId(updated)){
+                    statement.execute(Queries.updatePostalCodesTable(original, updated))
+                }
+                statement.execute(Queries.updateCandidatesTable(original, updated))
+                statement.execute(Queries.deleteUnusedPostalCodes())
+                statement.execute(Queries.updateCandidateSkillTable(original, updated))
+            }
+
+            connection.commit()
+            return true
+
+        } catch (SQLException e) {
+            connection.rollback()
+            e.printStackTrace()
+            return false
+        } finally {
+            connection.autoCommit = originalAutoCommit
+        }
+    }
+
+    boolean deleteCandidateById(int id) {
+        try {
+            this.connection.createStatement().withCloseable { statement ->
+                statement.execute(Queries.deleteCandidateById(id))
+                statement.execute(Queries.deleteUnusedPostalCodes())
+            }
+            return true
+        } catch (SQLException e) {
+            e.printStackTrace()
+            return false
+        }
+    }
+
+    //UTILS
+    Integer getUserIdByEmail(String email) {
+        try {
+            return this.connection.createStatement().withCloseable { statement ->
+                statement.executeQuery(Queries.selectIdByEmail(email)).withCloseable { resultSet ->
+                    if (resultSet.next()) {
+                        return resultSet.getInt("id")
+                    } else {
+                        return null
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
+    Integer getPostalCodeId(NewCandidate update) {
+        try {
+            // Usa withCloseable para fechar automaticamente Statement e ResultSet
+            return this.connection.createStatement().withCloseable { statement ->
+                statement.executeQuery(Queries.selectPostalCodeId(update.getPostalCode(), update.getState())).withCloseable { resultSet ->
+                    if (resultSet.next()) {
+                        return resultSet.getInt("id")
+                    } else {
+                        return null
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
+    boolean hasDifferences(entity1, entity2, boolean ignoreId = false) {
+        return entity1.properties.any { key, value ->
+            // Ignora 'class' e (opcionalmente) 'id'
+            boolean shouldIgnore = key == 'class' || (ignoreId && key == 'id')
+
+            // Verifica diferenças apenas nas propriedades não ignoradas
+            !shouldIgnore && entity2.properties[key] != value
+        }
+    }
 }
+
+
