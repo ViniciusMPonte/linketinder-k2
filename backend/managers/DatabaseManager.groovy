@@ -1,5 +1,7 @@
 package managers
 
+import entities.NewEnterprise
+
 import java.sql.Connection
 import java.sql.SQLException
 
@@ -14,6 +16,7 @@ class DatabaseManager {
         this.connection = connection
     }
 
+    //CRUD Candidates
     boolean saveNewCandidate(NewCandidate candidate) {
         if (!candidate.isAllSet()) {
             return false
@@ -126,6 +129,115 @@ class DatabaseManager {
         }
     }
 
+    //CRUD Enterprises
+    boolean saveNewEnterprise(NewEnterprise enterprise) {
+        if (!enterprise.isAllSet()) {
+            return false
+        }
+
+        // Desativa o auto-commit para controle manual
+        boolean originalAutoCommit = connection.autoCommit
+        connection.autoCommit = false
+
+        try {
+            // Executa a query completa (já inclui BEGIN e COMMIT)
+            connection.createStatement().withCloseable { statement ->
+                statement.execute(Queries.insertUsersTable(enterprise))
+                if(!this.getPostalCodeId(enterprise)){
+                    statement.execute(Queries.insertPostalCodesTable(enterprise))
+                }
+                statement.execute(Queries.insertEnterprisesTable(enterprise))
+            }
+
+            connection.commit() // Confirma transação
+            return true
+
+        } catch (SQLException e) {
+            connection.rollback() // Reverte em caso de erro
+            e.printStackTrace()
+            return false
+        } finally {
+            connection.autoCommit = originalAutoCommit // Restaura o auto-commit original
+        }
+    }
+
+    NewEnterprise getEnterpriseById(int id) {
+        try {
+            // Usa withCloseable para fechar automaticamente Statement e ResultSet
+            return this.connection.createStatement().withCloseable { statement ->
+                statement.executeQuery(Queries.selectEnterpriseById(id)).withCloseable { resultSet ->
+                    if (resultSet.next()) {
+                        // Mapeia os dados (com tratamento de valores nulos)
+                        Map params = [
+                                id: resultSet.getInt("id"),
+                                email: resultSet.getString("email"),
+                                password: resultSet.getString("password"),
+                                name: resultSet.getString("name"),
+                                description: resultSet.getString("description"),
+                                cnpj: resultSet.getString("cnpj"),
+                                country: resultSet.getString("country"),
+                                state: resultSet.getString("state"),
+                                postalCode: resultSet.getString("postalCode")
+                        ]
+                        return new NewEnterprise(params)
+                    } else {
+                        return null
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
+    boolean updateEnterprise(NewEnterprise original, NewEnterprise updated) {
+        if (!original || !updated || !updated.isAllSet()) {
+            return false
+        }
+
+        if (!this.hasDifferences(original, updated)) {
+            return false // Nenhuma alteração necessária
+        }
+
+        boolean originalAutoCommit = connection.autoCommit
+        connection.autoCommit = false
+
+        try {
+            connection.createStatement().withCloseable { statement ->
+                statement.execute(Queries.updateUsersTable(original, updated))
+                if(!this.getPostalCodeId(updated)){
+                    statement.execute(Queries.updatePostalCodesTable(original, updated))
+                }
+                statement.execute(Queries.updateEnterprisesTable(original, updated))
+                statement.execute(Queries.deleteUnusedPostalCodes())
+            }
+
+            connection.commit()
+            return true
+
+        } catch (SQLException e) {
+            connection.rollback()
+            e.printStackTrace()
+            return false
+        } finally {
+            connection.autoCommit = originalAutoCommit
+        }
+    }
+
+    boolean deleteEnterpriseById(int id) {
+        try {
+            this.connection.createStatement().withCloseable { statement ->
+                statement.execute(Queries.deleteEnterpriseById(id))
+                statement.execute(Queries.deleteUnusedPostalCodes())
+            }
+            return true
+        } catch (SQLException e) {
+            e.printStackTrace()
+            return false
+        }
+    }
+
     //UTILS
     Integer getUserIdByEmail(String email) {
         try {
@@ -144,7 +256,7 @@ class DatabaseManager {
         }
     }
 
-    Integer getPostalCodeId(NewCandidate update) {
+    Integer getPostalCodeId(update) {
         try {
             // Usa withCloseable para fechar automaticamente Statement e ResultSet
             return this.connection.createStatement().withCloseable { statement ->

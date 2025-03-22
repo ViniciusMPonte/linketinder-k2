@@ -1,26 +1,27 @@
 package db
 
 import entities.NewCandidate
+import entities.NewEnterprise
 
 class Queries {
 
-    static String insertUsersTable(NewCandidate candidate) {
+    static String insertUsersTable(entity) {
         String query = "BEGIN;\n" // Inicia a transação
 
         // Insere usuário
         query += "INSERT INTO users (email, password)\n" +
-                "VALUES ('" + candidate.getEmail() + "', '" + candidate.getPassword() + "');\n"
+                "VALUES ('" + entity.getEmail() + "', '" + entity.getPassword() + "');\n"
 
         query += "COMMIT;" // Finaliza a transação
         return query
     }
 
-    static String insertPostalCodesTable(NewCandidate candidate) {
+    static String insertPostalCodesTable(entity) {
         String query = "BEGIN;\n" // Inicia a transação
 
         // Insere postal_code
         query += "INSERT INTO postal_codes (postal_code, state_id)\n" +
-                "VALUES ('" + candidate.getPostalCode() + "', (SELECT id FROM states WHERE name = '" + candidate.getState() + "'));\n"
+                "VALUES ('" + entity.getPostalCode() + "', (SELECT id FROM states WHERE name = '" + entity.getState() + "'));\n"
 
         query += "COMMIT;" // Finaliza a transação
         return query
@@ -38,6 +39,23 @@ class Queries {
                 "    '" + candidate.getBirthday().format("yyyy-MM-dd") + "',\n" + // Formato esperado: 'YYYY-MM-DD'
                 "    '" + candidate.getCpf() + "',\n" +
                 "    (SELECT id FROM postal_codes WHERE postal_code = '" + candidate.getPostalCode() + "')\n" +
+                ");\n"
+
+        query += "COMMIT;" // Finaliza a transação
+        return query
+    }
+
+    static String insertEnterprisesTable(NewEnterprise enterprise) {
+        String query = "BEGIN;\n" // Inicia a transação
+
+        // Insere candidato
+        query += "INSERT INTO enterprises (user_id, name, description, cnpj, postal_code_id)\n" +
+                "VALUES (\n" +
+                "    (SELECT id FROM users WHERE email = '" + enterprise.getEmail() + "'),\n" +
+                "    '" + enterprise.getName() + "',\n" +
+                "    '" + enterprise.getDescription() + "',\n" +
+                "    '" + enterprise.getCnpj() + "',\n" +
+                "    (SELECT id FROM postal_codes WHERE postal_code = '" + enterprise.getPostalCode() + "')\n" +
                 ");\n"
 
         query += "COMMIT;" // Finaliza a transação
@@ -98,6 +116,41 @@ class Queries {
                 "    c.birthday, \n" +
                 "    co.name, \n" +
                 "    s.name, \n" +
+                "    pc.postal_code;"
+    }
+
+    static String selectEnterpriseById(int id) {
+        return "SELECT\n" +
+                "    e.user_id AS id,\n" +
+                "    u.email,\n" +
+                "    u.password,\n" +
+                "    e.name,\n" +
+                "    e.description,\n" +
+                "    e.cnpj,\n" +
+                "    co.name AS country,\n" +
+                "    s.name AS state,\n" +
+                "    pc.postal_code AS \"postalCode\"\n" +
+                "FROM\n" +
+                "    enterprises e\n" +
+                "        JOIN\n" +
+                "    users u ON e.user_id = u.id\n" +
+                "        JOIN\n" +
+                "    postal_codes pc ON e.postal_code_id = pc.id\n" +
+                "        JOIN\n" +
+                "    states s ON pc.state_id = s.id\n" +
+                "        JOIN\n" +
+                "    countries co ON s.country_id = co.id\n" +
+                "WHERE \n" +
+                "    e.user_id = " + id + "\n" +
+                "GROUP BY\n" +
+                "    e.user_id,\n" +
+                "    u.email,\n" +
+                "    u.password,\n" +
+                "    e.name,\n" +
+                "    e.description,\n" +
+                "    e.cnpj,\n" +
+                "    co.name,\n" +
+                "    s.name,\n" +
                 "    pc.postal_code;"
     }
 
@@ -198,6 +251,50 @@ class Queries {
         return query
     }
 
+    static String updateEnterprisesTable(original, updated) {
+        boolean hasUpdates = false
+
+        // Atualiza candidato
+        String query = "BEGIN;\n"
+        if(
+                !original.getName().equals(updated.getName()) ||
+                        !original.getDescription().equals(updated.getDescription()) ||
+                        !original.getCnpj().equals(updated.getCnpj()) ||
+                        !original.getPostalCode().equals(updated.getPostalCode())
+        ){
+            query += "UPDATE enterprises SET\n"
+        }
+
+        List<String> updates = new ArrayList<>()
+
+        if (!original.getName().equals(updated.getName())) {
+            updates.add("name = '" + updated.getName() + "'")
+        }
+        if (!original.getDescription().equals(updated.getDescription())) {
+            updates.add("description = '" + updated.getDescription() + "'")
+        }
+        if (!original.getCnpj().equals(updated.getCnpj())) {
+            updates.add("cnpj = '" + updated.getCnpj() + "'")
+        }
+        if (!original.getPostalCode().equals(updated.getPostalCode())) {
+            updates.add("postal_code_id = (SELECT id FROM postal_codes WHERE postal_code = '" + updated.getPostalCode() + "')")
+        }
+
+        if (!updates.isEmpty()) {
+            query += String.join(",\n", updates) + "\n"
+            query += "WHERE user_id = " + original.getId() + ";\n"
+            hasUpdates = true
+        }
+
+        if (hasUpdates) {
+            query += "COMMIT;"
+        } else {
+            query = "" // Nenhuma alteração necessária
+        }
+
+        return query
+    }
+
     static String updateCandidateSkillTable(original, updated) {
         boolean hasUpdates = false
 
@@ -231,6 +328,15 @@ class Queries {
                 "DELETE FROM candidate_skill WHERE candidate_id = " + id + ";\n" +
                 "DELETE FROM matches WHERE candidate_id = " + id + ";\n" +
                 "DELETE FROM candidates WHERE user_id = " + id + ";\n" +
+                "DELETE FROM users WHERE id = " + id + ";\n" +
+                "\n" +
+                "COMMIT;"
+    }
+
+    static String deleteEnterpriseById(int id) {
+        return "BEGIN;\n" +
+                "\n" +
+                "DELETE FROM enterprises WHERE user_id = " + id + ";\n" +
                 "DELETE FROM users WHERE id = " + id + ";\n" +
                 "\n" +
                 "COMMIT;"

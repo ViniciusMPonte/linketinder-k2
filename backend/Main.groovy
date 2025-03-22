@@ -2,6 +2,7 @@
 
 
 import entities.NewCandidate
+import entities.NewEnterprise
 import view.Cli
 import data.CandidatesData
 import data.EnterprisesData
@@ -54,6 +55,38 @@ static void main(String[] args) {
     dbManager.deleteCandidateById(currentId)
 
     println dbManager.getCandidateById(currentId)
+
+    println dbManager.saveNewEnterprise(new NewEnterprise(
+            email: "contato@neonixtech.com",
+            password: "inovacao2025",
+            name: "Neonix Tech",
+            description: "Liderando a revolução da tecnologia sustentável",
+            cnpj: "45.678.912/0001-55",
+            country: "Brasil",
+            state: "Santa Catarina",
+            postalCode: "88000-001"
+    ))
+    currentId = dbManager.getUserIdByEmail("contato@neonixtech.com")
+    println dbManager.getEnterpriseById(currentId)
+
+    dbManager.updateEnterprise(dbManager.getEnterpriseById(currentId), new NewEnterprise(
+            email: "contato@neonixtech.com",
+            password: "inovacao2025ATUALIZADA",
+            name: "Neonix Tech ATUALIZADA",
+            description: "ATUALIZADA Liderando a revolução da tecnologia sustentável",
+            cnpj: "45.678.912/0001-55",
+            country: "Brasil",
+            state: "Santa Catarina",
+            postalCode: "88880-001"
+    ))
+
+    println dbManager.getEnterpriseById(currentId)
+
+    dbManager.deleteEnterpriseById(currentId)
+
+    println dbManager.getEnterpriseById(currentId)
+
+
     //--------------
 
     def candidatesList = CandidatesData.getInfos()

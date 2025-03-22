@@ -50,6 +50,32 @@ class NewEnterprise {
     String getState() { return state }
     void setState(String state) { this.state = state }
 
-    String getpostalCode() { return postalCode }
-    void setpostalCode(String postalCode) { this.postalCode = postalCode }
+    String getPostalCode() { return postalCode }
+    void setPostalCode(String postalCode) { this.postalCode = postalCode }
+
+    boolean isAllSet() {
+        return  getEmail() != null &&
+                getPassword() != null &&
+                getName() != null &&
+                getDescription() != null &&
+                getCnpj() != null &&
+                getCountry() != null &&
+                getState() != null &&
+                getPostalCode() != null
+    }
+
+    @Override
+    public String toString() {
+        return "Empresa [" + '\n' +
+                "id=" + id + '\n' +
+                "email=" + email + '\n' +
+                "password=" + password + '\n' +
+                "name=" + name + '\n' +
+                "description=" + description + '\n' +
+                "cnpj=" + cnpj + '\n' +
+                "country=" + country + '\n' +
+                "state=" + state + '\n' +
+                "postalCode=" + postalCode + '\n' +
+                ']';
+    }
 }
