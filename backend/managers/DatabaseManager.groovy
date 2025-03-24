@@ -419,6 +419,25 @@ class DatabaseManager {
         }
     }
 
+    int[] getEmploymentIds() {
+        try {
+            return this.connection.createStatement().withCloseable { statement ->
+                statement.executeQuery(Queries.selectAllEmploymentsIds()).withCloseable { resultSet ->
+                    List<Integer> ids = []
+
+                    while (resultSet.next()) {
+                        ids.add(resultSet.getInt("id"))
+                    }
+
+                    return ids as int[]
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace()
+            return [] as int[]
+        }
+    }
+
     boolean hasDifferences(entity1, entity2, boolean ignoreId = false) {
         return entity1.properties.any { key, value ->
             // Ignora 'class' e (opcionalmente) 'id'

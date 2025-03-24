@@ -170,7 +170,7 @@ class Menu {
 
         switch (this.section.input.nextLine()) {
             case "1":
-
+                this.chooseEmploymentToLike()
                 break
             case "2":
                 this.RUDMenuCandidate()
@@ -182,6 +182,15 @@ class Menu {
             default:
                 println "Opção inválida, tente novamente."
         }
+    }
+
+    void chooseEmploymentToLike(){
+
+        int[] employmentIds = this.section.dbManager.getEmploymentIds()
+        employmentIds.each { id ->
+                println this.section.dbManager.getEmploymentById(id as int)
+        }
+
     }
 
     def RUDMenuCandidate() {

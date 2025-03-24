@@ -543,6 +543,10 @@ class Queries {
                 "AND enterprise_id = " + enterpriseId + ";\n"
         return query
     }
+
+    static String selectAllEmploymentsIds(){
+        return "SELECT id FROM employments;"
+    }
 }
 
 
