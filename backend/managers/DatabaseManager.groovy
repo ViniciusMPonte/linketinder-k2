@@ -366,6 +366,23 @@ class DatabaseManager {
         }
     }
 
+    Integer getUserIdByEmailAndPassword(String email, String password) {
+        try {
+            return this.connection.createStatement().withCloseable { statement ->
+                statement.executeQuery(Queries.selectIdByEmailAndPassword(email, password)).withCloseable { resultSet ->
+                    if (resultSet.next()) {
+                        return resultSet.getInt("id")
+                    } else {
+                        return null
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
     Integer getPostalCodeId(update) {
         try {
             // Usa withCloseable para fechar automaticamente Statement e ResultSet

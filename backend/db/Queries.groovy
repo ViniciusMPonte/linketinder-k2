@@ -524,6 +524,10 @@ class Queries {
         return "SELECT id FROM users WHERE email = '" + email + "';"
     }
 
+    static String selectIdByEmailAndPassword(String email, String password) {
+        return "SELECT id FROM users WHERE email = '" + email + "' AND password = '" + password + "';"
+    }
+
     static String selectPostalCodeId(String postalCode, String state) {
         String query = "SELECT id \n" +
                 "FROM postal_codes \n" +

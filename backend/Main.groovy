@@ -2,10 +2,13 @@
 
 
 import entities.*
+import services.SectionService
 import view.Cli
 import data.CandidatesData
 import data.EnterprisesData
 import db.DatabaseConnection
+import view.Menu
+
 import java.sql.ResultSet
 import managers.DatabaseManager
 
@@ -15,6 +18,10 @@ static void main(String[] args) {
     //Conexão com o Banco
     def conn = DatabaseConnection.connect()
     def dbManager = new DatabaseManager(conn)
+
+    Scanner input = new Scanner(System.in)
+    def section = new SectionService(input, dbManager)
+    def menu = new Menu(section)
 
     //TESTES
     //--------------
@@ -87,48 +94,50 @@ static void main(String[] args) {
 
 
 
-    println "90 "+ dbManager.saveNewEmployment(new Employment([
-            enterpriseId: 10,
-            name: "Desenvolvedor Backend Java",
-            description: "Vaga para desenvolvimento de APIs REST com Spring Boot e integração com sistemas cloud",
-            country: "Brasil",
-            state: "São Paulo",
-            postalCode: "11000-000",
-            skills: ["Java", "Git"]
-    ]))
-
-    Integer employmentId = dbManager.getEmploymentId(10, "Desenvolvedor Backend Java")
-    def originalEmployment = dbManager.getEmploymentById(employmentId)
-
-    println "103 "+ originalEmployment
-
-    println "105 "+ dbManager.updateEmployment(originalEmployment, new Employment([
-            enterpriseId: 10,
-            name: "Desenvolvedor Backend Java Atualizado",
-            description: "ATUALIZADO Vaga para desenvolvimento de APIs REST com Spring Boot e integração com sistemas cloud",
-            country: "Brasil",
-            state: "Bahia",
-            postalCode: "11000-000",
-            skills: ["Java", "Git"]
-    ]))
-
-    def updateEmployment = dbManager.getEmploymentById(employmentId)
-
-    println "117 "+ updateEmployment
-
-    println "119 "+ dbManager.deleteEmploymentById(employmentId)
-
-    println "121 "+ dbManager.getEmploymentById(employmentId)
+//    println "90 "+ dbManager.saveNewEmployment(new Employment([
+//            enterpriseId: 10,
+//            name: "Desenvolvedor Backend Java",
+//            description: "Vaga para desenvolvimento de APIs REST com Spring Boot e integração com sistemas cloud",
+//            country: "Brasil",
+//            state: "São Paulo",
+//            postalCode: "11000-000",
+//            skills: ["Java", "Git"]
+//    ]))
+//
+//    Integer employmentId = dbManager.getEmploymentId(10, "Desenvolvedor Backend Java")
+//    def originalEmployment = dbManager.getEmploymentById(employmentId)
+//
+//    println "103 "+ originalEmployment
+//
+//    println "105 "+ dbManager.updateEmployment(originalEmployment, new Employment([
+//            enterpriseId: 10,
+//            name: "Desenvolvedor Backend Java Atualizado",
+//            description: "ATUALIZADO Vaga para desenvolvimento de APIs REST com Spring Boot e integração com sistemas cloud",
+//            country: "Brasil",
+//            state: "Bahia",
+//            postalCode: "11000-000",
+//            skills: ["Java", "Git"]
+//    ]))
+//
+//    def updateEmployment = dbManager.getEmploymentById(employmentId)
+//
+//    println "117 "+ updateEmployment
+//
+//    println "119 "+ dbManager.deleteEmploymentById(employmentId)
+//
+//    println "121 "+ dbManager.getEmploymentById(employmentId)
 
 
     //--------------
 
-    def candidatesList = CandidatesData.getInfos()
-    def enterprisesList = EnterprisesData.getInfos()
+//    def candidatesList = CandidatesData.getInfos()
+//    def enterprisesList = EnterprisesData.getInfos()
+//    Cli.mainMenu(section.input as Scanner, candidatesList, enterprisesList)
 
-    Scanner input = new Scanner(System.in)
+    menu.startMenu()
 
-    Cli.mainMenu(input, candidatesList, enterprisesList)
+
+
 
     input.close()
     conn.close()
