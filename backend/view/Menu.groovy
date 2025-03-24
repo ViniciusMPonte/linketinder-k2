@@ -18,7 +18,7 @@ class Menu {
             this.mainMenuCandidate()
         }
         if (this.section.userLogged instanceof NewEnterprise) {
-            println "A variável é do tipo NewEnterprise"
+            this.mainMenuEnterprise()
         }
         if (this.section.userLogged == null) {
                 println """
@@ -268,6 +268,105 @@ class Menu {
         this.errorMenu("Erro ao tentar excluir candidato", this.&deleteCandidate)
     }
 
+    def mainMenuEnterprise() {
+        println """
+        === Menu Empresa ===
+        1. Visualizar Candidatos
+        2. Minhas Vagas
+        3. Perfil
+        0. Logout
+        """.stripIndent()
+
+        print "Escolha uma opção: "
+
+        switch (this.section.input.nextLine()) {
+            case "1":
+
+                break
+            case "2":
+
+                break
+            case "3":
+                this.RUDMenuEnterprise()
+                break
+            case "0":
+                println "Deslogando..."
+                this.section.userLogged = null
+                break
+            default:
+                println "Opção inválida, tente novamente."
+        }
+    }
+
+    def RUDMenuEnterprise() {
+        println """
+        === Perfil da Empresa ===
+        1. Visualizar Perfil
+        2. Editar Perfil
+        3. Excluir Perfil
+        0. Voltar
+        """.stripIndent()
+
+        print "Escolha uma opção: "
+
+        switch (this.section.input.nextLine()) {
+            case "1":
+                this.readEnterpriseProfile()
+                break
+            case "2":
+                this.updateEnterprise()
+                break
+            case "3":
+                this.deleteEnterprise()
+                break
+            case "0":
+                println "Voltando..."
+                return
+            default:
+                println "Opção inválida, tente novamente."
+        }
+
+        if (this.section.userLogged == null) return
+        this.RUDMenuEnterprise()
+    }
+
+    void readEnterpriseProfile() {
+        println this.section.userLogged
+    }
+
+    void updateEnterprise() {
+
+        println "=== Editar Empresa ==="
+
+        Map params = [
+                email      : this.getQuestionResult("\nDigite o email: "),
+                password   : this.getQuestionResult("\nDigite a senha: "),
+                name       : this.getQuestionResult("\nDigite o nome da empresa: "),
+                description: this.getQuestionResult("\nDescreva a empresa: "),
+                cnpj       : this.getQuestionResult("\nDigite seu CNPJ: "),
+                country    : this.getQuestionResult("\nDigite o país da empresa (Brasil): "),
+                state      : this.getQuestionResult("\nDigite o estado onde a empresa se localiza: "),
+                postalCode : this.getQuestionResult("\nDigite o CEP: ")
+        ]
+
+        if (this.section.dbManager.updateEnterprise(this.section.userLogged as NewEnterprise, new NewEnterprise(params))) {
+            this.section.userLogged = this.section.dbManager.getEnterpriseById(this.section.userLogged.getId())
+            println "\nPerfil editado com sucesso."
+            return
+        }
+
+        this.errorMenu("Falha ao tentar editar perfil da empresa.", this.&registerEnterprise)
+    }
+
+    void deleteEnterprise() {
+        this.section.dbManager.deleteEnterpriseById(this.section.userLogged.getId())
+        if (!this.section.dbManager.getEnterpriseById(this.section.userLogged.getId())) {
+            this.section.userLogged = null
+            println "\nEmpresa Excluída com sucesso!"
+            return
+        }
+        this.errorMenu("Erro ao tentar excluir empresa", this.&deleteEnterprise)
+    }
 
     //UTILS
     String getQuestionResult(String question) {
