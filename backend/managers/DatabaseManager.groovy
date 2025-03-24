@@ -419,6 +419,25 @@ class DatabaseManager {
         }
     }
 
+    int[] getCandidateIds() {
+        try {
+            return this.connection.createStatement().withCloseable { statement ->
+                statement.executeQuery(Queries.selectAllCandidatesIds()).withCloseable { resultSet ->
+                    List<Integer> ids = []
+
+                    while (resultSet.next()) {
+                        ids.add(resultSet.getInt("user_id"))
+                    }
+
+                    return ids as int[]
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace()
+            return [] as int[]
+        }
+    }
+
     int[] getEmploymentIds() {
         try {
             return this.connection.createStatement().withCloseable { statement ->

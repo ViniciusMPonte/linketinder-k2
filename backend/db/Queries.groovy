@@ -544,6 +544,10 @@ class Queries {
         return query
     }
 
+    static String selectAllCandidatesIds(){
+        return "SELECT user_id FROM candidates;"
+    }
+
     static String selectAllEmploymentsIds(){
         return "SELECT id FROM employments;"
     }

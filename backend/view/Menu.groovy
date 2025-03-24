@@ -21,7 +21,7 @@ class Menu {
             this.mainMenuEnterprise()
         }
         if (this.section.userLogged == null) {
-                println """
+            println """
             === Bem vindo ao Linketinder ===
             1. Fazer login Empresa
             2. Fazer login Candidato
@@ -184,11 +184,11 @@ class Menu {
         }
     }
 
-    void chooseEmploymentToLike(){
+    void chooseEmploymentToLike() {
 
         int[] employmentIds = this.section.dbManager.getEmploymentIds()
         employmentIds.each { id ->
-                println this.section.dbManager.getEmploymentById(id as int)
+            println this.section.dbManager.getEmploymentById(id as int)
         }
 
     }
@@ -281,7 +281,7 @@ class Menu {
 
         switch (this.section.input.nextLine()) {
             case "1":
-
+                this.chooseCandidateToLike()
                 break
             case "2":
 
@@ -296,6 +296,15 @@ class Menu {
             default:
                 println "Opção inválida, tente novamente."
         }
+    }
+
+    void chooseCandidateToLike() {
+
+        int[] candidatesIds = this.section.dbManager.getCandidateIds()
+        candidatesIds.each { id ->
+            println this.section.dbManager.getCandidateById(id as int)
+        }
+
     }
 
     def RUDMenuEnterprise() {
