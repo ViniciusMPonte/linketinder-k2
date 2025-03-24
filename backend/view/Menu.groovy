@@ -1,5 +1,6 @@
 package view
 
+import entities.Employment
 import entities.NewCandidate
 import entities.NewEnterprise
 import services.SectionService
@@ -284,7 +285,7 @@ class Menu {
                 this.chooseCandidateToLike()
                 break
             case "2":
-
+                this.RUDMenuEmployment()
                 break
             case "3":
                 this.RUDMenuEnterprise()
@@ -305,6 +306,101 @@ class Menu {
             println this.section.dbManager.getCandidateById(id as int)
         }
 
+    }
+
+    def RUDMenuEmployment() {
+        println """
+        === Vagas da Empresa ===
+        1. Visualizar Vagas
+        2. Editar Vaga
+        3. Excluir Vaga
+        0. Voltar
+        """.stripIndent()
+
+        print "Escolha uma opção: "
+
+        switch (this.section.input.nextLine()) {
+            case "1":
+                this.readEmployments()
+                break
+            case "2":
+                this.updateEmployment()
+                break
+            case "3":
+                this.deleteEmployment()
+                break
+            case "0":
+                println "Voltando..."
+                return
+            default:
+                println "Opção inválida, tente novamente."
+        }
+
+        if (this.section.userLogged == null) return
+        this.RUDMenuEmployment()
+    }
+
+    void readEmployments() {
+
+        int[] employmentsIds = this.section.dbManager.getEmploymentIds(this.section.userLogged.getId())
+        employmentsIds.each { id ->
+            println this.section.dbManager.getEmploymentById(id as int)
+        }
+
+        if(employmentsIds.length == 0){
+            println "\nNenhuma vaga encontrada"
+        }
+
+    }
+
+    void updateEmployment() {
+
+        println "=== Editar Vaga ==="
+
+        Integer employmentId = this.safeToInteger(this.getQuestionResult("\nDigite o ID da vaga à ser editada: "))
+
+        Employment originalEmployment = this.section.dbManager.getEmploymentById(employmentId)
+        List<Integer> employmentsIdList = this.section.dbManager.getEmploymentIds(this.section.userLogged.getId())
+
+        if(originalEmployment && employmentsIdList.contains(employmentId)){
+            Map params = [
+                    enterpriseId: this.section.userLogged.getId(),
+                    name       : this.getQuestionResult("\nDigite o nome da vaga: "),
+                    description: this.getQuestionResult("\nDescreva a vaga: "),
+                    country    : this.getQuestionResult("\nDigite o país da vaga (Brasil): "),
+                    state      : this.getQuestionResult("\nDigite o estado onde a vaga se localiza: "),
+                    postalCode : this.getQuestionResult("\nDigite o CEP: "),
+                    skills     : this.getQuestionResult(
+                            "\nDigite as habilidades desejadas, separadas por virgula " +
+                                    "[Opções: Java, Groovy, JavaScript, Git, GitHub, SQL, NoSQL, Angular, Spring, Docker]: "
+                    )?.replaceAll(/ /, '')?.split(',')?.toList() ?: []
+            ]
+
+            if (this.section.dbManager.updateEmployment(originalEmployment, new Employment(params))) {
+                println "\nVaga editada com sucesso."
+                return
+            }
+        }
+
+        this.errorMenu("Falha ao tentar editar vaga.", this.&updateEmployment)
+    }
+
+    void deleteEmployment() {
+
+        Integer employmentId = this.safeToInteger(this.getQuestionResult("\nDigite o ID da vaga à ser deletada: "))
+
+        Employment originalEmployment = this.section.dbManager.getEmploymentById(employmentId)
+        List<Integer> employmentsIdList = this.section.dbManager.getEmploymentIds(this.section.userLogged.getId())
+
+        if (originalEmployment && employmentsIdList.contains(employmentId)){
+            this.section.dbManager.deleteEmploymentById(employmentId)
+            if (!this.section.dbManager.getEmploymentById(employmentId)) {
+                println "\nVaga Excluída com sucesso!"
+                return
+            }
+        }
+
+        this.errorMenu("Erro ao tentar excluir candidato", this.&deleteCandidate)
     }
 
     def RUDMenuEnterprise() {
@@ -402,5 +498,9 @@ class Menu {
             default:
                 println "Opção inválida, voltando..."
         }
+    }
+
+    Integer safeToInteger(String value) {
+        return value?.isInteger() ? value.toInteger() : null
     }
 }

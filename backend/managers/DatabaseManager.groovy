@@ -438,10 +438,10 @@ class DatabaseManager {
         }
     }
 
-    int[] getEmploymentIds() {
+    int[] getEmploymentIds(Integer enterpriseId = null) {
         try {
             return this.connection.createStatement().withCloseable { statement ->
-                statement.executeQuery(Queries.selectAllEmploymentsIds()).withCloseable { resultSet ->
+                statement.executeQuery(Queries.selectAllEmploymentsIds(enterpriseId)).withCloseable { resultSet ->
                     List<Integer> ids = []
 
                     while (resultSet.next()) {

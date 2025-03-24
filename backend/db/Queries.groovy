@@ -548,8 +548,9 @@ class Queries {
         return "SELECT user_id FROM candidates;"
     }
 
-    static String selectAllEmploymentsIds(){
-        return "SELECT id FROM employments;"
+    static String selectAllEmploymentsIds(Integer enterpriseId = null){
+        String filterQuery = enterpriseId ? " WHERE enterprise_id = " + enterpriseId : ""
+        return "SELECT id FROM employments$filterQuery;"
     }
 }
 
