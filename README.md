@@ -123,59 +123,32 @@ O módulo **ValidationForms** é uma classe utilitária, escrita em TypeScript, 
 
 # BACKEND: Linketinder CLI
 
-O projeto Linketinder é uma aplicação desenvolvida em Groovy por **Vinícius Menezes Pontes**, cujo objetivo é facilitar a conexão entre empresas e candidatos cujas competências sejam compatíveis. A plataforma permite que empresas definam as habilidades desejadas para suas vagas e que candidatos com essas qualificações tenham maior visibilidade, aumentando as chances de um alinhamento eficiente no processo seletivo.
+O projeto Linketinder é uma aplicação desenvolvida em Groovy por **Vinícius Menezes Pontes**, cujo objetivo é facilitar a conexão entre empresas e candidatos cujas competências sejam compatíveis.
 
-Além das funcionalidades básicas, como listar, cadastrar e excluir usuários (empresas e candidatos), o sistema também oferece a opção de "Listar Compartibilidade Empresa/Candidatos". Nessa funcionalidade, cada empresa cadastrada terá uma lista de candidatos classificados por ordem de compatibilidade. Quanto maior o número de competências em comum, maior será a posição do candidato no ranking da empresa.
-
-No sistema, existe uma estrutura de testes unitários que garante a qualidade do código. O package tests contém o RunTests, ponto de entrada para a execução dos testes, e subpackages que avaliam as entidades (Candidate e Enterprise), o gerenciador de usuários (UserManager), além de oferecer mocks e utilitários, como o FakeScanner, para simular interações.
+A aplicação integra-se automaticamente a um banco de dados PostgreSQL, gerenciando todas as operações de conexão e interações com o banco de forma autônoma.
 
 ## Estrutura
-### 📂 **data** - Dados estáticos
-- `CandidatesData`: Armazena dados estáticos de candidatos (apenas para testes)
-- `EnterprisesData`: Armazena dados estáticos de Empresas (apenas para testes)
+
+### 📂 **db** - Banco de Dados
+- `DatabaseConnection`: Estabelece conexão com o banco de dados
+- `Queries`: Centraliza e gerencia todas as instruções SQL do sistema, processando parâmetros dinâmicos e retornando consultas formatadas e prontas para execução no banco de dados
 
 ### 📂 **entities** - Entidades
 - `Candidate`: Classe responsável por métodos e parâmetros da entidade Candidato
 - `Enterprise`: Classe responsável por métodos e parâmetros da entidade Empresa
-- `User`: Interface base para usuários do sistema (candidatos e empresas)
-- `SkillsList`: Define e valida as competências técnicas
+- `Employment`: Classe responsável por métodos e parâmetros da entidade Vaga
 
 ### 📂 **managers** - Gerenciadores
-- `UserManager`: Controla operações de CRUD para usuários (criação/exclusão)
+- `DatabaseManager`: Controla operações de CRUD para as entidades
 
-### 📂 **services** - Lógica de negócios
-- `CompatibilityService`: Implementa algoritmo de compatibilidade entre candidatos e vagas
-
-### 📂 **utils** - Utilitários
-- `GenericUtils`: Oferece funções auxiliares para processamento genérico
+### 📂 **services** - Serviços
+- `SectionService`: Gerencia o estado de autenticação do usuário, sessões, entrada de dados e integração com o banco de dados no sistema.
 
 ### 📂 **view** - Interface do usuário
-- `Cli`: Implementa a interface de linha de comando (CLI) interativa
+- `Menu`: Implementa a interface de linha de comando (CLI) interativa
 
 ### ⚙️ **Main.groovy** - Ponto de entrada
 - Classe principal que inicia a aplicação
-
-## Estrutura - Testes Unitários
-
-### 📂 **tests** - Testes unitários
-- `RunTests`: Ponto de entrada para execução dos testes
-
-### 📂 **tests.entities** - Testes do package entities
-- `CandidateTest`: testes de todos os métodos da classe Candidate
-- `EnterpriseTest`: testes de todos os métodos da classe Enterprise
-
-### 📂 **tests.managers** - Testes do package managers
-- `UserManagerTest`: testes de todos os métodos da classe UserManager
-
-### 📂 **tests.mocks** - Mocks para os testes
-- `UsersMock`: disponibiliza dados válidos e inválidos para testar as entidades Candidate e Enterprise
-
-### 📂 **tests.utils** - Utilitários para testes
-- `FakeScanner`: Simula entradas do usuário
-
-### ⚙️ **./tests/RunTests** - Ponto de entrada
-- Classe principal que inicia os testes unitários
-
 
 ## Pré-requisitos
 - Java JDK 8+ instalado
@@ -187,7 +160,7 @@ No sistema, existe uma estrutura de testes unitários que garante a qualidade do
 Abra o terminal e execute o comando abaixo:
 
 ```bash
-git clone https://github.com/ViniciusMPonte/linketinder-frontend-and-backend
+git clone https://github.com/ViniciusMPonte/linketinder_K1-T9.git
 ```
 
 ### 2. Acesse a pasta do projeto
@@ -204,12 +177,6 @@ Inicie a aplicação com o seguinte comando:
 
 ```bash
 groovy Main.groovy
-```
-
-Para os testes unitários, inicie com o seguinte comando:
-
-```bash
-groovy ./tests/RunTests.groovy
 ```
 
 ### 4. Primeiros passos após a execução
