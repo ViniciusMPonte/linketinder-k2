@@ -15,7 +15,6 @@ class Menu {
     }
 
     def startMenu() {
-        println this.section.dbManager.saveNewSkill("Teste")
         if (this.section.userLogged instanceof NewCandidate) {
             this.mainMenuCandidate()
         }
@@ -142,7 +141,7 @@ class Menu {
                 name       : this.getQuestionResult("\nDigite seu nome: "),
                 description: this.getQuestionResult("\nDescreva-se: "),
                 cpf        : this.getQuestionResult("\nDigite seu CPF: "),
-                birthday   : this.getQuestionResult("\nDigite a data do seu aniversário [YYY-MM-DD]: "),
+                birthday   : this.getQuestionResult("\nDigite a data do seu aniversário [YYYY-MM-DD]: "),
                 country    : this.getQuestionResult("\nDigite o páis que mora (Brasil): "),
                 state      : this.getQuestionResult("\nDigite o estado que você mora: "),
                 postalCode : this.getQuestionResult("\nDigite seu CEP: "),
@@ -240,7 +239,7 @@ class Menu {
                 name       : this.getQuestionResult("\nDigite seu nome: "),
                 description: this.getQuestionResult("\nDescreva-se: "),
                 cpf        : this.getQuestionResult("\nDigite seu CPF: "),
-                birthday   : this.getQuestionResult("\nDigite a data do seu aniversário [YYY-MM-DD]: "),
+                birthday   : this.getQuestionResult("\nDigite a data do seu aniversário [YYYY-MM-DD]: "),
                 country    : this.getQuestionResult("\nDigite o páis que mora (Brasil): "),
                 state      : this.getQuestionResult("\nDigite o estado que você mora: "),
                 postalCode : this.getQuestionResult("\nDigite seu CEP: "),

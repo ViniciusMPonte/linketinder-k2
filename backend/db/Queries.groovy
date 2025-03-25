@@ -7,32 +7,19 @@ import entities.NewEnterprise
 class Queries {
 
     static String insertUsersTable(entity) {
-        String query = "BEGIN;\n" // Inicia a transação
-
-        // Insere usuário
-        query += "INSERT INTO users (email, password)\n" +
+        String query = "INSERT INTO users (email, password)\n" +
                 "VALUES ('" + entity.getEmail() + "', '" + entity.getPassword() + "');\n"
-
-        query += "COMMIT;" // Finaliza a transação
         return query
     }
 
     static String insertPostalCodesTable(entity) {
-        String query = "BEGIN;\n" // Inicia a transação
-
-        // Insere postal_code
-        query += "INSERT INTO postal_codes (postal_code, state_id)\n" +
+        String query = "INSERT INTO postal_codes (postal_code, state_id)\n" +
                 "VALUES ('" + entity.getPostalCode() + "', (SELECT id FROM states WHERE name = '" + entity.getState() + "'));\n"
-
-        query += "COMMIT;" // Finaliza a transação
         return query
     }
 
     static String insertCandidatesTable(NewCandidate candidate) {
-        String query = "BEGIN;\n" // Inicia a transação
-
-        // Insere candidato
-        query += "INSERT INTO candidates (user_id, name, description, birthday, cpf, postal_code_id)\n" +
+        String query = "INSERT INTO candidates (user_id, name, description, birthday, cpf, postal_code_id)\n" +
                 "VALUES (\n" +
                 "    (SELECT id FROM users WHERE email = '" + candidate.getEmail() + "'),\n" +
                 "    '" + candidate.getName() + "',\n" +
@@ -41,16 +28,11 @@ class Queries {
                 "    '" + candidate.getCpf() + "',\n" +
                 "    (SELECT id FROM postal_codes WHERE postal_code = '" + candidate.getPostalCode() + "')\n" +
                 ");\n"
-
-        query += "COMMIT;" // Finaliza a transação
         return query
     }
 
     static String insertEnterprisesTable(NewEnterprise enterprise) {
-        String query = "BEGIN;\n" // Inicia a transação
-
-        // Insere candidato
-        query += "INSERT INTO enterprises (user_id, name, description, cnpj, postal_code_id)\n" +
+        String query = "INSERT INTO enterprises (user_id, name, description, cnpj, postal_code_id)\n" +
                 "VALUES (\n" +
                 "    (SELECT id FROM users WHERE email = '" + enterprise.getEmail() + "'),\n" +
                 "    '" + enterprise.getName() + "',\n" +
@@ -58,47 +40,32 @@ class Queries {
                 "    '" + enterprise.getCnpj() + "',\n" +
                 "    (SELECT id FROM postal_codes WHERE postal_code = '" + enterprise.getPostalCode() + "')\n" +
                 ");\n"
-
-        query += "COMMIT;" // Finaliza a transação
         return query
     }
 
     static String insertEmploymentsTable(Employment employment) {
-        String query = "BEGIN;\n" // Inicia a transação
-
-        // Insere vaga
-        query += "INSERT INTO employments (name, description, postal_code_id, enterprise_id)\n" +
+        String query = "INSERT INTO employments (name, description, postal_code_id, enterprise_id)\n" +
                 "VALUES (\n" +
                 "    '" + employment.getName() + "',\n" +
                 "    '" + employment.getDescription() + "',\n" +
                 "    (SELECT id FROM postal_codes WHERE postal_code = '" + employment.getPostalCode() + "'),\n" +
                 "    " + employment.getEnterpriseId() + "\n" +
                 ");\n"
-
-        query += "COMMIT;" // Finaliza a transação
         return query
     }
 
     static String insertCandidateSkillTable(NewCandidate candidate) {
-        String query = "BEGIN;\n" // Inicia a transação
-
-        // Insere skills
-        query += "INSERT INTO candidate_skill (candidate_id, skill_id)\nVALUES\n"
+        String query = "INSERT INTO candidate_skill (candidate_id, skill_id)\nVALUES\n"
         candidate.getSkills().forEach(skill -> {
             query += "((SELECT id FROM users WHERE email = '" + candidate.getEmail() + "'), " +
                     "(SELECT id FROM skills WHERE name = '" + skill + "')),\n"
-        });
-        query = query.replaceFirst(/,\n$/, ";\n") // Substitui última vírgula por ponto-e-vírgula
-
-        query += "COMMIT;" // Finaliza a transação
+        })
+        query = query.replaceFirst(/,\n$/, ";\n")
         return query
     }
 
     static String insertEmploymentSkillTable(Employment employment) {
-        String query = "BEGIN;\n" // Inicia a transação
-
-        // Insere skills
-        query += "INSERT INTO employment_skill (employment_id, skill_id)\nVALUES\n"
+        String query = "INSERT INTO employment_skill (employment_id, skill_id)\nVALUES\n"
         employment.getSkills().forEach(skill -> {
             query += "((SELECT id \n" +
                     "FROM employments \n" +
@@ -107,9 +74,7 @@ class Queries {
                     "    enterprise_id = " + employment.getEnterpriseId() + " ), " +
                     "(SELECT id FROM skills WHERE name = '" + skill + "')),\n"
         });
-        query = query.replaceFirst(/,\n$/, ";\n") // Substitui última vírgula por ponto-e-vírgula
-
-        query += "COMMIT;" // Finaliza a transação
+        query = query.replaceFirst(/,\n$/, ";\n")
         return query
     }
 
@@ -225,11 +190,7 @@ class Queries {
     }
 
     static String updateUsersTable(original, updated) {
-
-        boolean hasUpdates = false
-
-        // Atualiza usuário (email/password)
-        String query = "BEGIN;\n"
+        String query = ""
         if (!original.getEmail().equals(updated.getEmail()) || !original.getPassword().equals(updated.getPassword())) {
             query += "UPDATE users SET\n"
             if (!original.getEmail().equals(updated.getEmail())) {
@@ -240,44 +201,22 @@ class Queries {
             }
             query = query.replaceFirst(/,\n$/, "\n")
             query += "WHERE id = " + original.getId() + ";\n"
-            hasUpdates = true
         }
-
-        if (hasUpdates) {
-            query += "COMMIT;"
-        } else {
-            query = "" // Nenhuma alteração necessária
-        }
-
         return query
     }
 
     static String updatePostalCodesTable(original, updated) {
-        boolean hasUpdates = false
-
-        // Atualiza postal_code se necessário (versão simplificada)
-        String query = "BEGIN;\n"
+        String query = ""
         if (!original.getPostalCode().equals(updated.getPostalCode()) || !original.getState().equals(updated.getState())) {
             query += "INSERT INTO postal_codes (postal_code, state_id)\n" +
                     "VALUES ('" + updated.getPostalCode() + "', " +
                     "(SELECT id FROM states WHERE name = '" + updated.getState() + "'));\n"
-            hasUpdates = true
         }
-
-        if (hasUpdates) {
-            query += "COMMIT;"
-        } else {
-            query = "" // Nenhuma alteração necessária
-        }
-
         return query
     }
 
     static String updateCandidatesTable(original, updated) {
-        boolean hasUpdates = false
-
-        // Atualiza candidato
-        String query = "BEGIN;\n"
+        String query = ""
         if(
                 !original.getName().equals(updated.getName()) ||
                 !original.getDescription().equals(updated.getDescription()) ||
@@ -309,23 +248,12 @@ class Queries {
         if (!updates.isEmpty()) {
             query += String.join(",\n", updates) + "\n"
             query += "WHERE user_id = " + original.getId() + ";\n"
-            hasUpdates = true
         }
-
-        if (hasUpdates) {
-            query += "COMMIT;"
-        } else {
-            query = "" // Nenhuma alteração necessária
-        }
-
         return query
     }
 
     static String updateEnterprisesTable(original, updated) {
-        boolean hasUpdates = false
-
-        // Atualiza candidato
-        String query = "BEGIN;\n"
+        String query = ""
         if(
                 !original.getName().equals(updated.getName()) ||
                         !original.getDescription().equals(updated.getDescription()) ||
@@ -353,23 +281,13 @@ class Queries {
         if (!updates.isEmpty()) {
             query += String.join(",\n", updates) + "\n"
             query += "WHERE user_id = " + original.getId() + ";\n"
-            hasUpdates = true
-        }
-
-        if (hasUpdates) {
-            query += "COMMIT;"
-        } else {
-            query = "" // Nenhuma alteração necessária
         }
 
         return query
     }
 
     static String updateEmploymentsTable(Employment original, Employment updated) {
-        boolean hasUpdates = false
-
-        // Atualiza vaga
-        String query = "BEGIN;\n"
+        String query = ""
         if(
                 !original.getName().equals(updated.getName()) ||
                 !original.getDescription().equals(updated.getDescription()) ||
@@ -405,23 +323,13 @@ class Queries {
         if (!updates.isEmpty()) {
             query += String.join(",\n", updates) + "\n"
             query += "WHERE id = " + original.getId() + ";\n"
-            hasUpdates = true
-        }
-
-        if (hasUpdates) {
-            query += "COMMIT;"
-        } else {
-            query = "" // Nenhuma alteração necessária
         }
 
         return query
     }
 
     static String updateCandidateSkillTable(original, updated) {
-        boolean hasUpdates = false
-
-        // Atualiza skills se necessário
-        String query = "BEGIN;\n"
+        String query = ""
         if (!original.getSkills().equals(updated.getSkills())) {
             query += "DELETE FROM candidate_skill WHERE candidate_id = " + original.getId() + ";\n"
             if (!updated.getSkills().isEmpty()) {
@@ -432,23 +340,13 @@ class Queries {
                 })
                 query = query.replaceFirst(/,\n$/, ";\n")
             }
-            hasUpdates = true
-        }
-
-        if (hasUpdates) {
-            query += "COMMIT;"
-        } else {
-            query = "" // Nenhuma alteração necessária
         }
 
         return query
     }
 
     static String updateEmploymentSkillTable(Employment original, Employment updated) {
-        boolean hasUpdates = false
-
-        // Atualiza skills se necessário
-        String query = "BEGIN;\n"
+        String query = ""
         if (!original.getSkills().equals(updated.getSkills())) {
             query += "DELETE FROM employment_skill WHERE employment_id = " + original.getId() + ";\n"
             if (!updated.getSkills().isEmpty()) {
@@ -459,52 +357,31 @@ class Queries {
                 })
                 query = query.replaceFirst(/,\n$/, ";\n")
             }
-            hasUpdates = true
-        }
-
-        if (hasUpdates) {
-            query += "COMMIT;"
-        } else {
-            query = "" // Nenhuma alteração necessária
         }
 
         return query
     }
 
     static String deleteCandidateById(int id) {
-        return "BEGIN;\n" +
-                "\n" +
-                "DELETE FROM candidate_skill WHERE candidate_id = " + id + ";\n" +
+        return  "DELETE FROM candidate_skill WHERE candidate_id = " + id + ";\n" +
                 "DELETE FROM matches WHERE candidate_id = " + id + ";\n" +
                 "DELETE FROM candidates WHERE user_id = " + id + ";\n" +
-                "DELETE FROM users WHERE id = " + id + ";\n" +
-                "\n" +
-                "COMMIT;"
+                "DELETE FROM users WHERE id = " + id + ";"
     }
 
     static String deleteEmploymentById(int id) {
-        return "BEGIN;\n" +
-                "\n" +
-                "DELETE FROM employment_skill WHERE employment_id = " + id + ";\n" +
+        return  "DELETE FROM employment_skill WHERE employment_id = " + id + ";\n" +
                 "DELETE FROM matches WHERE employment_id = " + id + ";\n" +
-                "DELETE FROM employments WHERE id = " + id + ";\n" +
-                "\n" +
-                "COMMIT;"
+                "DELETE FROM employments WHERE id = " + id + ";"
     }
 
     static String deleteEnterpriseById(int id) {
-        return "BEGIN;\n" +
-                "\n" +
-                "DELETE FROM enterprises WHERE user_id = " + id + ";\n" +
-                "DELETE FROM users WHERE id = " + id + ";\n" +
-                "\n" +
-                "COMMIT;"
+        return  "DELETE FROM enterprises WHERE user_id = " + id + ";\n" +
+                "DELETE FROM users WHERE id = " + id + ";"
     }
 
     static String deleteUnusedPostalCodes() {
-        return "BEGIN;\n" +
-                "\n" +
-                "DELETE FROM postal_codes\n" +
+        return  "DELETE FROM postal_codes\n" +
                 "WHERE NOT EXISTS (\n" +
                 "    SELECT 1 FROM candidates \n" +
                 "    WHERE candidates.postal_code_id = postal_codes.id\n" +
@@ -514,9 +391,7 @@ class Queries {
                 ") AND NOT EXISTS (\n" +
                 "    SELECT 1 FROM employments \n" +
                 "    WHERE employments.postal_code_id = postal_codes.id\n" +
-                ");\n" +
-                "\n" +
-                "COMMIT;";
+                ");"
     }
 
     //UTILS
@@ -558,31 +433,22 @@ class Queries {
     }
 
     static String insertSkillsTable(String skill) {
-        String query = "BEGIN;\n" // Inicia a transação
-
-        // Insere vaga
-        query += "INSERT INTO skills (name)\n" +
+        String query = "INSERT INTO skills (name)\n" +
                 "VALUES (\n" +
                 "    '" + skill + "'\n" +
-                ");\n"
-
-        query += "COMMIT;" // Finaliza a transação
+                ");"
         return query
     }
 
     static String deleteUnusedSkills() {
-        return "BEGIN;\n" +
-                "\n" +
-                "DELETE FROM skills\n" +
+        return  "DELETE FROM skills\n" +
                 "WHERE NOT EXISTS (\n" +
                 "    SELECT 1 FROM candidate_skill \n" +
                 "    WHERE candidate_skill.skill_id = skills.id\n" +
                 ") AND NOT EXISTS (\n" +
                 "    SELECT 1 FROM employment_skill \n" +
                 "    WHERE employment_skill.skill_id = skills.id\n" +
-                ");\n" +
-                "\n" +
-                "COMMIT;";
+                ");"
     }
 }
 

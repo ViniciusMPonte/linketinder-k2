@@ -23,12 +23,10 @@ class DatabaseManager {
             return false
         }
 
-        // Desativa o auto-commit para controle manual
         boolean originalAutoCommit = connection.autoCommit
         connection.autoCommit = false
 
         try {
-            // Executa a query completa (já inclui BEGIN e COMMIT)
             connection.createStatement().withCloseable { statement ->
                 statement.execute(Queries.insertUsersTable(candidate))
                 if(!this.getPostalCodeId(candidate)){
@@ -44,25 +42,23 @@ class DatabaseManager {
                 statement.execute(Queries.insertCandidateSkillTable(candidate))
             }
 
-            connection.commit() // Confirma transação
+            connection.commit()
             return true
 
         } catch (SQLException e) {
-            connection.rollback() // Reverte em caso de erro
+            connection.rollback()
             e.printStackTrace()
             return false
         } finally {
-            connection.autoCommit = originalAutoCommit // Restaura o auto-commit original
+            connection.autoCommit = originalAutoCommit
         }
     }
 
     NewCandidate getCandidateById(int id) {
         try {
-            // Usa withCloseable para fechar automaticamente Statement e ResultSet
             return this.connection.createStatement().withCloseable { statement ->
                 statement.executeQuery(Queries.selectCandidateById(id)).withCloseable { resultSet ->
                     if (resultSet.next()) {
-                        // Mapeia os dados (com tratamento de valores nulos)
                         Map params = [
                                 id: resultSet.getInt("id"),
                                 email: resultSet.getString("email"),
@@ -94,7 +90,7 @@ class DatabaseManager {
         }
 
         if (!this.hasDifferences(original, updated)) {
-            return false // Nenhuma alteração necessária
+            return false
         }
 
         boolean originalAutoCommit = connection.autoCommit
@@ -116,25 +112,39 @@ class DatabaseManager {
             return true
 
         } catch (SQLException e) {
+
             connection.rollback()
             e.printStackTrace()
             return false
+
         } finally {
             connection.autoCommit = originalAutoCommit
         }
     }
 
     boolean deleteCandidateById(int id) {
+
+        boolean originalAutoCommit = connection.autoCommit
+        connection.autoCommit = false
+
         try {
             this.connection.createStatement().withCloseable { statement ->
                 statement.execute(Queries.deleteCandidateById(id))
                 statement.execute(Queries.deleteUnusedPostalCodes())
                 statement.execute(Queries.deleteUnusedSkills())
             }
+
+            connection.commit()
             return true
+
         } catch (SQLException e) {
+
+            connection.rollback()
             e.printStackTrace()
             return false
+
+        } finally {
+            connection.autoCommit = originalAutoCommit
         }
     }
 
@@ -144,12 +154,10 @@ class DatabaseManager {
             return false
         }
 
-        // Desativa o auto-commit para controle manual
         boolean originalAutoCommit = connection.autoCommit
         connection.autoCommit = false
 
         try {
-            // Executa a query completa (já inclui BEGIN e COMMIT)
             connection.createStatement().withCloseable { statement ->
                 statement.execute(Queries.insertUsersTable(enterprise))
                 if(!this.getPostalCodeId(enterprise)){
@@ -158,25 +166,25 @@ class DatabaseManager {
                 statement.execute(Queries.insertEnterprisesTable(enterprise))
             }
 
-            connection.commit() // Confirma transação
+            connection.commit()
             return true
 
         } catch (SQLException e) {
-            connection.rollback() // Reverte em caso de erro
+
+            connection.rollback()
             e.printStackTrace()
             return false
+
         } finally {
-            connection.autoCommit = originalAutoCommit // Restaura o auto-commit original
+            connection.autoCommit = originalAutoCommit
         }
     }
 
     NewEnterprise getEnterpriseById(int id) {
         try {
-            // Usa withCloseable para fechar automaticamente Statement e ResultSet
             return this.connection.createStatement().withCloseable { statement ->
                 statement.executeQuery(Queries.selectEnterpriseById(id)).withCloseable { resultSet ->
                     if (resultSet.next()) {
-                        // Mapeia os dados (com tratamento de valores nulos)
                         Map params = [
                                 id: resultSet.getInt("id"),
                                 email: resultSet.getString("email"),
@@ -206,7 +214,7 @@ class DatabaseManager {
         }
 
         if (!this.hasDifferences(original, updated)) {
-            return false // Nenhuma alteração necessária
+            return false
         }
 
         boolean originalAutoCommit = connection.autoCommit
@@ -226,24 +234,41 @@ class DatabaseManager {
             return true
 
         } catch (SQLException e) {
+
             connection.rollback()
             e.printStackTrace()
             return false
+
         } finally {
             connection.autoCommit = originalAutoCommit
         }
     }
 
     boolean deleteEnterpriseById(int id) {
+
+        boolean originalAutoCommit = connection.autoCommit
+        connection.autoCommit = false
+
         try {
             this.connection.createStatement().withCloseable { statement ->
+                this.getEmploymentIds(id).each {employmentId ->
+                    this.deleteEmploymentById(employmentId as Integer)
+                }
                 statement.execute(Queries.deleteEnterpriseById(id))
                 statement.execute(Queries.deleteUnusedPostalCodes())
             }
+
+            connection.commit()
             return true
+
         } catch (SQLException e) {
+
+            connection.rollback()
             e.printStackTrace()
             return false
+
+        } finally {
+            connection.autoCommit = originalAutoCommit
         }
     }
 
@@ -253,18 +278,15 @@ class DatabaseManager {
             return false
         }
 
-        // Desativa o auto-commit para controle manual
         boolean originalAutoCommit = connection.autoCommit
         connection.autoCommit = false
 
         try {
-             //Executa a query completa (já inclui BEGIN e COMMIT)
             connection.createStatement().withCloseable { statement ->
                 if(!this.getPostalCodeId(employment)){
                     statement.execute(Queries.insertPostalCodesTable(employment))
                 }
                 statement.execute(Queries.insertEmploymentsTable(employment))
-                statement.execute(Queries.insertEmploymentSkillTable(employment))
                 employment.getSkills().each { skill ->
                     if (this.getSkillIdByName(skill)) {
                         return
@@ -273,25 +295,25 @@ class DatabaseManager {
                 }
                 statement.execute(Queries.insertEmploymentSkillTable(employment))
             }
-            connection.commit() // Confirma transação
+            connection.commit()
             return true
 
         } catch (SQLException e) {
-            connection.rollback() // Reverte em caso de erro
+
+            connection.rollback()
             e.printStackTrace()
             return false
+
         } finally {
-            connection.autoCommit = originalAutoCommit // Restaura o auto-commit original
+            connection.autoCommit = originalAutoCommit
         }
     }
 
     Employment getEmploymentById(int id) {
         try {
-            // Usa withCloseable para fechar automaticamente Statement e ResultSet
             return this.connection.createStatement().withCloseable { statement ->
                 statement.executeQuery(Queries.selectEmploymentById(id)).withCloseable { resultSet ->
                     if (resultSet.next()) {
-                        // Mapeia os dados (com tratamento de valores nulos)
                         Map params = [
                                 id: resultSet.getInt("id"),
                                 enterpriseId: resultSet.getInt("enterpriseId"),
@@ -320,7 +342,7 @@ class DatabaseManager {
         }
 
         if (!this.hasDifferences(original, updated)) {
-            return false // Nenhuma alteração necessária
+            return false
         }
 
         boolean originalAutoCommit = connection.autoCommit
@@ -347,25 +369,39 @@ class DatabaseManager {
             return true
 
         } catch (SQLException e) {
+
             connection.rollback()
             e.printStackTrace()
             return false
+
         } finally {
             connection.autoCommit = originalAutoCommit
         }
     }
 
     boolean deleteEmploymentById(int id) {
+
+        boolean originalAutoCommit = connection.autoCommit
+        connection.autoCommit = false
+
         try {
             this.connection.createStatement().withCloseable { statement ->
                 statement.execute(Queries.deleteEmploymentById(id))
                 statement.execute(Queries.deleteUnusedPostalCodes())
                 statement.execute(Queries.deleteUnusedSkills())
             }
+
+            connection.commit()
             return true
+
         } catch (SQLException e) {
+
+            connection.rollback()
             e.printStackTrace()
             return false
+
+        } finally {
+            connection.autoCommit = originalAutoCommit
         }
     }
 
@@ -375,25 +411,25 @@ class DatabaseManager {
             return true
         }
 
-        // Desativa o auto-commit para controle manual
         boolean originalAutoCommit = connection.autoCommit
         connection.autoCommit = false
 
         try {
-            //Executa a query completa (já inclui BEGIN e COMMIT)
             connection.createStatement().withCloseable { statement ->
                 statement.execute(Queries.insertSkillsTable(skill))
             }
 
-            connection.commit() // Confirma transação
+            connection.commit()
             return true
 
         } catch (SQLException e) {
-            connection.rollback() // Reverte em caso de erro
+
+            connection.rollback()
             e.printStackTrace()
             return false
+
         } finally {
-            connection.autoCommit = originalAutoCommit // Restaura o auto-commit original
+            connection.autoCommit = originalAutoCommit
         }
     }
 
@@ -451,7 +487,6 @@ class DatabaseManager {
 
     Integer getPostalCodeId(update) {
         try {
-            // Usa withCloseable para fechar automaticamente Statement e ResultSet
             return this.connection.createStatement().withCloseable { statement ->
                 statement.executeQuery(Queries.selectPostalCodeId(update.getPostalCode(), update.getState())).withCloseable { resultSet ->
                     if (resultSet.next()) {
@@ -469,7 +504,6 @@ class DatabaseManager {
 
     Integer getEmploymentId(enterpriseId, employmentName) {
         try {
-            // Usa withCloseable para fechar automaticamente Statement e ResultSet
             return this.connection.createStatement().withCloseable { statement ->
                 statement.executeQuery(Queries.selectEmploymentId(enterpriseId, employmentName)).withCloseable { resultSet ->
                     if (resultSet.next()) {
@@ -525,10 +559,7 @@ class DatabaseManager {
 
     boolean hasDifferences(entity1, entity2, boolean ignoreId = false) {
         return entity1.properties.any { key, value ->
-            // Ignora 'class' e (opcionalmente) 'id'
             boolean shouldIgnore = key == 'class' || (ignoreId && key == 'id')
-
-            // Verifica diferenças apenas nas propriedades não ignoradas
             !shouldIgnore && entity2.properties[key] != value
         }
     }
