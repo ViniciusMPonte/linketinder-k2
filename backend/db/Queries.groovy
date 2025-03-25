@@ -552,6 +552,38 @@ class Queries {
         String filterQuery = enterpriseId ? " WHERE enterprise_id = " + enterpriseId : ""
         return "SELECT id FROM employments$filterQuery;"
     }
+
+    static String selectSkillIdByName(String name) {
+        return "SELECT id FROM skills WHERE name = '$name';"
+    }
+
+    static String insertSkillsTable(String skill) {
+        String query = "BEGIN;\n" // Inicia a transação
+
+        // Insere vaga
+        query += "INSERT INTO skills (name)\n" +
+                "VALUES (\n" +
+                "    '" + skill + "'\n" +
+                ");\n"
+
+        query += "COMMIT;" // Finaliza a transação
+        return query
+    }
+
+    static String deleteUnusedSkills() {
+        return "BEGIN;\n" +
+                "\n" +
+                "DELETE FROM skills\n" +
+                "WHERE NOT EXISTS (\n" +
+                "    SELECT 1 FROM candidate_skill \n" +
+                "    WHERE candidate_skill.skill_id = skills.id\n" +
+                ") AND NOT EXISTS (\n" +
+                "    SELECT 1 FROM employment_skill \n" +
+                "    WHERE employment_skill.skill_id = skills.id\n" +
+                ");\n" +
+                "\n" +
+                "COMMIT;";
+    }
 }
 
 

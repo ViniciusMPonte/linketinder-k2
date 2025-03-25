@@ -1,6 +1,7 @@
 //Feito por Vinícius Menezes Pontes
 
 
+import db.Queries
 import entities.*
 import services.SectionService
 import view.Cli
@@ -14,7 +15,6 @@ import managers.DatabaseManager
 
 
 static void main(String[] args) {
-
     //Conexão com o Banco
     def conn = DatabaseConnection.connect()
     def dbManager = new DatabaseManager(conn)

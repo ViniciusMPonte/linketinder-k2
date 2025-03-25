@@ -35,6 +35,12 @@ class DatabaseManager {
                     statement.execute(Queries.insertPostalCodesTable(candidate))
                 }
                 statement.execute(Queries.insertCandidatesTable(candidate))
+                candidate.getSkills().each { skill ->
+                    if (this.getSkillIdByName(skill)) {
+                        return
+                    }
+                    statement.execute(Queries.insertSkillsTable(skill))
+                }
                 statement.execute(Queries.insertCandidateSkillTable(candidate))
             }
 
@@ -103,6 +109,7 @@ class DatabaseManager {
                 statement.execute(Queries.updateCandidatesTable(original, updated))
                 statement.execute(Queries.deleteUnusedPostalCodes())
                 statement.execute(Queries.updateCandidateSkillTable(original, updated))
+                statement.execute(Queries.deleteUnusedSkills())
             }
 
             connection.commit()
@@ -122,6 +129,7 @@ class DatabaseManager {
             this.connection.createStatement().withCloseable { statement ->
                 statement.execute(Queries.deleteCandidateById(id))
                 statement.execute(Queries.deleteUnusedPostalCodes())
+                statement.execute(Queries.deleteUnusedSkills())
             }
             return true
         } catch (SQLException e) {
@@ -257,8 +265,14 @@ class DatabaseManager {
                 }
                 statement.execute(Queries.insertEmploymentsTable(employment))
                 statement.execute(Queries.insertEmploymentSkillTable(employment))
+                employment.getSkills().each { skill ->
+                    if (this.getSkillIdByName(skill)) {
+                        return
+                    }
+                    statement.execute(Queries.insertSkillsTable(skill))
+                }
+                statement.execute(Queries.insertEmploymentSkillTable(employment))
             }
-
             connection.commit() // Confirma transação
             return true
 
@@ -319,7 +333,14 @@ class DatabaseManager {
                 }
                 statement.execute(Queries.updateEmploymentsTable(original, updated))
                 statement.execute(Queries.deleteUnusedPostalCodes())
+                updated.getSkills().each { skill ->
+                    if (this.getSkillIdByName(skill)) {
+                        return
+                    }
+                    statement.execute(Queries.insertSkillsTable(skill))
+                }
                 statement.execute(Queries.updateEmploymentSkillTable(original, updated))
+                statement.execute(Queries.deleteUnusedSkills())
             }
 
             connection.commit()
@@ -339,6 +360,7 @@ class DatabaseManager {
             this.connection.createStatement().withCloseable { statement ->
                 statement.execute(Queries.deleteEmploymentById(id))
                 statement.execute(Queries.deleteUnusedPostalCodes())
+                statement.execute(Queries.deleteUnusedSkills())
             }
             return true
         } catch (SQLException e) {
@@ -347,12 +369,56 @@ class DatabaseManager {
         }
     }
 
+    //CRUD Skills
+    boolean saveNewSkill(String skill) {
+        if (this.getSkillIdByName(skill)) {
+            return true
+        }
+
+        // Desativa o auto-commit para controle manual
+        boolean originalAutoCommit = connection.autoCommit
+        connection.autoCommit = false
+
+        try {
+            //Executa a query completa (já inclui BEGIN e COMMIT)
+            connection.createStatement().withCloseable { statement ->
+                statement.execute(Queries.insertSkillsTable(skill))
+            }
+
+            connection.commit() // Confirma transação
+            return true
+
+        } catch (SQLException e) {
+            connection.rollback() // Reverte em caso de erro
+            e.printStackTrace()
+            return false
+        } finally {
+            connection.autoCommit = originalAutoCommit // Restaura o auto-commit original
+        }
+    }
 
     //UTILS
     Integer getUserIdByEmail(String email) {
         try {
             return this.connection.createStatement().withCloseable { statement ->
                 statement.executeQuery(Queries.selectIdByEmail(email)).withCloseable { resultSet ->
+                    if (resultSet.next()) {
+                        return resultSet.getInt("id")
+                    } else {
+                        return null
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace()
+            return null
+        }
+    }
+
+    Integer getSkillIdByName(String name) {
+        try {
+            return this.connection.createStatement().withCloseable { statement ->
+                statement.executeQuery(Queries.selectSkillIdByName(name)).withCloseable { resultSet ->
                     if (resultSet.next()) {
                         return resultSet.getInt("id")
                     } else {

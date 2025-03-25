@@ -15,6 +15,7 @@ class Menu {
     }
 
     def startMenu() {
+        println this.section.dbManager.saveNewSkill("Teste")
         if (this.section.userLogged instanceof NewCandidate) {
             this.mainMenuCandidate()
         }
@@ -146,8 +147,7 @@ class Menu {
                 state      : this.getQuestionResult("\nDigite o estado que você mora: "),
                 postalCode : this.getQuestionResult("\nDigite seu CEP: "),
                 skills     : this.getQuestionResult(
-                        "\nDigite suas habilidades, separadas por virgula " +
-                                "[Opções: Java, Groovy, JavaScript, Git, GitHub, SQL, NoSQL, Angular, Spring, Docker]: "
+                        "\nDigite suas habilidades, separadas por virgula: "
                 )?.replaceAll(/ /, '')?.split(',')?.toList() ?: []
         ]
 
@@ -245,8 +245,7 @@ class Menu {
                 state      : this.getQuestionResult("\nDigite o estado que você mora: "),
                 postalCode : this.getQuestionResult("\nDigite seu CEP: "),
                 skills     : this.getQuestionResult(
-                        "\nDigite suas habilidades, separadas por virgula " +
-                                "[Opções: Java, Groovy, JavaScript, Git, GitHub, SQL, NoSQL, Angular, Spring, Docker]: "
+                        "\nDigite suas habilidades, separadas por virgula: "
                 )?.replaceAll(/ /, '')?.split(',')?.toList() ?: []
         ]
 
@@ -312,8 +311,9 @@ class Menu {
         println """
         === Vagas da Empresa ===
         1. Visualizar Vagas
-        2. Editar Vaga
-        3. Excluir Vaga
+        2. Criar Nova Vaga
+        3. Editar Vaga
+        4. Excluir Vaga
         0. Voltar
         """.stripIndent()
 
@@ -324,9 +324,12 @@ class Menu {
                 this.readEmployments()
                 break
             case "2":
-                this.updateEmployment()
+                this.createEmployment()
                 break
             case "3":
+                this.updateEmployment()
+                break
+            case "4":
                 this.deleteEmployment()
                 break
             case "0":
@@ -338,6 +341,30 @@ class Menu {
 
         if (this.section.userLogged == null) return
         this.RUDMenuEmployment()
+    }
+
+    void createEmployment() {
+
+        println "=== Criar Vaga ==="
+
+        Map params = [
+                enterpriseId: this.section.userLogged.getId(),
+                name       : this.getQuestionResult("\nDigite o nome da vaga: "),
+                description: this.getQuestionResult("\nDescreva a vaga: "),
+                country    : this.getQuestionResult("\nDigite o país da vaga (Brasil): "),
+                state      : this.getQuestionResult("\nDigite o estado onde a vaga se localiza: "),
+                postalCode : this.getQuestionResult("\nDigite o CEP: "),
+                skills     : this.getQuestionResult(
+                        "\nDigite as habilidades desejadas, separadas por virgula: "
+                )?.replaceAll(/ /, '')?.split(',')?.toList() ?: []
+        ]
+
+        if (this.section.dbManager.saveNewEmployment(new Employment(params))) {
+            println "\nVaga cadastrada com sucesso."
+            return
+        }
+
+        this.errorMenu("Falha ao cadastrar vaga", this.&createEmployment)
     }
 
     void readEmployments() {
@@ -371,8 +398,7 @@ class Menu {
                     state      : this.getQuestionResult("\nDigite o estado onde a vaga se localiza: "),
                     postalCode : this.getQuestionResult("\nDigite o CEP: "),
                     skills     : this.getQuestionResult(
-                            "\nDigite as habilidades desejadas, separadas por virgula " +
-                                    "[Opções: Java, Groovy, JavaScript, Git, GitHub, SQL, NoSQL, Angular, Spring, Docker]: "
+                            "\nDigite as habilidades desejadas, separadas por virgula: "
                     )?.replaceAll(/ /, '')?.split(',')?.toList() ?: []
             ]
 
