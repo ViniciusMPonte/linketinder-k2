@@ -22,7 +22,7 @@ CREATE TABLE postal_codes
 (
     id SERIAL PRIMARY KEY,
     postal_code VARCHAR(100) NOT NULL,
-    state_id INT REFERENCES states(id)
+    state_id INT REFERENCES states(id) NOT NULL
 );
 
 CREATE TABLE candidates

@@ -1,8 +1,8 @@
 package db
 
 import entities.Employment
-import entities.NewCandidate
-import entities.NewEnterprise
+import entities.Candidate
+import entities.Enterprise
 
 class Queries {
 
@@ -18,7 +18,7 @@ class Queries {
         return query
     }
 
-    static String insertCandidatesTable(NewCandidate candidate) {
+    static String insertCandidatesTable(Candidate candidate) {
         String query = "INSERT INTO candidates (user_id, name, description, birthday, cpf, postal_code_id)\n" +
                 "VALUES (\n" +
                 "    (SELECT id FROM users WHERE email = '" + candidate.getEmail() + "'),\n" +
@@ -31,7 +31,7 @@ class Queries {
         return query
     }
 
-    static String insertEnterprisesTable(NewEnterprise enterprise) {
+    static String insertEnterprisesTable(Enterprise enterprise) {
         String query = "INSERT INTO enterprises (user_id, name, description, cnpj, postal_code_id)\n" +
                 "VALUES (\n" +
                 "    (SELECT id FROM users WHERE email = '" + enterprise.getEmail() + "'),\n" +
@@ -54,7 +54,7 @@ class Queries {
         return query
     }
 
-    static String insertCandidateSkillTable(NewCandidate candidate) {
+    static String insertCandidateSkillTable(Candidate candidate) {
         String query = "INSERT INTO candidate_skill (candidate_id, skill_id)\nVALUES\n"
         candidate.getSkills().forEach(skill -> {
             query += "((SELECT id FROM users WHERE email = '" + candidate.getEmail() + "'), " +

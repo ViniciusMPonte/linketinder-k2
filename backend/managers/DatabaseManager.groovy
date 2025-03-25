@@ -1,12 +1,12 @@
 package managers
 
 import entities.Employment
-import entities.NewEnterprise
+import entities.Enterprise
 
 import java.sql.Connection
 import java.sql.SQLException
 
-import entities.NewCandidate
+import entities.Candidate
 import db.Queries
 
 class DatabaseManager {
@@ -18,7 +18,7 @@ class DatabaseManager {
     }
 
     //CRUD Candidates
-    boolean saveNewCandidate(NewCandidate candidate) {
+    boolean saveNewCandidate(Candidate candidate) {
         if (!candidate.isAllSet()) {
             return false
         }
@@ -54,7 +54,7 @@ class DatabaseManager {
         }
     }
 
-    NewCandidate getCandidateById(int id) {
+    Candidate getCandidateById(int id) {
         try {
             return this.connection.createStatement().withCloseable { statement ->
                 statement.executeQuery(Queries.selectCandidateById(id)).withCloseable { resultSet ->
@@ -72,7 +72,7 @@ class DatabaseManager {
                                 postalCode: resultSet.getString("postalCode"),
                                 skills: resultSet.getString("skills")?.replaceAll(/[{}]/, '')?.split(',')?.toList() ?: []
                         ]
-                        return new NewCandidate(params)
+                        return new Candidate(params)
                     } else {
                         return null
                     }
@@ -84,7 +84,7 @@ class DatabaseManager {
         }
     }
 
-    boolean updateCandidate(NewCandidate original, NewCandidate updated) {
+    boolean updateCandidate(Candidate original, Candidate updated) {
         if (!original || !updated || !updated.isAllSet()) {
             return false
         }
@@ -149,7 +149,7 @@ class DatabaseManager {
     }
 
     //CRUD Enterprises
-    boolean saveNewEnterprise(NewEnterprise enterprise) {
+    boolean saveNewEnterprise(Enterprise enterprise) {
         if (!enterprise.isAllSet()) {
             return false
         }
@@ -180,7 +180,7 @@ class DatabaseManager {
         }
     }
 
-    NewEnterprise getEnterpriseById(int id) {
+    Enterprise getEnterpriseById(int id) {
         try {
             return this.connection.createStatement().withCloseable { statement ->
                 statement.executeQuery(Queries.selectEnterpriseById(id)).withCloseable { resultSet ->
@@ -196,7 +196,7 @@ class DatabaseManager {
                                 state: resultSet.getString("state"),
                                 postalCode: resultSet.getString("postalCode")
                         ]
-                        return new NewEnterprise(params)
+                        return new Enterprise(params)
                     } else {
                         return null
                     }
@@ -208,7 +208,7 @@ class DatabaseManager {
         }
     }
 
-    boolean updateEnterprise(NewEnterprise original, NewEnterprise updated) {
+    boolean updateEnterprise(Enterprise original, Enterprise updated) {
         if (!original || !updated || !updated.isAllSet()) {
             return false
         }

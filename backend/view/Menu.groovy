@@ -1,8 +1,8 @@
 package view
 
 import entities.Employment
-import entities.NewCandidate
-import entities.NewEnterprise
+import entities.Candidate
+import entities.Enterprise
 import services.SectionService
 
 
@@ -15,10 +15,10 @@ class Menu {
     }
 
     def startMenu() {
-        if (this.section.userLogged instanceof NewCandidate) {
+        if (this.section.userLogged instanceof Candidate) {
             this.mainMenuCandidate()
         }
-        if (this.section.userLogged instanceof NewEnterprise) {
+        if (this.section.userLogged instanceof Enterprise) {
             this.mainMenuEnterprise()
         }
         if (this.section.userLogged == null) {
@@ -123,7 +123,7 @@ class Menu {
                 postalCode : this.getQuestionResult("\nDigite o CEP da empresa: ")
         ]
 
-        if (this.section.dbManager.saveNewEnterprise(new NewEnterprise(params))) {
+        if (this.section.dbManager.saveNewEnterprise(new Enterprise(params))) {
             println "\nEmpresa cadastrada com sucesso."
             return
         }
@@ -150,7 +150,7 @@ class Menu {
                 )?.replaceAll(/ /, '')?.split(',')?.toList() ?: []
         ]
 
-        if (this.section.dbManager.saveNewCandidate(new NewCandidate(params))) {
+        if (this.section.dbManager.saveNewCandidate(new Candidate(params))) {
             println "\nCandidato cadastrado com sucesso."
             return
         }
@@ -248,7 +248,7 @@ class Menu {
                 )?.replaceAll(/ /, '')?.split(',')?.toList() ?: []
         ]
 
-        if (this.section.dbManager.updateCandidate(this.section.userLogged as NewCandidate, new NewCandidate(params))) {
+        if (this.section.dbManager.updateCandidate(this.section.userLogged as Candidate, new Candidate(params))) {
             this.section.userLogged = this.section.dbManager.getCandidateById(this.section.userLogged.getId())
             println "\nPerfil editado com sucesso."
             return
@@ -479,7 +479,7 @@ class Menu {
                 postalCode : this.getQuestionResult("\nDigite o CEP: ")
         ]
 
-        if (this.section.dbManager.updateEnterprise(this.section.userLogged as NewEnterprise, new NewEnterprise(params))) {
+        if (this.section.dbManager.updateEnterprise(this.section.userLogged as Enterprise, new Enterprise(params))) {
             this.section.userLogged = this.section.dbManager.getEnterpriseById(this.section.userLogged.getId())
             println "\nPerfil editado com sucesso."
             return
