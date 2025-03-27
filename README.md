@@ -100,10 +100,10 @@ O módulo **ValidationForms** é uma classe utilitária, escrita em TypeScript, 
 
 1. **Clone o repositório**:
    ```bash
-   git clone https://github.com/ViniciusMPonte/linketinder-frontend-and-backend
+   git clone https://github.com/ViniciusMPonte/linketinder_K1-T10.git
    ```
 
-2. **Instale as dependências**:
+2. **Acesse a pasta "frontent" e instale as dependências**:
    ```bash
    npm install
    ```
@@ -160,7 +160,7 @@ A aplicação integra-se automaticamente a um banco de dados PostgreSQL, gerenci
 Abra o terminal e execute o comando abaixo:
 
 ```bash
-git clone https://github.com/ViniciusMPonte/linketinder_K1-T9.git
+git clone https://github.com/ViniciusMPonte/linketinder_K1-T10.git
 ```
 
 ### 2. Acesse a pasta do projeto
@@ -171,12 +171,12 @@ Navegue até o diretório do projeto clonado:
 cd backend
 ```
 
-### 3. Execute a aplicação ou os testes
+### 3. Execute a aplicação
 
 Inicie a aplicação com o seguinte comando:
 
 ```bash
-groovy Main.groovy
+groovy Main.groovy \\verificar caminho correto
 ```
 
 ### 4. Primeiros passos após a execução
