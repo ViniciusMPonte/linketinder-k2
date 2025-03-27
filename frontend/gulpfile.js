@@ -5,23 +5,23 @@ const source = require('vinyl-source-stream');
 const tsify = require('tsify');
 
 function clean() {
-    return del(['frontend/dist'])
+    return del(['dist'])
 }
 
 function copyHTML() {
-    return src('frontend/public/**/*')
-        .pipe(dest('frontend/dist'))
+    return src('public/**/*')
+        .pipe(dest('dist'))
 }
 
 function buildJS() {
     return browserify({
         basedir: '.',
-        entries: ['frontend/src/main.ts']
+        entries: ['src/main.ts']
     })
         .plugin(tsify)
         .bundle()
         .pipe(source('app.js'))
-        .pipe(dest('frontend/dist'))
+        .pipe(dest('dist'))
 }
 
 exports.default = series(

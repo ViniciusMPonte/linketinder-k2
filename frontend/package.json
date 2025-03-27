@@ -4,7 +4,7 @@
   "description": "O projeto Linketinder é uma aplicação desenvolvida em Groovy por **Vinícius Menezes Pontes**, cujo objetivo é facilitar a conexão entre empresas e candidatos cujas competências sejam compatíveis. A plataforma permite que empresas definam as habilidades desejadas para suas vagas e que candidatos com essas qualificações tenham maior visibilidade, aumentando as chances de um alinhamento eficiente no processo seletivo.",
   "main": "index.js",
   "scripts": {
-    "start": "live-server frontend/dist",
+    "start": "live-server dist",
     "build": "gulp",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
