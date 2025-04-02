@@ -14,6 +14,7 @@ import Chart from "../components/Chart";
 import Card from "../components/Card";
 import {ProfileEnterprise, ProfileCandidate} from "../components/Profile";
 import Nav from "../components/Nav";
+import CandidateValidation from "./validation/CandidateValidation";
 
 const nav = new Nav()
 
@@ -27,8 +28,12 @@ export default class NavigationManager {
         const path = window.location.pathname;
         switch (path) {
             case '/':
-                if (!this.redirectIfLogged()) this.activeCandidateCreateFormListener()
+                this.redirectIfLogged()
+                this.activeCandidateCreateFormListener()
                 break;
+            // case '/':
+            //     if (!this.redirectIfLogged()) this.activeCandidateCreateFormListener()
+            //     break;
             case '/candidate/register-candidate.html':
                 if (!this.redirectIfLogged()) this.activeCandidateCreateFormListener()
                 break;
@@ -116,23 +121,7 @@ export default class NavigationManager {
                 age: Number((document.getElementById('candidate-age-input') as HTMLInputElement)?.value) || 0,
             }
 
-            const isEmptyField = Object.values(newCandidateData).some(value => value.toString().trim() === '');
-
-            if (isEmptyField) {
-                alert('Por favor, preencha todos os campos obrigatórios!');
-                return;
-            }
-
-            let isItValid = true
-            for (const [key, value] of Object.entries(newCandidateData)) {
-                const validateKey: string = key as string
-                const result = ValidationForms.validate(validateKey, String(value));
-
-                if(!result){
-                    alert(ValidationForms.validationFailMessageCandidate(validateKey))
-                    isItValid = false
-                }
-            }
+            let isItValid: boolean = CandidateValidation.checkRegistrationData(newCandidateData)
             if (!isItValid) return
 
             let candidatesWithSameEmail = dbManager.candidates?.filter(candidate =>

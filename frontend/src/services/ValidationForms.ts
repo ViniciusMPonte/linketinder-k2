@@ -1,3 +1,5 @@
+import {CandidateConfig} from "../entities/Candidate";
+
 const validSkills: string[] = [
     "TypeScript",
     "JavaScript",
@@ -147,6 +149,71 @@ export default class ValidationForms {
             case "skills": return `Habilidades inválidas. Opções disponíveis: ${validSkills.join(', ')}`
             default: return ""
         }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    validateCandidateData(candidateData: CandidateConfig): boolean {
+        if (this.hasEmptyFields(candidateData)) {
+            this.showValidationError("Preencha todos os campos obrigatórios!");
+            return false;
+        }
+
+        const validationErrors = this.getValidationErrors(candidateData);
+        if (validationErrors.length > 0) {
+            this.showValidationErrors(validationErrors);
+            return false;
+        }
+
+        return true;
+    }
+
+// --- Métodos Auxiliares (encapsulam lógicas específicas) ---
+
+    private hasEmptyFields(data: CandidateConfig): boolean {
+        return Object.values(data).some(value =>
+            this.isEmptyValue(value)
+        );
+    }
+
+    private isEmptyValue(value: any): boolean {
+        if (Array.isArray(value)) return value.length === 0;
+        if (typeof value === "number") return value === 0;
+        return String(value).trim() === "";
+    }
+
+    private getValidationErrors(data: CandidateConfig): string[] {
+        return Object.entries(data).reduce((errors, [key, value]) => {
+            const errorMessage = this.validateField(key, String(value));
+            if (errorMessage) errors.push(errorMessage);
+            return errors;
+        }, [] as string[]);
+    }
+
+    private validateField(key: string, value: string): string | null {
+        const isValid = ValidationForms.validate(key, value);
+        return isValid ? null : ValidationForms.validationFailMessageCandidate(key);
+    }
+
+    private showValidationErrors(errors: string[]): void {
+        const combinedErrors = errors.join("\n");
+        this.showValidationError(combinedErrors);
+    }
+
+    private showValidationError(message: string): void {
+        alert(message); // Ideal: substituir por sistema de notificação controlado
     }
 
 }
