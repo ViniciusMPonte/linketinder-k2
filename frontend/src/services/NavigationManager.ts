@@ -1,22 +1,31 @@
 import {Candidate, CandidateConfig} from "../entities/Candidate"
 import {Enterprise, EnterpriseConfig} from "../entities/Enterprise"
 import {Employment, EmploymentConfig} from "../entities/Employment"
-import ValidationForms from "./ValidationForms";
+import ValidationForms from "./ValidationForms"
 
 import DatabaseManager from "./DatabaseManager"
 
 const dbManager = new DatabaseManager()
-import LoginManager from "./LoginManager";
+import LoginManager from "./LoginManager"
 
 const loginManager = new LoginManager()
 
-import Chart from "../components/Chart";
-import Card from "../components/Card";
-import {ProfileEnterprise, ProfileCandidate} from "../components/Profile";
-import Nav from "../components/Nav";
-import CandidateValidation from "./validation/CandidateValidation";
-import DatabaseValidation from "./validation/DatabaseValidation";
-import PublicPages from "../view/PublicPages";
+import Chart from "../components/Chart"
+import Card from "../components/Card"
+import {ProfileEnterprise, ProfileCandidate} from "../components/Profile"
+import Nav from "../components/Nav"
+import CandidateValidation from "./validation/CandidateValidation"
+import DatabaseValidation from "./validation/DatabaseValidation"
+import PublicPages from "../view/PublicPages"
+import DOMQuery from "../view/DOMQuery"
+
+const publicPages = new PublicPages({
+    dbManager: new DatabaseManager(),
+    domQuery: new DOMQuery(),
+    candidateValidation: new CandidateValidation(),
+    dbValidation: new DatabaseValidation(),
+    createCandidate: data => new Candidate(data)
+})
 
 const nav = new Nav()
 
@@ -27,55 +36,55 @@ export default class NavigationManager {
         this.insertNav()
         this.activeNavListener()
 
-        const path = window.location.pathname;
+        const path = window.location.pathname
         switch (path) {
             // case '/':
             //     this.redirectIfLogged()
             //     PublicPages.activeCandidateCreateFormListener()
             //     break;
-            case '/':
-                if (!this.redirectIfLogged()) this.activeCandidateCreateFormListener()
-                break;
-            case '/candidate/register-candidate.html':
-                if (!this.redirectIfLogged()) PublicPages.activeCandidateCreateFormListener()
-                break;
-            case '/enterprise/register-enterprise.html':
+            case "/":
+                if (!this.redirectIfLogged()) publicPages.activeCandidateCreateFormListener()
+                break
+            case "/candidate/register-candidate.html":
+                if (!this.redirectIfLogged()) publicPages.activeCandidateCreateFormListener()
+                break
+            case "/enterprise/register-enterprise.html":
                 if (!this.redirectIfLogged()) this.activeEnterpriseCreateFormListener()
-                break;
-            case '/enterprise/register-employment.html':
-                if (!this.redirectIfNotLogged('enterprise')) this.activeEmploymentCreateFormListener()
-                break;
-            case '/candidate/login-candidate.html':
+                break
+            case "/enterprise/register-employment.html":
+                if (!this.redirectIfNotLogged("enterprise")) this.activeEmploymentCreateFormListener()
+                break
+            case "/candidate/login-candidate.html":
                 if (!this.redirectIfLogged()) this.activeCandidateLoginFormListener()
-                break;
-            case '/enterprise/login-enterprise.html':
+                break
+            case "/enterprise/login-enterprise.html":
                 if (!this.redirectIfLogged()) this.activeEnterpriseLoginFormListener()
-                break;
-            case '/enterprise/candidates-list.html':
-                if (!this.redirectIfNotLogged('enterprise')) this.buildEnterpriseCandidatesList()
-                break;
-            case '/enterprise/profile.html':
-                if (!this.redirectIfNotLogged('enterprise')) this.buildEnterpriseProfile()
-                break;
-            case '/candidate/profile.html':
-                if (!this.redirectIfNotLogged('candidate')) this.buildCandidateProfile()
-                break;
-            case '/enterprise/my-employments.html':
-                if (!this.redirectIfNotLogged('enterprise')) this.buildEnterpriseMyEmploymentsList()
-                break;
-            case '/candidate/employments-list.html':
-                if (!this.redirectIfNotLogged('candidate')) this.buildCandidateEmploymentsList()
-                break;
+                break
+            case "/enterprise/candidates-list.html":
+                if (!this.redirectIfNotLogged("enterprise")) this.buildEnterpriseCandidatesList()
+                break
+            case "/enterprise/profile.html":
+                if (!this.redirectIfNotLogged("enterprise")) this.buildEnterpriseProfile()
+                break
+            case "/candidate/profile.html":
+                if (!this.redirectIfNotLogged("candidate")) this.buildCandidateProfile()
+                break
+            case "/enterprise/my-employments.html":
+                if (!this.redirectIfNotLogged("enterprise")) this.buildEnterpriseMyEmploymentsList()
+                break
+            case "/candidate/employments-list.html":
+                if (!this.redirectIfNotLogged("candidate")) this.buildCandidateEmploymentsList()
+                break
             default:
-                console.log('Rota não encontrada: Página 404');
-                break;
+                console.log("Rota não encontrada: Página 404")
+                break
         }
     }
 
     insertNav() {
-        const body = document.querySelector('body');
+        const body = document.querySelector("body")
         if (!body) return
-        body.insertAdjacentHTML('afterbegin', nav.get());
+        body.insertAdjacentHTML("afterbegin", nav.get())
     }
 
     innerHTMLInject(tag: HTMLElement | null, output: string): void {
@@ -85,96 +94,96 @@ export default class NavigationManager {
     }
 
     activeNavListener() {
-        const logOutBtn = document.querySelector('#logout-btn')
+        const logOutBtn = document.querySelector("#logout-btn")
         if (!logOutBtn) return
 
-        logOutBtn.addEventListener('click', (event) => {
+        logOutBtn.addEventListener("click", (event) => {
             if (loginManager.loggedIn) loginManager.logOut()
         })
 
-        const resetDBBtn = document.querySelector('#reset-db-btn')
+        const resetDBBtn = document.querySelector("#reset-db-btn")
         if (!resetDBBtn) return
 
-        resetDBBtn.addEventListener('click', (event) => {
+        resetDBBtn.addEventListener("click", (event) => {
             if (loginManager.loggedIn) loginManager.logOut()
             dbManager.reset()
         })
     }
 
-    activeCandidateCreateFormListener() {
-
-        const form = document.querySelector('.card-body')
-        if (!form) return
-        const formBtn = document.querySelector('.card-body #create-candidate-btn')
-        if (!formBtn) return
-
-        formBtn.addEventListener('click', (event) => {
-            event.preventDefault()
-            const newCandidateData: CandidateConfig = {
-                name: (document.getElementById('candidate-name-input') as HTMLInputElement)?.value || '',
-                email: (document.getElementById('candidate-email-input') as HTMLInputElement)?.value || '',
-                password: (document.getElementById('candidate-password-input') as HTMLInputElement)?.value || '',
-                country: (document.getElementById('candidate-country-input') as HTMLInputElement)?.value || '',
-                state: (document.getElementById('candidate-state-input') as HTMLInputElement)?.value || '',
-                cep: (document.getElementById('candidate-cep-input') as HTMLInputElement)?.value || '',
-                skills: (document.getElementById('candidate-skills-input') as HTMLInputElement)?.value?.split(', ') || [],
-                description: (document.getElementById('candidate-description-input') as HTMLInputElement)?.value || '',
-                cpf: (document.getElementById('candidate-cpf-input') as HTMLInputElement)?.value || '',
-                age: Number((document.getElementById('candidate-age-input') as HTMLInputElement)?.value) || 0,
-            }
-
-            let isItValid: boolean = CandidateValidation.checkRegistrationData(newCandidateData)
-            if (!isItValid) return
-
-            // let candidatesWithSameEmail = dbManager.candidates?.filter(candidate =>
-            //     candidate.email == newCandidateData.email
-            // )
-
-            let isDuplicated = DatabaseValidation.checkDuplicateCandidateEmail(dbManager.candidates, newCandidateData)
-            if (isDuplicated) return
-
-
-
-            dbManager.addCandidate(new Candidate(newCandidateData))
-            alert('Cadastro realizado com sucesso!')
-            window.location.href = '/candidate/login-candidate.html';
-
-
-        })
-
-    }
+    // activeCandidateCreateFormListener() {
+    //
+    //     const form = document.querySelector('.card-body')
+    //     if (!form) return
+    //     const formBtn = document.querySelector('.card-body #create-candidate-btn')
+    //     if (!formBtn) return
+    //
+    //     formBtn.addEventListener('click', (event) => {
+    //         event.preventDefault()
+    //         const newCandidateData: CandidateConfig = {
+    //             name: (document.getElementById('candidate-name-input') as HTMLInputElement)?.value || '',
+    //             email: (document.getElementById('candidate-email-input') as HTMLInputElement)?.value || '',
+    //             password: (document.getElementById('candidate-password-input') as HTMLInputElement)?.value || '',
+    //             country: (document.getElementById('candidate-country-input') as HTMLInputElement)?.value || '',
+    //             state: (document.getElementById('candidate-state-input') as HTMLInputElement)?.value || '',
+    //             cep: (document.getElementById('candidate-cep-input') as HTMLInputElement)?.value || '',
+    //             skills: (document.getElementById('candidate-skills-input') as HTMLInputElement)?.value?.split(', ') || [],
+    //             description: (document.getElementById('candidate-description-input') as HTMLInputElement)?.value || '',
+    //             cpf: (document.getElementById('candidate-cpf-input') as HTMLInputElement)?.value || '',
+    //             age: Number((document.getElementById('candidate-age-input') as HTMLInputElement)?.value) || 0,
+    //         }
+    //
+    //         let isItValid: boolean = CandidateValidation.checkRegistrationData(newCandidateData)
+    //         if (!isItValid) return
+    //
+    //         // let candidatesWithSameEmail = dbManager.candidates?.filter(candidate =>
+    //         //     candidate.email == newCandidateData.email
+    //         // )
+    //
+    //         let isDuplicated = DatabaseValidation.checkDuplicateCandidateEmail(dbManager.candidates, newCandidateData)
+    //         if (isDuplicated) return
+    //
+    //
+    //
+    //         dbManager.addCandidate(new Candidate(newCandidateData))
+    //         alert('Cadastro realizado com sucesso!')
+    //         window.location.href = '/candidate/login-candidate.html';
+    //
+    //
+    //     })
+    //
+    // }
 
     activeEnterpriseCreateFormListener() {
 
-        const form = document.querySelector('.card-body')
+        const form = document.querySelector(".card-body")
         if (!form) return
-        const formBtn = document.querySelector('.card-body #create-enterprise-btn')
+        const formBtn = document.querySelector(".card-body #create-enterprise-btn")
         if (!formBtn) return
 
-        formBtn.addEventListener('click', (event) => {
+        formBtn.addEventListener("click", (event) => {
             event.preventDefault()
             const newEnterpriseData: EnterpriseConfig = {
-                name: (document.getElementById('enterprise-name-input') as HTMLInputElement)?.value || '',
-                email: (document.getElementById('enterprise-email-input') as HTMLInputElement)?.value || '',
-                password: (document.getElementById('enterprise-password-input') as HTMLInputElement)?.value || '',
-                country: (document.getElementById('enterprise-country-input') as HTMLInputElement)?.value || '',
-                state: (document.getElementById('enterprise-state-input') as HTMLInputElement)?.value || '',
-                cep: (document.getElementById('enterprise-cep-input') as HTMLInputElement)?.value || '',
-                description: (document.getElementById('enterprise-description-input') as HTMLInputElement)?.value || '',
-                cnpj: (document.getElementById('enterprise-cnpj-input') as HTMLInputElement)?.value || '',
+                name: (document.getElementById("enterprise-name-input") as HTMLInputElement)?.value || "",
+                email: (document.getElementById("enterprise-email-input") as HTMLInputElement)?.value || "",
+                password: (document.getElementById("enterprise-password-input") as HTMLInputElement)?.value || "",
+                country: (document.getElementById("enterprise-country-input") as HTMLInputElement)?.value || "",
+                state: (document.getElementById("enterprise-state-input") as HTMLInputElement)?.value || "",
+                cep: (document.getElementById("enterprise-cep-input") as HTMLInputElement)?.value || "",
+                description: (document.getElementById("enterprise-description-input") as HTMLInputElement)?.value || "",
+                cnpj: (document.getElementById("enterprise-cnpj-input") as HTMLInputElement)?.value || "",
             }
 
-            const isEmptyField = Object.values(newEnterpriseData).some(value => value.toString().trim() === '');
+            const isEmptyField = Object.values(newEnterpriseData).some(value => value.toString().trim() === "")
 
             if (isEmptyField) {
-                alert('Por favor, preencha todos os campos obrigatórios!');
-                return;
+                alert("Por favor, preencha todos os campos obrigatórios!")
+                return
             }
 
             let isItValid = true
             for (const [key, value] of Object.entries(newEnterpriseData)) {
                 const validateKey: string = key as string
-                const result = ValidationForms.validate(validateKey, String(value));
+                const result = ValidationForms.validate(validateKey, String(value))
 
                 if (!result) {
                     alert(ValidationForms.validationFailMessageEnterprise(validateKey))
@@ -189,10 +198,10 @@ export default class NavigationManager {
 
             if (enterprisesWithSameEmail != undefined && enterprisesWithSameEmail.length == 0) {
                 dbManager.addEnterprise(new Enterprise(newEnterpriseData))
-                alert('Cadastro realizado com sucesso!')
-                window.location.href = '/enterprise/login-enterprise.html';
+                alert("Cadastro realizado com sucesso!")
+                window.location.href = "/enterprise/login-enterprise.html"
             } else if (enterprisesWithSameEmail != undefined && enterprisesWithSameEmail.length > 0) {
-                alert('Já existe um usuário com mesmo e-mail.')
+                alert("Já existe um usuário com mesmo e-mail.")
             }
         })
 
@@ -201,33 +210,33 @@ export default class NavigationManager {
     activeEmploymentCreateFormListener() {
 
         if (!loginManager.isEnterprise) {
-            alert('`Precisa estar logado como empresa para acessar essa página`')
-            window.location.href = '/enterprise/login-enterprise.html';
+            alert("`Precisa estar logado como empresa para acessar essa página`")
+            window.location.href = "/enterprise/login-enterprise.html"
         }
 
-        const form = document.querySelector('.card-body')
+        const form = document.querySelector(".card-body")
         if (!form) return
-        const formBtn = document.querySelector('.card-body #create-employment-btn')
+        const formBtn = document.querySelector(".card-body #create-employment-btn")
         if (!formBtn) return
 
-        formBtn.addEventListener('click', (event) => {
+        formBtn.addEventListener("click", (event) => {
             event.preventDefault()
 
             let enterpriseLogged: Enterprise = loginManager.loggedIn as Enterprise
             let enterpriseId: number = enterpriseLogged.id
 
             const newEmploymentData: EmploymentConfig = {
-                name: (document.getElementById('employment-name-input') as HTMLInputElement)?.value || '',
-                description: (document.getElementById('employment-description-input') as HTMLInputElement)?.value || '',
-                skills: (document.getElementById('employment-skills-input') as HTMLInputElement)?.value?.split(', ') || [],
+                name: (document.getElementById("employment-name-input") as HTMLInputElement)?.value || "",
+                description: (document.getElementById("employment-description-input") as HTMLInputElement)?.value || "",
+                skills: (document.getElementById("employment-skills-input") as HTMLInputElement)?.value?.split(", ") || [],
                 enterpriseId: enterpriseId
             }
 
             let isItValid = true
             for (const [key, value] of Object.entries(newEmploymentData)) {
                 const validateKey: string = key as string
-                if (validateKey == 'enterpriseId') continue
-                const result = ValidationForms.validate(validateKey, String(value));
+                if (validateKey == "enterpriseId") continue
+                const result = ValidationForms.validate(validateKey, String(value))
 
                 if (!result) {
                     alert(ValidationForms.validationFailMessageEmployment(validateKey))
@@ -237,30 +246,30 @@ export default class NavigationManager {
             if (!isItValid) return
 
             dbManager.addEmployment(new Employment(newEmploymentData))
-            alert('Cadastro realizado com sucesso!')
-            window.location.href = '/enterprise/candidates-list.html';
+            alert("Cadastro realizado com sucesso!")
+            window.location.href = "/enterprise/candidates-list.html"
         })
 
     }
 
     activeCandidateLoginFormListener() {
 
-        const form = document.querySelector('.card-body')
+        const form = document.querySelector(".card-body")
         if (!form) return
-        const formBtn = document.querySelector('.card-body #login-candidate-btn')
+        const formBtn = document.querySelector(".card-body #login-candidate-btn")
         if (!formBtn) return
 
-        formBtn.addEventListener('click', (event) => {
+        formBtn.addEventListener("click", (event) => {
             event.preventDefault()
             const loginCandidateData: CandidateConfig = {
-                email: (document.getElementById('candidate-email-input') as HTMLInputElement)?.value || '',
-                password: (document.getElementById('candidate-password-input') as HTMLInputElement)?.value || '',
+                email: (document.getElementById("candidate-email-input") as HTMLInputElement)?.value || "",
+                password: (document.getElementById("candidate-password-input") as HTMLInputElement)?.value || "",
             }
 
             let isItValid = true
             for (const [key, value] of Object.entries(loginCandidateData)) {
                 const validateKey: string = key as string
-                const result = ValidationForms.validate(validateKey, String(value));
+                const result = ValidationForms.validate(validateKey, String(value))
 
                 if (!result) {
                     alert(ValidationForms.validationFailMessageCandidate(validateKey))
@@ -274,34 +283,34 @@ export default class NavigationManager {
             )
 
             if (candidatesFiltered == undefined || candidatesFiltered.length == 0) {
-                alert('Usuário não encontrado')
+                alert("Usuário não encontrado")
             } else if (candidatesFiltered.length > 1) {
-                alert('Usuário repetido')
+                alert("Usuário repetido")
             } else if (candidatesFiltered.length == 1) {
                 loginManager.logIn(candidatesFiltered[0])
-                window.location.href = '/candidate/employments-list.html';
+                window.location.href = "/candidate/employments-list.html"
             }
         })
     }
 
     activeEnterpriseLoginFormListener() {
 
-        const form = document.querySelector('.card-body')
+        const form = document.querySelector(".card-body")
         if (!form) return
-        const formBtn = document.querySelector('.card-body #login-enterprise-btn')
+        const formBtn = document.querySelector(".card-body #login-enterprise-btn")
         if (!formBtn) return
 
-        formBtn.addEventListener('click', (event) => {
+        formBtn.addEventListener("click", (event) => {
             event.preventDefault()
             const loginEnterpriseData: EnterpriseConfig = {
-                email: (document.getElementById('enterprise-email-input') as HTMLInputElement)?.value || '',
-                password: (document.getElementById('enterprise-password-input') as HTMLInputElement)?.value || '',
+                email: (document.getElementById("enterprise-email-input") as HTMLInputElement)?.value || "",
+                password: (document.getElementById("enterprise-password-input") as HTMLInputElement)?.value || "",
             }
 
             let isItValid = true
             for (const [key, value] of Object.entries(loginEnterpriseData)) {
                 const validateKey: string = key as string
-                const result = ValidationForms.validate(validateKey, String(value));
+                const result = ValidationForms.validate(validateKey, String(value))
 
                 if (!result) {
                     alert(ValidationForms.validationFailMessageEnterprise(validateKey))
@@ -315,31 +324,31 @@ export default class NavigationManager {
             )
 
             if (enterprisesFiltered == undefined || enterprisesFiltered.length == 0) {
-                alert('Usuário não encontrado')
+                alert("Usuário não encontrado")
             } else if (enterprisesFiltered.length > 1) {
-                alert('Usuário repetido')
+                alert("Usuário repetido")
             } else if (enterprisesFiltered.length == 1) {
                 loginManager.logIn(enterprisesFiltered[0])
             }
-            if (loginManager.isEnterprise) window.location.href = '/enterprise/candidates-list.html';
+            if (loginManager.isEnterprise) window.location.href = "/enterprise/candidates-list.html"
         })
     }
 
     buildEnterpriseCandidatesList() {
-        let chartTag = document.getElementById('myChart') as HTMLCanvasElement
+        let chartTag = document.getElementById("myChart") as HTMLCanvasElement
         if (chartTag) {
             if (dbManager.candidates == null) return
             let skillCounts = Chart.countCandidateSkills(dbManager.candidates)
             let keys = Object.keys(skillCounts)
             let values = Object.values(skillCounts)
-            Chart.build(chartTag, keys, values);
+            Chart.build(chartTag, keys, values)
         }
 
         if (dbManager.candidates == null) return
         dbManager.candidates.forEach(candidate => {
-                if (true) candidate.name = '<span class="blur">Hidden Name<\span>'
-                const cardComponent = new Card(candidate.params, 'candidate');
-                this.innerHTMLInject(document.querySelector('#candidates-list'), cardComponent.getCard());
+                if (true) candidate.name = "<span class=\"blur\">Hidden Name<\span>"
+                const cardComponent = new Card(candidate.params, "candidate")
+                this.innerHTMLInject(document.querySelector("#candidates-list"), cardComponent.getCard())
             }
         )
     }
@@ -347,9 +356,9 @@ export default class NavigationManager {
     buildCandidateEmploymentsList() {
         if (dbManager.employments == null) return
         dbManager.employments.forEach(employment => {
-                if (true) employment.name = '<span class="blur">Hidden Name<\span>'
-                const cardComponent = new Card(employment.params, 'employment', employment.enterpriseId);
-                this.innerHTMLInject(document.querySelector('#employments-list'), cardComponent.getCard());
+                if (true) employment.name = "<span class=\"blur\">Hidden Name<\span>"
+                const cardComponent = new Card(employment.params, "employment", employment.enterpriseId)
+                this.innerHTMLInject(document.querySelector("#employments-list"), cardComponent.getCard())
             }
         )
     }
@@ -357,7 +366,7 @@ export default class NavigationManager {
     buildEnterpriseMyEmploymentsList() {
 
         if (!loginManager.isEnterprise) {
-            window.location.href = '/enterprise/register-enterprise.html';
+            window.location.href = "/enterprise/register-enterprise.html"
             return
         }
 
@@ -370,43 +379,43 @@ export default class NavigationManager {
         dbManager.employments.forEach(employment => {
             if (employment.enterpriseId == enterpriseId) {
                 isEmptyEmployment = false
-                const cardComponent = new Card(employment.params, 'employment', employment.enterpriseId);
-                this.innerHTMLInject(document.querySelector('#employments-list'), cardComponent.getCard(false));
+                const cardComponent = new Card(employment.params, "employment", employment.enterpriseId)
+                this.innerHTMLInject(document.querySelector("#employments-list"), cardComponent.getCard(false))
             }
         })
         if (isEmptyEmployment) {
-            this.innerHTMLInject(document.querySelector('#employments-list'), '<h1>Nenhuma vaga encontrada, crie uma vaga antes!</h1>');
+            this.innerHTMLInject(document.querySelector("#employments-list"), "<h1>Nenhuma vaga encontrada, crie uma vaga antes!</h1>")
         }
     }
 
     buildEnterpriseProfile() {
         if (!loginManager.isEnterprise) {
-            window.location.href = '/enterprise/register-enterprise.html';
+            window.location.href = "/enterprise/register-enterprise.html"
             return
         }
 
         let enterpriseLogged: Enterprise = loginManager.loggedIn as Enterprise
         let profileEnterprise = new ProfileEnterprise(enterpriseLogged)
-        this.innerHTMLInject(document.querySelector('#enterprise-profile'), profileEnterprise.get());
+        this.innerHTMLInject(document.querySelector("#enterprise-profile"), profileEnterprise.get())
     }
 
     buildCandidateProfile() {
         if (!loginManager.isCandidate) {
-            window.location.href = '/candidate/register-candidate.html';
+            window.location.href = "/candidate/register-candidate.html"
             return
         }
 
         let candidateLogged: Candidate = loginManager.loggedIn as Candidate
         let profileCandidate = new ProfileCandidate(candidateLogged)
-        this.innerHTMLInject(document.querySelector('#candidate-profile'), profileCandidate.get());
+        this.innerHTMLInject(document.querySelector("#candidate-profile"), profileCandidate.get())
     }
 
     redirectIfLogged(): boolean {
         let ifLogged = false
         if (loginManager.loggedIn) {
             ifLogged = true
-            if (loginManager.isCandidate) window.location.href = '/candidate/employments-list.html';
-            if (loginManager.isEnterprise) window.location.href = '/enterprise/candidates-list.html';
+            if (loginManager.isCandidate) window.location.href = "/candidate/employments-list.html"
+            if (loginManager.isEnterprise) window.location.href = "/enterprise/candidates-list.html"
         }
         return ifLogged
     }
@@ -414,11 +423,11 @@ export default class NavigationManager {
     redirectIfNotLogged(user: string): boolean {
         let ifLogged = false
 
-        if (user == 'candidate' && loginManager.isCandidate) return ifLogged
-        if (user == 'enterprise' && loginManager.isEnterprise) return ifLogged
+        if (user == "candidate" && loginManager.isCandidate) return ifLogged
+        if (user == "enterprise" && loginManager.isEnterprise) return ifLogged
 
         ifLogged = true
-        window.location.href = '/';
+        window.location.href = "/"
         return ifLogged
     }
 }

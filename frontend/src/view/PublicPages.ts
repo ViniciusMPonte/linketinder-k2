@@ -1,68 +1,74 @@
 import {Candidate, CandidateConfig} from "../entities/Candidate"
-import DatabaseManager from "../services/DatabaseManager"
 import CandidateValidation from "../services/validation/CandidateValidation"
 import DatabaseValidation from "../services/validation/DatabaseValidation"
+import DatabaseManager from "../services/DatabaseManager"
+import DOMQuery from "./DOMQuery"
 
-const dbManager = new DatabaseManager()
+interface PublicPagesDependencies {
+    dbManager: DatabaseManager
+    domQuery: DOMQuery
+    candidateValidation: CandidateValidation
+    dbValidation: DatabaseValidation
+    createCandidate: (data: CandidateConfig) => Candidate
+}
 
 export default class PublicPages {
+    private dbManager: DatabaseManager
+    private domQuery: DOMQuery
+    private dbValidation: DatabaseValidation
+    private candidateValidation: CandidateValidation
+    private readonly createCandidate: (data: CandidateConfig) => Candidate
 
-    static activeCandidateCreateFormListener() {
-        const createButton = PublicPages.getCreateButton()
+    constructor({
+                    dbManager,
+                    domQuery,
+                    candidateValidation,
+                    dbValidation,
+                    createCandidate
+                }: PublicPagesDependencies) {
+        this.dbManager = dbManager
+        this.domQuery = domQuery
+        this.dbValidation = dbValidation
+        this.candidateValidation = candidateValidation
+        this.createCandidate = createCandidate
+    }
+
+    activeCandidateCreateFormListener() {
+        const createButton = this.domQuery.getCreateButton()
         if (!createButton) return
-        createButton.addEventListener('click', PublicPages.handleCandidateCreation.bind(this))
+        createButton.addEventListener("click", this.handleCandidateCreation.bind(this))
     }
 
-    private static getCreateButton(){
-        return document.querySelector('.card-body #create-candidate-btn')
-    }
-
-    private static handleCandidateCreation(event: Event) {
+    private handleCandidateCreation(event: Event) {
         event.preventDefault()
 
         try {
-            const candidateData = PublicPages.getInputForNewCandidate()
+            const candidateData = this.domQuery.getInputForNewCandidate()
 
-            if (!PublicPages.isValidCandidate(candidateData)) {
+            if (!this.isValidCandidate(candidateData)) {
                 return
             }
 
-            dbManager.addCandidate(new Candidate(candidateData))
-            PublicPages.notifySuccessAndRedirect()
+            this.dbManager.addCandidate(this.createCandidate(candidateData))
+
+            this.notifySuccessAndRedirect()
         } catch (error) {
             console.log(error)
         }
     }
 
-    private static getInputForNewCandidate(){
-        const newCandidateData: CandidateConfig = {
-            name: (document.getElementById('candidate-name-input') as HTMLInputElement)?.value || '',
-            email: (document.getElementById('candidate-email-input') as HTMLInputElement)?.value || '',
-            password: (document.getElementById('candidate-password-input') as HTMLInputElement)?.value || '',
-            country: (document.getElementById('candidate-country-input') as HTMLInputElement)?.value || '',
-            state: (document.getElementById('candidate-state-input') as HTMLInputElement)?.value || '',
-            cep: (document.getElementById('candidate-cep-input') as HTMLInputElement)?.value || '',
-            skills: (document.getElementById('candidate-skills-input') as HTMLInputElement)?.value?.split(', ') || [],
-            description: (document.getElementById('candidate-description-input') as HTMLInputElement)?.value || '',
-            cpf: (document.getElementById('candidate-cpf-input') as HTMLInputElement)?.value || '',
-            age: Number((document.getElementById('candidate-age-input') as HTMLInputElement)?.value) || 0,
-        }
-        return newCandidateData
-    }
-
-    private static isValidCandidate(data: CandidateConfig): boolean {
-        const isValid = CandidateValidation.checkRegistrationData(data)
+    isValidCandidate(data: CandidateConfig): boolean {
+        const isValid = this.candidateValidation.checkRegistrationData(data)
         if (!isValid) return false
 
-        const isDuplicatedEmail = DatabaseValidation.checkDuplicateCandidateEmail(dbManager.candidates, data)
+        const isDuplicatedEmail = this.dbValidation.checkDuplicateCandidateEmail(this.dbManager.candidates, data)
         if (isDuplicatedEmail) return false
 
         return true
     }
 
-    private static notifySuccessAndRedirect() {
-        alert('Cadastro realizado com sucesso!')
-        window.location.href = '/candidate/login-candidate.html'
+    private notifySuccessAndRedirect() {
+        alert("Cadastro realizado com sucesso!")
+        window.location.href = "/candidate/login-candidate.html"
     }
-
 }
