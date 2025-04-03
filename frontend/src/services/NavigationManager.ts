@@ -18,13 +18,18 @@ import CandidateValidation from "./validation/CandidateValidation"
 import DatabaseValidation from "./validation/DatabaseValidation"
 import PublicPages from "../view/PublicPages"
 import DOMQuery from "../view/DOMQuery"
+import Redirect from "../view/Redirect"
+import EnterpriseValidation from "./validation/EnterpriseValidation"
 
 const publicPages = new PublicPages({
     dbManager: new DatabaseManager(),
     domQuery: new DOMQuery(),
+    redirect: new Redirect(),
     candidateValidation: new CandidateValidation(),
+    enterpriseValidation: new EnterpriseValidation(),
     dbValidation: new DatabaseValidation(),
-    createCandidate: data => new Candidate(data)
+    createCandidate: data => new Candidate(data),
+    createEnterprise: data => new Enterprise(data)
 })
 
 const nav = new Nav()
@@ -49,7 +54,7 @@ export default class NavigationManager {
                 if (!this.redirectIfLogged()) publicPages.activeCandidateCreateFormListener()
                 break
             case "/enterprise/register-enterprise.html":
-                if (!this.redirectIfLogged()) this.activeEnterpriseCreateFormListener()
+                if (!this.redirectIfLogged()) publicPages.activeEnterpriseCreateFormListener()
                 break
             case "/enterprise/register-employment.html":
                 if (!this.redirectIfNotLogged("enterprise")) this.activeEmploymentCreateFormListener()
@@ -162,6 +167,62 @@ export default class NavigationManager {
 
         formBtn.addEventListener("click", (event) => {
             event.preventDefault()
+            const newEnterpriseData: EnterpriseConfig = {
+                name: (document.getElementById("enterprise-name-input") as HTMLInputElement)?.value || "",
+                email: (document.getElementById("enterprise-email-input") as HTMLInputElement)?.value || "",
+                password: (document.getElementById("enterprise-password-input") as HTMLInputElement)?.value || "",
+                country: (document.getElementById("enterprise-country-input") as HTMLInputElement)?.value || "",
+                state: (document.getElementById("enterprise-state-input") as HTMLInputElement)?.value || "",
+                cep: (document.getElementById("enterprise-cep-input") as HTMLInputElement)?.value || "",
+                description: (document.getElementById("enterprise-description-input") as HTMLInputElement)?.value || "",
+                cnpj: (document.getElementById("enterprise-cnpj-input") as HTMLInputElement)?.value || "",
+            }
+
+            const isEmptyField = Object.values(newEnterpriseData).some(value => value.toString().trim() === "")
+
+            if (isEmptyField) {
+                alert("Por favor, preencha todos os campos obrigatórios!")
+                return
+            }
+
+            let isItValid = true
+            for (const [key, value] of Object.entries(newEnterpriseData)) {
+                const validateKey: string = key as string
+                const result = ValidationForms.validate(validateKey, String(value))
+
+                if (!result) {
+                    alert(ValidationForms.validationFailMessageEnterprise(validateKey))
+                    isItValid = false
+                }
+            }
+            if (!isItValid) return
+
+            let enterprisesWithSameEmail = dbManager.enterprises?.filter(enterprise =>
+                enterprise.email == newEnterpriseData.email
+            )
+
+            if (enterprisesWithSameEmail != undefined && enterprisesWithSameEmail.length == 0) {
+                dbManager.addEnterprise(new Enterprise(newEnterpriseData))
+                alert("Cadastro realizado com sucesso!")
+                window.location.href = "/enterprise/login-enterprise.html"
+            } else if (enterprisesWithSameEmail != undefined && enterprisesWithSameEmail.length > 0) {
+                alert("Já existe um usuário com mesmo e-mail.")
+            }
+        })
+
+    }
+
+    activeEnterpriseCreateFormListenerCOPIA() {
+
+        const form = document.querySelector(".card-body")
+        if (!form) return
+        const formBtn = document.querySelector(".card-body #create-enterprise-btn")
+        if (!formBtn) return
+
+        formBtn.addEventListener("click", (event) => {
+            event.preventDefault()
+
+            // removido
             const newEnterpriseData: EnterpriseConfig = {
                 name: (document.getElementById("enterprise-name-input") as HTMLInputElement)?.value || "",
                 email: (document.getElementById("enterprise-email-input") as HTMLInputElement)?.value || "",
