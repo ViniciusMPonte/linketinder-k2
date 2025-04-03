@@ -15,6 +15,8 @@ import Card from "../components/Card";
 import {ProfileEnterprise, ProfileCandidate} from "../components/Profile";
 import Nav from "../components/Nav";
 import CandidateValidation from "./validation/CandidateValidation";
+import DatabaseValidation from "./validation/DatabaseValidation";
+import PublicPages from "../view/PublicPages";
 
 const nav = new Nav()
 
@@ -27,15 +29,15 @@ export default class NavigationManager {
 
         const path = window.location.pathname;
         switch (path) {
-            case '/':
-                this.redirectIfLogged()
-                this.activeCandidateCreateFormListener()
-                break;
             // case '/':
-            //     if (!this.redirectIfLogged()) this.activeCandidateCreateFormListener()
+            //     this.redirectIfLogged()
+            //     PublicPages.activeCandidateCreateFormListener()
             //     break;
-            case '/candidate/register-candidate.html':
+            case '/':
                 if (!this.redirectIfLogged()) this.activeCandidateCreateFormListener()
+                break;
+            case '/candidate/register-candidate.html':
+                if (!this.redirectIfLogged()) PublicPages.activeCandidateCreateFormListener()
                 break;
             case '/enterprise/register-enterprise.html':
                 if (!this.redirectIfLogged()) this.activeEnterpriseCreateFormListener()
@@ -124,17 +126,19 @@ export default class NavigationManager {
             let isItValid: boolean = CandidateValidation.checkRegistrationData(newCandidateData)
             if (!isItValid) return
 
-            let candidatesWithSameEmail = dbManager.candidates?.filter(candidate =>
-                candidate.email == newCandidateData.email
-            )
+            // let candidatesWithSameEmail = dbManager.candidates?.filter(candidate =>
+            //     candidate.email == newCandidateData.email
+            // )
 
-            if (candidatesWithSameEmail != undefined && candidatesWithSameEmail.length == 0) {
-                dbManager.addCandidate(new Candidate(newCandidateData))
-                alert('Cadastro realizado com sucesso!')
-                window.location.href = '/candidate/login-candidate.html';
-            } else if (candidatesWithSameEmail != undefined && candidatesWithSameEmail.length > 0) {
-                alert('Já existe um usuário com mesmo e-mail.')
-            }
+            let isDuplicated = DatabaseValidation.checkDuplicateCandidateEmail(dbManager.candidates, newCandidateData)
+            if (isDuplicated) return
+
+
+
+            dbManager.addCandidate(new Candidate(newCandidateData))
+            alert('Cadastro realizado com sucesso!')
+            window.location.href = '/candidate/login-candidate.html';
+
 
         })
 
@@ -172,7 +176,7 @@ export default class NavigationManager {
                 const validateKey: string = key as string
                 const result = ValidationForms.validate(validateKey, String(value));
 
-                if(!result){
+                if (!result) {
                     alert(ValidationForms.validationFailMessageEnterprise(validateKey))
                     isItValid = false
                 }
@@ -222,10 +226,10 @@ export default class NavigationManager {
             let isItValid = true
             for (const [key, value] of Object.entries(newEmploymentData)) {
                 const validateKey: string = key as string
-                if(validateKey == 'enterpriseId') continue
+                if (validateKey == 'enterpriseId') continue
                 const result = ValidationForms.validate(validateKey, String(value));
 
-                if(!result){
+                if (!result) {
                     alert(ValidationForms.validationFailMessageEmployment(validateKey))
                     isItValid = false
                 }
@@ -258,7 +262,7 @@ export default class NavigationManager {
                 const validateKey: string = key as string
                 const result = ValidationForms.validate(validateKey, String(value));
 
-                if(!result){
+                if (!result) {
                     alert(ValidationForms.validationFailMessageCandidate(validateKey))
                     isItValid = false
                 }
@@ -299,7 +303,7 @@ export default class NavigationManager {
                 const validateKey: string = key as string
                 const result = ValidationForms.validate(validateKey, String(value));
 
-                if(!result){
+                if (!result) {
                     alert(ValidationForms.validationFailMessageEnterprise(validateKey))
                     isItValid = false
                 }
@@ -407,11 +411,11 @@ export default class NavigationManager {
         return ifLogged
     }
 
-    redirectIfNotLogged(user:string): boolean {
+    redirectIfNotLogged(user: string): boolean {
         let ifLogged = false
 
-        if(user == 'candidate' && loginManager.isCandidate) return ifLogged
-        if(user == 'enterprise' && loginManager.isEnterprise) return ifLogged
+        if (user == 'candidate' && loginManager.isCandidate) return ifLogged
+        if (user == 'enterprise' && loginManager.isEnterprise) return ifLogged
 
         ifLogged = true
         window.location.href = '/';
