@@ -162,5 +162,37 @@ export default class PublicPages {
         this.loginManager.logIn(candidate)
     }
 
+    activeEnterpriseLoginFormListener() {
+        const loginButton = this.domQuery.getLoginEnterpriseButton()
+        if (!loginButton) return
+        loginButton.addEventListener("click", this.handleLoginEnterprise.bind(this))
+    }
 
+    handleLoginEnterprise(event: Event) {
+        event.preventDefault()
+
+        try {
+            const input = this.domQuery.getInputForLoginEnterprise()
+            if (!this.isValidLoginEnterprise(input)) return
+            this.loginEnterprise(input)
+            this.redirect.enterpriseCandidatesList()
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    isValidLoginEnterprise(data: EnterpriseConfig): boolean {
+        const isValid = this.enterpriseValidation.checkLoginData(data)
+        if (!isValid) return false
+
+        return true
+    }
+
+    loginEnterprise(input: EnterpriseConfig) {
+
+        let enterprise = this.dbValidation.tryGetEnterprise(input)
+        if (!enterprise) return
+
+        this.loginManager.logIn(enterprise)
+    }
 }

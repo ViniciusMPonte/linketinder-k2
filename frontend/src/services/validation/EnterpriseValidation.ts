@@ -1,5 +1,6 @@
 import FieldsValidation from "./FieldsValidation";
 import {EnterpriseConfig} from "../../entities/Enterprise";
+import {CandidateConfig} from "../../entities/Candidate"
 
 export default class EnterpriseValidation extends FieldsValidation {
 
@@ -8,6 +9,17 @@ export default class EnterpriseValidation extends FieldsValidation {
             this.showValidationError("Preencha todos os campos obrigatórios!");
             return false;
         }
+
+        const validationErrors = this.getValidationErrors(enterpriseData);
+        if (validationErrors.length > 0) {
+            this.showValidationErrors(validationErrors);
+            return false;
+        }
+
+        return true;
+    }
+
+    checkLoginData(enterpriseData: EnterpriseConfig): boolean {
 
         const validationErrors = this.getValidationErrors(enterpriseData);
         if (validationErrors.length > 0) {

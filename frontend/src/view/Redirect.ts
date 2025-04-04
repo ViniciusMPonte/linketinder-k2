@@ -10,4 +10,8 @@ export default class Redirect {
     candidateEmploymentsList() {
         window.location.href = "/candidate/employments-list.html"
     }
+
+    enterpriseCandidatesList() {
+        window.location.href = "/enterprise/candidates-list.html"
+    }
 }

@@ -45,10 +45,22 @@ export default class DOMQuery {
         return document.querySelector(".card-body #login-candidate-btn")
     }
 
+    getLoginEnterpriseButton(){
+        return document.querySelector(".card-body #login-enterprise-btn")
+    }
+
     getInputForLoginCandidate(){
         const loginData: CandidateConfig = {
             email: (document.getElementById("candidate-email-input") as HTMLInputElement)?.value || "",
             password: (document.getElementById("candidate-password-input") as HTMLInputElement)?.value || "",
+        }
+        return loginData
+    }
+
+    getInputForLoginEnterprise(){
+        const loginData: EnterpriseConfig = {
+            email: (document.getElementById("enterprise-email-input") as HTMLInputElement)?.value || "",
+            password: (document.getElementById("enterprise-password-input") as HTMLInputElement)?.value || "",
         }
         return loginData
     }

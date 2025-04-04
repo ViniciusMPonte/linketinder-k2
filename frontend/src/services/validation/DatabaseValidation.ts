@@ -65,4 +65,19 @@ export default class DatabaseValidation {
         }
         return candidatesFiltered[0]
     }
+
+    tryGetEnterprise(input:EnterpriseConfig){
+        let enterprisesFiltered = this.dbManager.enterprises?.filter(enterprise =>
+            enterprise.email == input.email && enterprise.password == input.password
+        )
+
+        if (enterprisesFiltered == undefined || enterprisesFiltered.length == 0) {
+            this.notification.userNotFound()
+            return undefined
+        } else if (enterprisesFiltered.length > 1) {
+            this.notification.repeatedUser()
+            return undefined
+        }
+        return enterprisesFiltered[0]
+    }
 }
