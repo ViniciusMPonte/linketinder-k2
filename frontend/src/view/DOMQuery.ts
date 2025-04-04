@@ -40,4 +40,17 @@ export default class DOMQuery {
         }
         return newEnterpriseData
     }
+
+    getLoginCandidateButton(){
+        return document.querySelector(".card-body #login-candidate-btn")
+    }
+
+    getInputForLoginCandidate(){
+        const loginData: CandidateConfig = {
+            email: (document.getElementById("candidate-email-input") as HTMLInputElement)?.value || "",
+            password: (document.getElementById("candidate-password-input") as HTMLInputElement)?.value || "",
+        }
+        return loginData
+    }
+
 }

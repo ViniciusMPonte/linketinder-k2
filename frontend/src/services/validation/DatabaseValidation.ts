@@ -1,7 +1,25 @@
 import {Candidate, CandidateConfig} from "../../entities/Candidate"
 import {Enterprise, EnterpriseConfig} from "../../entities/Enterprise"
+import Notification from "../../view/Notification"
+import DatabaseManager from "../DatabaseManager"
+
+interface DatabaseValidationDependencies {
+    dbManager: DatabaseManager
+    notification: Notification
+}
 
 export default class DatabaseValidation {
+
+    private dbManager: DatabaseManager
+    private notification: Notification
+
+    constructor({
+                    dbManager,
+                    notification,
+                }:DatabaseValidationDependencies) {
+        this.dbManager = dbManager
+        this.notification = notification
+    }
 
     checkDuplicateCandidateEmail(candidates: Candidate[] | null, newCandidateData: CandidateConfig) {
 
@@ -12,7 +30,7 @@ export default class DatabaseValidation {
         const isDuplicated = candidatesWithSameEmail != undefined && candidatesWithSameEmail.length > 0
 
         if (isDuplicated) {
-            this.showValidationError("Já existe um usuário com mesmo e-mail.")
+            this.notification.repeatedEmailResgistrationError()
         }
 
         return isDuplicated
@@ -27,13 +45,24 @@ export default class DatabaseValidation {
         const isDuplicated = enterprisesWithSameEmail != undefined && enterprisesWithSameEmail.length > 0
 
         if (isDuplicated) {
-            this.showValidationError("Já existe um usuário com mesmo e-mail.")
+            this.notification.repeatedEmailResgistrationError()
         }
 
         return isDuplicated
     }
 
-    private showValidationError(message: string): void {
-        alert(message)
+    tryGetCandidate(input:CandidateConfig){
+        let candidatesFiltered = this.dbManager.candidates?.filter(candidate =>
+            candidate.email == input.email && candidate.password == input.password
+        )
+
+        if (candidatesFiltered == undefined || candidatesFiltered.length == 0) {
+            this.notification.userNotFound()
+            return undefined
+        } else if (candidatesFiltered.length > 1) {
+            this.notification.repeatedUser()
+            return undefined
+        }
+        return candidatesFiltered[0]
     }
 }

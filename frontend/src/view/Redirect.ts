@@ -6,4 +6,8 @@ export default class Redirect {
     loginEnterprise() {
         window.location.href = "/enterprise/login-enterprise.html"
     }
+
+    candidateEmploymentsList() {
+        window.location.href = "/candidate/employments-list.html"
+    }
 }

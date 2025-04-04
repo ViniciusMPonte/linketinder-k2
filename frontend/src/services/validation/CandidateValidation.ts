@@ -18,6 +18,17 @@ export default class CandidateValidation extends FieldsValidation {
         return true;
     }
 
+    checkLoginData(candidateData: CandidateConfig): boolean {
+
+        const validationErrors = this.getValidationErrors(candidateData);
+        if (validationErrors.length > 0) {
+            this.showValidationErrors(validationErrors);
+            return false;
+        }
+
+        return true;
+    }
+
     private hasEmptyFields(data: CandidateConfig): boolean {
         let result = false
         Object.values(data).some(value => {
