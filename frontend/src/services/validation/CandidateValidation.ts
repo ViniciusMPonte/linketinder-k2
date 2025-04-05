@@ -3,6 +3,10 @@ import {CandidateConfig} from "../../entities/Candidate";
 
 export default class CandidateValidation extends FieldsValidation {
 
+    constructor() {
+        super()
+    }
+
     checkRegistrationData(candidateData: CandidateConfig): boolean {
         if (this.hasEmptyFields(candidateData)) {
             this.showValidationError("Preencha todos os campos obrigatórios!");
@@ -55,7 +59,7 @@ export default class CandidateValidation extends FieldsValidation {
     }
 
     private validateField(key: string, value: string): string | null {
-        const isValid = FieldsValidation.entry(key, value);
+        const isValid = this.entry(key, value);
         return isValid ? null : FieldsValidation.validationFailMessageCandidate(key);
     }
 

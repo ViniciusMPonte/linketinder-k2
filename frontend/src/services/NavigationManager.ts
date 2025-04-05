@@ -51,7 +51,7 @@ export default class NavigationManager {
                 if (!this.redirectIfLogged()) publicPages.activeEnterpriseCreateFormListener()
                 break
             case "/enterprise/register-employment.html":
-                if (!this.redirectIfNotLogged("enterprise")) this.activeEmploymentCreateFormListener()
+                if (!this.redirectIfNotLogged("enterprise")) publicPages.activeEmploymentCreateFormListener()
                 break
             case "/candidate/login-candidate.html":
                 if (!this.redirectIfLogged()) publicPages.activeCandidateLoginFormListener()

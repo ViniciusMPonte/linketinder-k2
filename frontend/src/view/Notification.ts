@@ -14,4 +14,8 @@ export default class Notification {
     repeatedUser(){
         alert("Usuário repetido")
     }
+
+    unauthorizedAccess() {
+        alert("`Precisa estar logado para acessar essa página`")
+    }
 }

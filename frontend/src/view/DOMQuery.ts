@@ -1,5 +1,6 @@
 import {CandidateConfig} from "../entities/Candidate";
 import {EnterpriseConfig} from "../entities/Enterprise"
+import {EmploymentConfig} from "../entities/Employment"
 
 export default class DOMQuery {
 
@@ -63,6 +64,18 @@ export default class DOMQuery {
             password: (document.getElementById("enterprise-password-input") as HTMLInputElement)?.value || "",
         }
         return loginData
+    }
+
+    getCreateEmploymentButton(){
+        return document.querySelector(".card-body #create-employment-btn")
+    }
+
+    getInputForCreateEmployment(){
+        return {
+            name: (document.getElementById("employment-name-input") as HTMLInputElement)?.value || "",
+            description: (document.getElementById("employment-description-input") as HTMLInputElement)?.value || "",
+            skills: (document.getElementById("employment-skills-input") as HTMLInputElement)?.value?.split(", ") || [],
+        } as EmploymentConfig
     }
 
 }

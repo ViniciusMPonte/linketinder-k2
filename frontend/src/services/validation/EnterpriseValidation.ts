@@ -1,8 +1,14 @@
 import FieldsValidation from "./FieldsValidation";
 import {EnterpriseConfig} from "../../entities/Enterprise";
 import {CandidateConfig} from "../../entities/Candidate"
+import ValidationForms from "../ValidationForms"
+import {EmploymentConfig} from "../../entities/Employment"
 
 export default class EnterpriseValidation extends FieldsValidation {
+
+    constructor() {
+        super()
+    }
 
     checkRegistrationData(enterpriseData: EnterpriseConfig): boolean {
         if (this.hasEmptyFields(enterpriseData)) {
@@ -56,7 +62,7 @@ export default class EnterpriseValidation extends FieldsValidation {
     }
 
     private validateField(key: string, value: string): string | null {
-        const isValid = FieldsValidation.entry(key, value);
+        const isValid = this.entry(key, value);
         return isValid ? null : FieldsValidation.validationFailMessageEnterprise(key);
     }
 

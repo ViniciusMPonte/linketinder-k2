@@ -1,13 +1,15 @@
 import {Candidate, CandidateConfig} from "../entities/Candidate"
 import {Enterprise, EnterpriseConfig} from "../entities/Enterprise"
 import CandidateValidation from "../services/validation/CandidateValidation"
+import EnterpriseValidation from "../services/validation/EnterpriseValidation"
 import DatabaseValidation from "../services/validation/DatabaseValidation"
 import DatabaseManager from "../services/DatabaseManager"
 import DOMQuery from "./DOMQuery"
-import EnterpriseValidation from "../services/validation/EnterpriseValidation"
 import Redirect from "./Redirect"
 import LoginManager from "../services/LoginManager"
 import Notification from "./Notification"
+import {Employment, EmploymentConfig} from "../entities/Employment"
+import EmploymentValidation from "../services/validation/EmploymentValidation"
 
 interface PublicPagesDependencies {
     dbManager: DatabaseManager
@@ -17,9 +19,11 @@ interface PublicPagesDependencies {
     redirect: Redirect
     candidateValidation: CandidateValidation
     enterpriseValidation: EnterpriseValidation
+    employmentValidation: EmploymentValidation
     dbValidation: DatabaseValidation
     createCandidate: (data: CandidateConfig) => Candidate
     createEnterprise: (data: EnterpriseConfig) => Enterprise
+    createEmployment: (data: EmploymentConfig) => Employment
 }
 
 export default class PublicPages {
@@ -31,8 +35,10 @@ export default class PublicPages {
     private dbValidation: DatabaseValidation
     private candidateValidation: CandidateValidation
     private enterpriseValidation: EnterpriseValidation
+    private employmentValidation: EmploymentValidation
     private readonly createCandidate: (data: CandidateConfig) => Candidate
     private readonly createEnterprise: (data: EnterpriseConfig) => Enterprise
+    private readonly createEmployment: (data: EmploymentConfig) => Employment
 
     constructor({
                     dbManager,
@@ -42,9 +48,11 @@ export default class PublicPages {
                     redirect,
                     candidateValidation,
                     enterpriseValidation,
+                    employmentValidation,
                     dbValidation,
                     createCandidate,
-                    createEnterprise
+                    createEnterprise,
+                    createEmployment,
                 }: PublicPagesDependencies) {
         this.dbManager = dbManager
         this.loginManager = loginManager
@@ -54,8 +62,10 @@ export default class PublicPages {
         this.dbValidation = dbValidation
         this.candidateValidation = candidateValidation
         this.enterpriseValidation = enterpriseValidation
+        this.employmentValidation = employmentValidation
         this.createCandidate = createCandidate
         this.createEnterprise = createEnterprise
+        this.createEmployment = createEmployment
     }
 
     activeCandidateCreateFormListener() {
@@ -194,5 +204,43 @@ export default class PublicPages {
         if (!enterprise) return
 
         this.loginManager.logIn(enterprise)
+    }
+
+    activeEmploymentCreateFormListener() {
+        if (!this.loginManager.isEnterprise) {
+            this.notification.unauthorizedAccess()
+            this.redirect.loginEnterprise()
+            return
+        }
+
+        const createButton = this.domQuery.getCreateEmploymentButton()
+        if (!createButton) return
+        createButton.addEventListener("click", this.handleCreateEmployment.bind(this))
+    }
+
+    handleCreateEmployment(event: Event) {
+        event.preventDefault()
+
+        try {
+            let input = this.domQuery.getInputForCreateEmployment()
+
+            if (!this.isValidEntries(input)) return
+
+            input.enterpriseId = (this.loginManager.loggedIn as Enterprise).id
+
+            this.dbManager.addEmployment(this.createEmployment(input))
+
+            this.notification.successRegistration()
+            this.redirect.enterpriseCandidatesList()
+        } catch (error) {
+            console.log(error)
+        }
+    }
+
+    isValidEntries(data: EmploymentConfig): boolean {
+        const isValid = this.employmentValidation.check(data)
+        if (!isValid) return false
+
+        return true
     }
 }
