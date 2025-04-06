@@ -28,6 +28,20 @@ const publicPages = new PublicPages({...section})
 
 const nav = new Nav()
 
+
+
+import CandidateFormsManager from "../view/forms/CandidateFormsManager"
+import EnterpriseFormsManager from "../view/forms/EnterpriseFormsManager"
+import EmploymentFormsManager from "../view/forms/EmploymentFormsManager"
+
+import {entityFactories, coreServices, validationServices, uiServices} from "../main"
+const dependencies = {entityFactories, coreServices, validationServices, uiServices}
+
+const candidateFormsManager = new CandidateFormsManager(dependencies)
+const enterpriseFormsManager = new EnterpriseFormsManager(dependencies)
+const employmentFormsManager = new EmploymentFormsManager(dependencies)
+
+
 export default class NavigationManager {
 
     router(): void {
@@ -42,22 +56,22 @@ export default class NavigationManager {
             //     PublicPages.activeCandidateCreateFormListener()
             //     break;
             case "/":
-                if (!this.redirectIfLogged()) publicPages.activeCandidateCreateFormListener()
+                if (!this.redirectIfLogged()) candidateFormsManager.activeCandidateCreateFormListener()
                 break
             case "/candidate/register-candidate.html":
-                if (!this.redirectIfLogged()) publicPages.activeCandidateCreateFormListener()
+                if (!this.redirectIfLogged()) candidateFormsManager.activeCandidateCreateFormListener()
                 break
             case "/enterprise/register-enterprise.html":
-                if (!this.redirectIfLogged()) publicPages.activeEnterpriseCreateFormListener()
+                if (!this.redirectIfLogged()) enterpriseFormsManager.activeEnterpriseCreateFormListener()
                 break
             case "/enterprise/register-employment.html":
-                if (!this.redirectIfNotLogged("enterprise")) publicPages.activeEmploymentCreateFormListener()
+                if (!this.redirectIfNotLogged("enterprise")) employmentFormsManager.activeEmploymentCreateFormListener()
                 break
             case "/candidate/login-candidate.html":
-                if (!this.redirectIfLogged()) publicPages.activeCandidateLoginFormListener()
+                if (!this.redirectIfLogged()) candidateFormsManager.activeCandidateLoginFormListener()
                 break
             case "/enterprise/login-enterprise.html":
-                if (!this.redirectIfLogged()) publicPages.activeEnterpriseLoginFormListener()
+                if (!this.redirectIfLogged()) enterpriseFormsManager.activeEnterpriseLoginFormListener()
                 break
             case "/enterprise/candidates-list.html":
                 if (!this.redirectIfNotLogged("enterprise")) this.buildEnterpriseCandidatesList()

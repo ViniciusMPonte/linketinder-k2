@@ -53,7 +53,7 @@ export default class DatabaseValidation {
 
     tryGetCandidate(input:CandidateConfig){
         let candidatesFiltered = this.dbManager.candidates?.filter(candidate =>
-            candidate.email == input.email && candidate.password == input.password
+            candidate.email == input.email
         )
 
         if (candidatesFiltered == undefined || candidatesFiltered.length == 0) {
@@ -62,13 +62,16 @@ export default class DatabaseValidation {
         } else if (candidatesFiltered.length > 1) {
             this.notification.repeatedUser()
             return undefined
+        } else if (candidatesFiltered[0].password != input.password){
+            this.notification.wrongPassword()
+            return undefined
         }
         return candidatesFiltered[0]
     }
 
     tryGetEnterprise(input:EnterpriseConfig){
         let enterprisesFiltered = this.dbManager.enterprises?.filter(enterprise =>
-            enterprise.email == input.email && enterprise.password == input.password
+            enterprise.email == input.email
         )
 
         if (enterprisesFiltered == undefined || enterprisesFiltered.length == 0) {
@@ -76,6 +79,9 @@ export default class DatabaseValidation {
             return undefined
         } else if (enterprisesFiltered.length > 1) {
             this.notification.repeatedUser()
+            return undefined
+        } else if (enterprisesFiltered[0].password != input.password){
+            this.notification.wrongPassword()
             return undefined
         }
         return enterprisesFiltered[0]
