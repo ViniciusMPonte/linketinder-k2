@@ -18,11 +18,18 @@ import DOMQuery from "./view/DOMQuery"
 import Notification from "./view/Notification"
 import Redirect from "./view/Redirect"
 
+//Components
+import Card from "./components/Card"
+import Chart from "./components/Chart"
+import Nav from "./components/Nav"
+import {ProfileEnterprise, ProfileCandidate} from "./components/Profile"
+
 //Dependencies
 import EntityFactories from "./dependencies/EntityFactories"
 import CoreServices from "./dependencies/CoreServices"
 import ValidationServices from "./dependencies/ValidationServices"
 import UIServices from "./dependencies/UIServices"
+import Components from "./dependencies/Components"
 
 //------------------------------
 const dbManager = new DatabaseManager()
@@ -30,12 +37,16 @@ const loginManager = new LoginManager()
 
 const domQuery = new DOMQuery()
 const notification = new Notification()
-const redirect = new Redirect()
+const redirect = new Redirect(loginManager)
 
 const candidateValidation = new CandidateValidation()
 const enterpriseValidation = new EnterpriseValidation()
 const employmentValidation = new EmploymentValidation()
 const databaseValidation = new DatabaseValidation({dbManager, notification})
+
+const card = new Card(dbManager)
+
+
 
 const entityFactories = new EntityFactories()
 const coreServices = new CoreServices({
@@ -53,9 +64,10 @@ const uiServices = new UIServices({
     notification: notification,
     redirect: redirect
 })
+const components = new Components(card)
 
 //------------------------------
-export {entityFactories, coreServices, validationServices, uiServices}
+export {entityFactories, coreServices, validationServices, uiServices, components}
 
 //------------------------------
 import NavigationManager from "./services/NavigationManager"

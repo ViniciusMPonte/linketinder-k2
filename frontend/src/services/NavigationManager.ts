@@ -1,42 +1,26 @@
-import {Candidate, CandidateConfig} from "../entities/Candidate"
-import {Enterprise, EnterpriseConfig} from "../entities/Enterprise"
-import {Employment, EmploymentConfig} from "../entities/Employment"
-import ValidationForms from "./ValidationForms"
+import {Candidate} from "../entities/Candidate"
+import {Enterprise} from "../entities/Enterprise"
 
 import DatabaseManager from "./DatabaseManager"
-
-const dbManager = new DatabaseManager()
 import LoginManager from "./LoginManager"
-
-const loginManager = new LoginManager()
 
 import Chart from "../components/Chart"
 import Card from "../components/Card"
 import {ProfileEnterprise, ProfileCandidate} from "../components/Profile"
 import Nav from "../components/Nav"
-import CandidateValidation from "./validation/CandidateValidation"
-import DatabaseValidation from "./validation/DatabaseValidation"
-import PublicPages from "../view/PublicPages"
-import DOMQuery from "../view/DOMQuery"
-import Redirect from "../view/Redirect"
-import EnterpriseValidation from "./validation/EnterpriseValidation"
-import Notification from "../view/Notification"
-
-import section from "../core/Section"
-
-const publicPages = new PublicPages({...section})
-
-const nav = new Nav()
-
-
 
 import CandidateFormsManager from "../view/forms/CandidateFormsManager"
 import EnterpriseFormsManager from "../view/forms/EnterpriseFormsManager"
 import EmploymentFormsManager from "../view/forms/EmploymentFormsManager"
 
-import {entityFactories, coreServices, validationServices, uiServices} from "../main"
-const dependencies = {entityFactories, coreServices, validationServices, uiServices}
+import {entityFactories, coreServices, validationServices, uiServices, components} from "../main"
 
+const dbManager = new DatabaseManager()
+const loginManager = new LoginManager()
+
+const nav = new Nav()
+
+const dependencies = {entityFactories, coreServices, validationServices, uiServices}
 const candidateFormsManager = new CandidateFormsManager(dependencies)
 const enterpriseFormsManager = new EnterpriseFormsManager(dependencies)
 const employmentFormsManager = new EmploymentFormsManager(dependencies)
@@ -56,7 +40,7 @@ export default class NavigationManager {
             //     PublicPages.activeCandidateCreateFormListener()
             //     break;
             case "/":
-                if (!this.redirectIfLogged()) candidateFormsManager.activeCandidateCreateFormListener()
+                if (!this.redirectIfLogged()) break
                 break
             case "/candidate/register-candidate.html":
                 if (!this.redirectIfLogged()) candidateFormsManager.activeCandidateCreateFormListener()
@@ -123,270 +107,6 @@ export default class NavigationManager {
         })
     }
 
-    // activeCandidateCreateFormListener() {
-    //
-    //     const form = document.querySelector('.card-body')
-    //     if (!form) return
-    //     const formBtn = document.querySelector('.card-body #create-candidate-btn')
-    //     if (!formBtn) return
-    //
-    //     formBtn.addEventListener('click', (event) => {
-    //         event.preventDefault()
-    //         const newCandidateData: CandidateConfig = {
-    //             name: (document.getElementById('candidate-name-input') as HTMLInputElement)?.value || '',
-    //             email: (document.getElementById('candidate-email-input') as HTMLInputElement)?.value || '',
-    //             password: (document.getElementById('candidate-password-input') as HTMLInputElement)?.value || '',
-    //             country: (document.getElementById('candidate-country-input') as HTMLInputElement)?.value || '',
-    //             state: (document.getElementById('candidate-state-input') as HTMLInputElement)?.value || '',
-    //             cep: (document.getElementById('candidate-cep-input') as HTMLInputElement)?.value || '',
-    //             skills: (document.getElementById('candidate-skills-input') as HTMLInputElement)?.value?.split(', ') || [],
-    //             description: (document.getElementById('candidate-description-input') as HTMLInputElement)?.value || '',
-    //             cpf: (document.getElementById('candidate-cpf-input') as HTMLInputElement)?.value || '',
-    //             age: Number((document.getElementById('candidate-age-input') as HTMLInputElement)?.value) || 0,
-    //         }
-    //
-    //         let isItValid: boolean = CandidateValidation.checkRegistrationData(newCandidateData)
-    //         if (!isItValid) return
-    //
-    //         // let candidatesWithSameEmail = dbManager.candidates?.filter(candidate =>
-    //         //     candidate.email == newCandidateData.email
-    //         // )
-    //
-    //         let isDuplicated = DatabaseValidation.checkDuplicateCandidateEmail(dbManager.candidates, newCandidateData)
-    //         if (isDuplicated) return
-    //
-    //
-    //
-    //         dbManager.addCandidate(new Candidate(newCandidateData))
-    //         alert('Cadastro realizado com sucesso!')
-    //         window.location.href = '/candidate/login-candidate.html';
-    //
-    //
-    //     })
-    //
-    // }
-
-    // activeEnterpriseCreateFormListener() {
-    //
-    //     const form = document.querySelector(".card-body")
-    //     if (!form) return
-    //     const formBtn = document.querySelector(".card-body #create-enterprise-btn")
-    //     if (!formBtn) return
-    //
-    //     formBtn.addEventListener("click", (event) => {
-    //         event.preventDefault()
-    //         const newEnterpriseData: EnterpriseConfig = {
-    //             name: (document.getElementById("enterprise-name-input") as HTMLInputElement)?.value || "",
-    //             email: (document.getElementById("enterprise-email-input") as HTMLInputElement)?.value || "",
-    //             password: (document.getElementById("enterprise-password-input") as HTMLInputElement)?.value || "",
-    //             country: (document.getElementById("enterprise-country-input") as HTMLInputElement)?.value || "",
-    //             state: (document.getElementById("enterprise-state-input") as HTMLInputElement)?.value || "",
-    //             cep: (document.getElementById("enterprise-cep-input") as HTMLInputElement)?.value || "",
-    //             description: (document.getElementById("enterprise-description-input") as HTMLInputElement)?.value || "",
-    //             cnpj: (document.getElementById("enterprise-cnpj-input") as HTMLInputElement)?.value || "",
-    //         }
-    //
-    //         const isEmptyField = Object.values(newEnterpriseData).some(value => value.toString().trim() === "")
-    //
-    //         if (isEmptyField) {
-    //             alert("Por favor, preencha todos os campos obrigatórios!")
-    //             return
-    //         }
-    //
-    //         let isItValid = true
-    //         for (const [key, value] of Object.entries(newEnterpriseData)) {
-    //             const validateKey: string = key as string
-    //             const result = ValidationForms.validate(validateKey, String(value))
-    //
-    //             if (!result) {
-    //                 alert(ValidationForms.validationFailMessageEnterprise(validateKey))
-    //                 isItValid = false
-    //             }
-    //         }
-    //         if (!isItValid) return
-    //
-    //         let enterprisesWithSameEmail = dbManager.enterprises?.filter(enterprise =>
-    //             enterprise.email == newEnterpriseData.email
-    //         )
-    //
-    //         if (enterprisesWithSameEmail != undefined && enterprisesWithSameEmail.length == 0) {
-    //             dbManager.addEnterprise(new Enterprise(newEnterpriseData))
-    //             alert("Cadastro realizado com sucesso!")
-    //             window.location.href = "/enterprise/login-enterprise.html"
-    //         } else if (enterprisesWithSameEmail != undefined && enterprisesWithSameEmail.length > 0) {
-    //             alert("Já existe um usuário com mesmo e-mail.")
-    //         }
-    //     })
-    //
-    // }
-
-    activeEmploymentCreateFormListener() {
-
-        if (!loginManager.isEnterprise) {
-            alert("`Precisa estar logado como empresa para acessar essa página`")
-            window.location.href = "/enterprise/login-enterprise.html"
-        }
-
-        const form = document.querySelector(".card-body")
-        if (!form) return
-        const formBtn = document.querySelector(".card-body #create-employment-btn")
-        if (!formBtn) return
-
-        formBtn.addEventListener("click", (event) => {
-            event.preventDefault()
-
-            let enterpriseLogged: Enterprise = loginManager.loggedIn as Enterprise
-            let enterpriseId: number = enterpriseLogged.id
-
-            const newEmploymentData: EmploymentConfig = {
-                name: (document.getElementById("employment-name-input") as HTMLInputElement)?.value || "",
-                description: (document.getElementById("employment-description-input") as HTMLInputElement)?.value || "",
-                skills: (document.getElementById("employment-skills-input") as HTMLInputElement)?.value?.split(", ") || [],
-                enterpriseId: enterpriseId
-            }
-
-            let isItValid = true
-            for (const [key, value] of Object.entries(newEmploymentData)) {
-                const validateKey: string = key as string
-                if (validateKey == "enterpriseId") continue
-                const result = ValidationForms.validate(validateKey, String(value))
-
-                if (!result) {
-                    alert(ValidationForms.validationFailMessageEmployment(validateKey))
-                    isItValid = false
-                }
-            }
-            if (!isItValid) return
-
-            dbManager.addEmployment(new Employment(newEmploymentData))
-            alert("Cadastro realizado com sucesso!")
-            window.location.href = "/enterprise/candidates-list.html"
-        })
-
-    }
-
-    activeCandidateLoginFormListener() {
-
-        const form = document.querySelector(".card-body")
-        if (!form) return
-        const formBtn = document.querySelector(".card-body #login-candidate-btn")
-        if (!formBtn) return
-
-        formBtn.addEventListener("click", (event) => {
-            event.preventDefault()
-            const loginCandidateData: CandidateConfig = {
-                email: (document.getElementById("candidate-email-input") as HTMLInputElement)?.value || "",
-                password: (document.getElementById("candidate-password-input") as HTMLInputElement)?.value || "",
-            }
-
-            let isItValid = true
-            for (const [key, value] of Object.entries(loginCandidateData)) {
-                const validateKey: string = key as string
-                const result = ValidationForms.validate(validateKey, String(value))
-
-                if (!result) {
-                    alert(ValidationForms.validationFailMessageCandidate(validateKey))
-                    isItValid = false
-                }
-            }
-            if (!isItValid) return
-
-            let candidatesFiltered = dbManager.candidates?.filter(candidate =>
-                candidate.email == loginCandidateData.email && candidate.password == loginCandidateData.password
-            )
-
-            if (candidatesFiltered == undefined || candidatesFiltered.length == 0) {
-                alert("Usuário não encontrado")
-            } else if (candidatesFiltered.length > 1) {
-                alert("Usuário repetido")
-            } else if (candidatesFiltered.length == 1) {
-                loginManager.logIn(candidatesFiltered[0])
-                window.location.href = "/candidate/employments-list.html"
-            }
-        })
-    }
-
-    activeCandidateLoginFormListenerCOPIA() {
-
-        const form = document.querySelector(".card-body")
-        if (!form) return
-        const formBtn = document.querySelector(".card-body #login-candidate-btn")
-        if (!formBtn) return
-
-        formBtn.addEventListener("click", (event) => {
-            event.preventDefault()
-            const loginCandidateData: CandidateConfig = {
-                email: (document.getElementById("candidate-email-input") as HTMLInputElement)?.value || "",
-                password: (document.getElementById("candidate-password-input") as HTMLInputElement)?.value || "",
-            }
-
-            let isItValid = true
-            for (const [key, value] of Object.entries(loginCandidateData)) {
-                const validateKey: string = key as string
-                const result = ValidationForms.validate(validateKey, String(value))
-
-                if (!result) {
-                    alert(ValidationForms.validationFailMessageCandidate(validateKey))
-                    isItValid = false
-                }
-            }
-            if (!isItValid) return
-
-            let candidatesFiltered = dbManager.candidates?.filter(candidate =>
-                candidate.email == loginCandidateData.email && candidate.password == loginCandidateData.password
-            )
-
-            if (candidatesFiltered == undefined || candidatesFiltered.length == 0) {
-                alert("Usuário não encontrado")
-            } else if (candidatesFiltered.length > 1) {
-                alert("Usuário repetido")
-            } else if (candidatesFiltered.length == 1) {
-                loginManager.logIn(candidatesFiltered[0])
-                window.location.href = "/candidate/employments-list.html"
-            }
-        })
-    }
-
-    activeEnterpriseLoginFormListener() {
-
-        const form = document.querySelector(".card-body")
-        if (!form) return
-        const formBtn = document.querySelector(".card-body #login-enterprise-btn")
-        if (!formBtn) return
-
-        formBtn.addEventListener("click", (event) => {
-            event.preventDefault()
-            const loginEnterpriseData: EnterpriseConfig = {
-                email: (document.getElementById("enterprise-email-input") as HTMLInputElement)?.value || "",
-                password: (document.getElementById("enterprise-password-input") as HTMLInputElement)?.value || "",
-            }
-
-            let isItValid = true
-            for (const [key, value] of Object.entries(loginEnterpriseData)) {
-                const validateKey: string = key as string
-                const result = ValidationForms.validate(validateKey, String(value))
-
-                if (!result) {
-                    alert(ValidationForms.validationFailMessageEnterprise(validateKey))
-                    isItValid = false
-                }
-            }
-            if (!isItValid) return
-
-            let enterprisesFiltered = dbManager.enterprises?.filter(enterprise =>
-                enterprise.email == loginEnterpriseData.email && enterprise.password == loginEnterpriseData.password
-            )
-
-            if (enterprisesFiltered == undefined || enterprisesFiltered.length == 0) {
-                alert("Usuário não encontrado")
-            } else if (enterprisesFiltered.length > 1) {
-                alert("Usuário repetido")
-            } else if (enterprisesFiltered.length == 1) {
-                loginManager.logIn(enterprisesFiltered[0])
-            }
-            if (loginManager.isEnterprise) window.location.href = "/enterprise/candidates-list.html"
-        })
-    }
 
     buildEnterpriseCandidatesList() {
         let chartTag = document.getElementById("myChart") as HTMLCanvasElement
@@ -400,21 +120,21 @@ export default class NavigationManager {
 
         if (dbManager.candidates == null) return
         dbManager.candidates.forEach(candidate => {
-                if (true) candidate.name = "<span class=\"blur\">Hidden Name<\span>"
-                const cardComponent = new Card(candidate.params, "candidate")
-                this.innerHTMLInject(document.querySelector("#candidates-list"), cardComponent.getCard())
-            }
-        )
+            if (true) candidate.name = "<span class=\"blur\">Hidden Name<\span>"
+            const card = components.card.candidatesForEnterprise(candidate.id)
+            if (card == undefined) return
+            this.innerHTMLInject(document.querySelector("#candidates-list"), card)
+        })
     }
 
     buildCandidateEmploymentsList() {
         if (dbManager.employments == null) return
         dbManager.employments.forEach(employment => {
-                if (true) employment.name = "<span class=\"blur\">Hidden Name<\span>"
-                const cardComponent = new Card(employment.params, "employment", employment.enterpriseId)
-                this.innerHTMLInject(document.querySelector("#employments-list"), cardComponent.getCard())
-            }
-        )
+            if (true) employment.name = "<span class=\"blur\">Hidden Name<\span>"
+            const card = components.card.employmentForCandidate(employment.id, false)
+            if (card == undefined) return
+            this.innerHTMLInject(document.querySelector("#employments-list"), card)
+        })
     }
 
     buildEnterpriseMyEmploymentsList() {
@@ -433,8 +153,9 @@ export default class NavigationManager {
         dbManager.employments.forEach(employment => {
             if (employment.enterpriseId == enterpriseId) {
                 isEmptyEmployment = false
-                const cardComponent = new Card(employment.params, "employment", employment.enterpriseId)
-                this.innerHTMLInject(document.querySelector("#employments-list"), cardComponent.getCard(false))
+                const card = components.card.employmentForEnterprise(employment.id, false)
+                if (card == undefined) return
+                this.innerHTMLInject(document.querySelector("#employments-list"), card)
             }
         })
         if (isEmptyEmployment) {

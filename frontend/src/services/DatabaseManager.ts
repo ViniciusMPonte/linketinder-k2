@@ -121,10 +121,17 @@ export default class DatabaseManager {
         this.enterprises = enterprises
     }
 
-    getEnterprise(id: number): Enterprise | void {
-        let enterprises = this.enterprises
-        if (enterprises === null) return
-        return enterprises.filter(enterprise => enterprise.id === id)[0]
+    getEnterprise(id: number) {
+        const enterprises = this.enterprises
+        if (enterprises === null) return undefined
+
+        const result = enterprises.filter(enterprise => enterprise.id === id)
+
+        if (result.length > 0){
+            return result[0]
+        } else {
+            return undefined
+        }
     }
 
     updateEnterprise(id: number, enterprise: EnterpriseConfig): void {
@@ -179,10 +186,17 @@ export default class DatabaseManager {
         this.employments = employments
     }
 
-    getEmployment(id: number): Employment | void {
+    getEmployment(id: number){
         let employments = this.employments
-        if (employments === null) return
-        return employments.filter(employment => employment.id === id)[0]
+        if (employments === null) return undefined
+
+        const result = employments.filter(employment => employment.id === id)
+
+        if (result.length > 0){
+            return result[0]
+        } else {
+            return undefined
+        }
     }
 
     updateEmployment(id: number, employment: EmploymentConfig): void {
