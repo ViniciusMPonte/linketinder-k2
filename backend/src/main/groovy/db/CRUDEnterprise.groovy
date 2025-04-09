@@ -1,23 +1,29 @@
 package db
 
 import entities.Enterprise
+import managers.DatabaseManager
 import managers.TransactionManager
 
+import java.sql.Connection
 import java.sql.SQLException
 
 
-class CRUDEnterprise {
-    //CRUD Enterprise
-    boolean saveNewEnterprise(Enterprise enterprise) {
+class CRUDEnterprise extends DatabaseManager{
+
+    CRUDEnterprise (Connection connection, TransactionManager transactionManager) {
+        super(connection, transactionManager)
+    }
+
+    boolean save(Enterprise enterprise) {
         if (!enterprise.isAllSet()) {
             return false
         }
 
         try {
-            return TransactionManager.executeInTransaction(connection, {
+            return this.transactionManager.executeInTransaction({
                 this.connection.createStatement().withCloseable { statement ->
                     statement.execute(Queries.insertUsersTable(enterprise))
-                    if(!this.getPostalCodeId(enterprise)){
+                    if (!this.getPostalCodeId(enterprise)) {
                         statement.execute(Queries.insertPostalCodesTable(enterprise))
                     }
                     statement.execute(Queries.insertEnterprisesTable(enterprise))
@@ -31,21 +37,21 @@ class CRUDEnterprise {
         }
     }
 
-    Enterprise getEnterpriseById(int id) {
+    Enterprise getById(int id) {
         try {
             return this.connection.createStatement().withCloseable { statement ->
                 statement.executeQuery(Queries.selectEnterpriseById(id)).withCloseable { resultSet ->
                     if (resultSet.next()) {
                         Map params = [
-                                id: resultSet.getInt("id"),
-                                email: resultSet.getString("email"),
-                                password: resultSet.getString("password"),
-                                name: resultSet.getString("name"),
+                                id         : resultSet.getInt("id"),
+                                email      : resultSet.getString("email"),
+                                password   : resultSet.getString("password"),
+                                name       : resultSet.getString("name"),
                                 description: resultSet.getString("description"),
-                                cnpj: resultSet.getString("cnpj"),
-                                country: resultSet.getString("country"),
-                                state: resultSet.getString("state"),
-                                postalCode: resultSet.getString("postalCode")
+                                cnpj       : resultSet.getString("cnpj"),
+                                country    : resultSet.getString("country"),
+                                state      : resultSet.getString("state"),
+                                postalCode : resultSet.getString("postalCode")
                         ]
                         return new Enterprise(params)
                     } else {
@@ -59,7 +65,7 @@ class CRUDEnterprise {
         }
     }
 
-    boolean updateEnterprise(Enterprise original, Enterprise updated) {
+    boolean update(Enterprise original, Enterprise updated) {
         if (!original || !updated || !updated.isAllSet()) {
             return false
         }
@@ -69,10 +75,10 @@ class CRUDEnterprise {
         }
 
         try {
-            return TransactionManager.executeInTransaction(connection, {
+            return this.transactionManager.executeInTransaction({
                 this.connection.createStatement().withCloseable { statement ->
                     statement.execute(Queries.updateUsersTable(original, updated))
-                    if(!this.getPostalCodeId(updated)){
+                    if (!this.getPostalCodeId(updated)) {
                         statement.execute(Queries.updatePostalCodesTable(original, updated))
                     }
                     statement.execute(Queries.updateEnterprisesTable(original, updated))
@@ -87,12 +93,12 @@ class CRUDEnterprise {
         }
     }
 
-    boolean deleteEnterpriseById(int id) {
+    boolean deleteById(int id) {
 
         try {
-            return TransactionManager.executeInTransaction(connection, {
+            return this.transactionManager.executeInTransaction({
                 this.connection.createStatement().withCloseable { statement ->
-                    this.getEmploymentIds(id).each {employmentId ->
+                    this.getEmploymentIds(id).each { employmentId ->
                         this.deleteEmploymentById(employmentId as Integer)
                     }
                     statement.execute(Queries.deleteEnterpriseById(id))

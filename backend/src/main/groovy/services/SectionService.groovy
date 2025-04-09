@@ -6,11 +6,11 @@ class SectionService {
 
     public def userLogged
     Scanner input
-    DatabaseManager dbManager
+    def db
 
-    SectionService(input, dbManager, userLogged = null) {
+    SectionService(input, db, userLogged = null) {
         this.input = input
-        this.dbManager = dbManager
+        this.db = db
         this.userLogged = userLogged
     }
 

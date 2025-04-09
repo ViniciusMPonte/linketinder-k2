@@ -5,19 +5,24 @@ import java.sql.SQLException
 
 
 class TransactionManager {
+    Connection connection
 
-    static def executeInTransaction(Connection connection, Closure action) {
-        boolean originalAutoCommit = connection.autoCommit
-        connection.autoCommit = false
+    TransactionManager(Connection connection){
+        this.connection = connection
+    }
+
+    def executeInTransaction(Closure action) {
+        boolean originalAutoCommit = this.connection.autoCommit
+        this.connection.autoCommit = false
         try {
             def result = action.call()
-            connection.commit()
+            this.connection.commit()
             return result
         } catch (SQLException e) {
-            connection.rollback()
-            throw e // Ou tratar a exceção conforme necessário
+            this.connection.rollback()
+            throw e
         } finally {
-            connection.autoCommit = originalAutoCommit
+            this.connection.autoCommit = originalAutoCommit
         }
     }
 }

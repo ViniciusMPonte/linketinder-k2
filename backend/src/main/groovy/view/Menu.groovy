@@ -64,10 +64,10 @@ class Menu {
         def email = this.getQuestionResult("\nDigite o email: ")
         def password = this.getQuestionResult("\nDigite a senha: ")
 
-        Integer enterpriseId = this.section.dbManager.getUserIdByEmailAndPassword(email, password)
+        Integer enterpriseId = this.section.db.enterprise.getUserIdByEmailAndPassword(email, password)
 
         if (enterpriseId) {
-            this.section.userLogged = this.section.dbManager.getEnterpriseById(enterpriseId)
+            this.section.userLogged = this.section.db.enterprise.getById(enterpriseId)
             return
         }
 
@@ -81,10 +81,10 @@ class Menu {
         def email = this.getQuestionResult("\nDigite o email: ")
         def password = this.getQuestionResult("\nDigite a senha: ")
 
-        Integer candidateId = this.section.dbManager.getUserIdByEmailAndPassword(email, password)
+        Integer candidateId = this.section.db.candidate.getUserIdByEmailAndPassword(email, password)
 
         if (candidateId) {
-            this.section.userLogged = this.section.dbManager.getCandidateById(candidateId)
+            this.section.userLogged = this.section.db.candidate.getById(candidateId)
             return
         }
 
@@ -123,7 +123,7 @@ class Menu {
                 postalCode : this.getQuestionResult("\nDigite o CEP da empresa: ")
         ]
 
-        if (this.section.dbManager.saveNewEnterprise(new Enterprise(params))) {
+        if (this.section.db.enterprise.save(new Enterprise(params))) {
             println "\nEmpresa cadastrada com sucesso."
             return
         }
@@ -150,7 +150,7 @@ class Menu {
                 )?.replaceAll(/ /, '')?.split(',')?.toList() ?: []
         ]
 
-        if (this.section.dbManager.saveNewCandidate(new Candidate(params))) {
+        if (this.section.db.candidate.save(new Candidate(params))) {
             println "\nCandidato cadastrado com sucesso."
             return
         }
@@ -186,9 +186,9 @@ class Menu {
 
     void chooseEmploymentToLike() {
 
-        int[] employmentIds = this.section.dbManager.getEmploymentIds()
+        int[] employmentIds = this.section.db.employment.getEmploymentIds()
         employmentIds.each { id ->
-            println this.section.dbManager.getEmploymentById(id as int)
+            println this.section.db.employment.getById(id as int)
         }
 
     }
@@ -248,8 +248,8 @@ class Menu {
                 )?.replaceAll(/ /, '')?.split(',')?.toList() ?: []
         ]
 
-        if (this.section.dbManager.updateCandidate(this.section.userLogged as Candidate, new Candidate(params))) {
-            this.section.userLogged = this.section.dbManager.getCandidateById(this.section.userLogged.getId())
+        if (this.section.db.candidate.update(this.section.userLogged as Candidate, new Candidate(params))) {
+            this.section.userLogged = this.section.db.candidate.getById(this.section.userLogged.getId())
             println "\nPerfil editado com sucesso."
             return
         }
@@ -258,8 +258,8 @@ class Menu {
     }
 
     void deleteCandidate() {
-        this.section.dbManager.deleteCandidateById(this.section.userLogged.getId())
-        if (!this.section.dbManager.getCandidateById(this.section.userLogged.getId())) {
+        this.section.db.candidate.delete(this.section.userLogged.getId())
+        if (!this.section.db.candidate.getById(this.section.userLogged.getId())) {
             this.section.userLogged = null
             println "\nCandidato Excluído com sucesso!"
             return
@@ -299,9 +299,9 @@ class Menu {
 
     void chooseCandidateToLike() {
 
-        int[] candidatesIds = this.section.dbManager.getCandidateIds()
+        int[] candidatesIds = this.section.db.candidate.getCandidateIds()
         candidatesIds.each { id ->
-            println this.section.dbManager.getCandidateById(id as int)
+            println this.section.db.candidate.getById(id as int)
         }
 
     }
@@ -358,7 +358,7 @@ class Menu {
                 )?.replaceAll(/ /, '')?.split(',')?.toList() ?: []
         ]
 
-        if (this.section.dbManager.saveNewEmployment(new Employment(params))) {
+        if (this.section.db.employment.save(new Employment(params))) {
             println "\nVaga cadastrada com sucesso."
             return
         }
@@ -368,9 +368,9 @@ class Menu {
 
     void readEmployments() {
 
-        int[] employmentsIds = this.section.dbManager.getEmploymentIds(this.section.userLogged.getId())
+        int[] employmentsIds = this.section.db.employment.getEmploymentIds(this.section.userLogged.getId())
         employmentsIds.each { id ->
-            println this.section.dbManager.getEmploymentById(id as int)
+            println this.section.db.employment.getById(id as int)
         }
 
         if(employmentsIds.length == 0){
@@ -385,8 +385,8 @@ class Menu {
 
         Integer employmentId = this.safeToInteger(this.getQuestionResult("\nDigite o ID da vaga à ser editada: "))
 
-        Employment originalEmployment = this.section.dbManager.getEmploymentById(employmentId)
-        List<Integer> employmentsIdList = this.section.dbManager.getEmploymentIds(this.section.userLogged.getId())
+        Employment originalEmployment = this.section.db.employment.getById(employmentId)
+        List<Integer> employmentsIdList = this.section.db.employment.getEmploymentIds(this.section.userLogged.getId())
 
         if(originalEmployment && employmentsIdList.contains(employmentId)){
             Map params = [
@@ -401,7 +401,7 @@ class Menu {
                     )?.replaceAll(/ /, '')?.split(',')?.toList() ?: []
             ]
 
-            if (this.section.dbManager.updateEmployment(originalEmployment, new Employment(params))) {
+            if (this.section.db.employment.update(originalEmployment, new Employment(params))) {
                 println "\nVaga editada com sucesso."
                 return
             }
@@ -414,12 +414,12 @@ class Menu {
 
         Integer employmentId = this.safeToInteger(this.getQuestionResult("\nDigite o ID da vaga à ser deletada: "))
 
-        Employment originalEmployment = this.section.dbManager.getEmploymentById(employmentId)
-        List<Integer> employmentsIdList = this.section.dbManager.getEmploymentIds(this.section.userLogged.getId())
+        Employment originalEmployment = this.section.db.employment.getById(employmentId)
+        List<Integer> employmentsIdList = this.section.db.employment.getEmploymentIds(this.section.userLogged.getId())
 
         if (originalEmployment && employmentsIdList.contains(employmentId)){
-            this.section.dbManager.deleteEmploymentById(employmentId)
-            if (!this.section.dbManager.getEmploymentById(employmentId)) {
+            this.section.db.employment.deleteById(employmentId)
+            if (!this.section.db.employment.getById(employmentId)) {
                 println "\nVaga Excluída com sucesso!"
                 return
             }
@@ -479,8 +479,8 @@ class Menu {
                 postalCode : this.getQuestionResult("\nDigite o CEP: ")
         ]
 
-        if (this.section.dbManager.updateEnterprise(this.section.userLogged as Enterprise, new Enterprise(params))) {
-            this.section.userLogged = this.section.dbManager.getEnterpriseById(this.section.userLogged.getId())
+        if (this.section.db.enterprise.update(this.section.userLogged as Enterprise, new Enterprise(params))) {
+            this.section.userLogged = this.section.db.enterprise.getById(this.section.userLogged.getId())
             println "\nPerfil editado com sucesso."
             return
         }
@@ -489,8 +489,8 @@ class Menu {
     }
 
     void deleteEnterprise() {
-        this.section.dbManager.deleteEnterpriseById(this.section.userLogged.getId())
-        if (!this.section.dbManager.getEnterpriseById(this.section.userLogged.getId())) {
+        this.section.db.enterprise.deleteById(this.section.userLogged.getId())
+        if (!this.section.db.enterprise.getById(this.section.userLogged.getId())) {
             this.section.userLogged = null
             println "\nEmpresa Excluída com sucesso!"
             return

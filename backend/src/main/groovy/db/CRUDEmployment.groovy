@@ -1,19 +1,26 @@
 package db
 
 import entities.Employment
+import managers.DatabaseManager
 import managers.TransactionManager
 
+import java.sql.Connection
 import java.sql.SQLException
 
 
-class CRUDEmployment {
-    boolean saveNewEmployment(Employment employment) {
+class CRUDEmployment extends DatabaseManager{
+
+    CRUDEmployment (Connection connection, TransactionManager transactionManager) {
+        super(connection, transactionManager)
+    }
+
+    boolean save(Employment employment) {
         if (!employment.isAllSet()) {
             return false
         }
 
         try {
-            return TransactionManager.executeInTransaction(connection, {
+            return this.transactionManager.executeInTransaction({
                 this.connection.createStatement().withCloseable { statement ->
                     if(!this.getPostalCodeId(employment)){
                         statement.execute(Queries.insertPostalCodesTable(employment))
@@ -35,7 +42,7 @@ class CRUDEmployment {
         }
     }
 
-    Employment getEmploymentById(int id) {
+    Employment getById(int id) {
         try {
             return this.connection.createStatement().withCloseable { statement ->
                 statement.executeQuery(Queries.selectEmploymentById(id)).withCloseable { resultSet ->
@@ -62,7 +69,7 @@ class CRUDEmployment {
         }
     }
 
-    boolean updateEmployment(Employment original, Employment updated) {
+    boolean update(Employment original, Employment updated) {
         if (!original || !updated || !updated.isAllSet()) {
             return false
         }
@@ -72,7 +79,7 @@ class CRUDEmployment {
         }
 
         try {
-            return TransactionManager.executeInTransaction(connection, {
+            return this.transactionManager.executeInTransaction({
                 this.connection.createStatement().withCloseable { statement ->
                     if(!this.getPostalCodeId(updated)){
                         statement.execute(Queries.updatePostalCodesTable(original, updated))
@@ -96,10 +103,9 @@ class CRUDEmployment {
         }
     }
 
-    boolean deleteEmploymentById(int id) {
-
+    boolean deleteById(int id) {
         try {
-            return TransactionManager.executeInTransaction(connection, {
+            return this.transactionManager.executeInTransaction({
                 this.connection.createStatement().withCloseable { statement ->
                     statement.execute(Queries.deleteEmploymentById(id))
                     statement.execute(Queries.deleteUnusedPostalCodes())
@@ -112,5 +118,4 @@ class CRUDEmployment {
             return false
         }
     }
-
 }

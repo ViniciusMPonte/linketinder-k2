@@ -1,21 +1,28 @@
 package db
 
 import entities.Candidate
+import managers.DatabaseManager
 import managers.TransactionManager
 
+import java.sql.Connection
 import java.sql.SQLException
 
 
-class CRUDCandidate {
-    //CRUD Candidates
-    boolean saveNewCandidate(Candidate candidate) {
-        if (!this.isAllSet()) {
+class CRUDCandidate extends DatabaseManager{
+
+    CRUDCandidate(Connection connection, TransactionManager transactionManager){
+        super(connection, transactionManager)
+    }
+
+
+    boolean save(Candidate candidate) {
+        if (!candidate.isAllSet()) {
             return false
         }
 
         try {
-            return TransactionManager.executeInTransaction(connection, {
-                this.connection.createStatement().withCloseable { statement ->
+            return this.transactionManager.executeInTransaction({
+                this.connection.createStatement().withCloseable({ statement ->
                     statement.execute(Queries.insertUsersTable(candidate))
                     if (!getPostalCodeId(candidate)) {
                         statement.execute(Queries.insertPostalCodesTable(candidate))
@@ -27,7 +34,7 @@ class CRUDCandidate {
                         }
                     }
                     statement.execute(Queries.insertCandidateSkillTable(candidate))
-                }
+                })
                 return true
             })
         } catch (SQLException e) {
@@ -36,7 +43,7 @@ class CRUDCandidate {
         }
     }
 
-    Candidate getCandidateById(int id) {
+    Candidate getById(int id) {
         try {
             return this.connection.createStatement().withCloseable { statement ->
                 statement.executeQuery(Queries.selectCandidateById(id)).withCloseable { resultSet ->
@@ -66,17 +73,17 @@ class CRUDCandidate {
         }
     }
 
-    boolean updateCandidate(Candidate original, Candidate updated) {
+    boolean update(Candidate original, Candidate updated) {
         if (!original || !updated || !updated.isAllSet()) {
             return false
         }
 
-        if (!dbManager.hasDifferences(original, updated)) {
+        if (!this.hasDifferences(original, updated)) {
             return false
         }
 
         try {
-            return TransactionManager.executeInTransaction(connection, {
+            return this.transactionManager.executeInTransaction({
                 this.connection.createStatement().withCloseable { statement ->
                     statement.execute(Queries.updateUsersTable(original, updated))
                     if(!this.getPostalCodeId(updated)){
@@ -96,13 +103,9 @@ class CRUDCandidate {
         }
     }
 
-    boolean deleteCandidateById(int id) {
-
-        boolean originalAutoCommit = connection.autoCommit
-        connection.autoCommit = false
-
+    boolean deleteById(int id) {
         try {
-            return TransactionManager.executeInTransaction(connection, {
+            return this.transactionManager.executeInTransaction({
                 this.connection.createStatement().withCloseable { statement ->
                     statement.execute(Queries.deleteCandidateById(id))
                     statement.execute(Queries.deleteUnusedPostalCodes())

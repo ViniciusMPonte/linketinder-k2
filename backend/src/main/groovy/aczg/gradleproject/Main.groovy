@@ -9,15 +9,28 @@ import services.SectionService
 import view.Menu
 import managers.DatabaseManager
 import java.text.SimpleDateFormat
+import managers.TransactionManager
 
+import db.*
 
 static void main(String[] args) {
 
     def conn = DatabaseConnection.connect()
-
-    def dbManager = new DatabaseManager(conn)
+    def transactionManager = new TransactionManager(conn)
+    def dbManager = new DatabaseManager(conn, transactionManager)
+    def dbCandidate = new CRUDCandidate(conn, transactionManager)
+    def dbEnterprise = new CRUDEnterprise(conn, transactionManager)
+    def dbEmployment = new CRUDEmployment(conn, transactionManager)
+    
+    def db =  [
+            candidate : dbCandidate,
+            enterprise: dbEnterprise,
+            employment: dbEmployment
+    ]
+    
+    
     Scanner input = new Scanner(System.in)
-    def section = new SectionService(input, dbManager)
+    def section = new SectionService(input, db)
     def menu = new Menu(section)
 
     //TESTES-------------------
@@ -29,44 +42,40 @@ static void main(String[] args) {
             password: "senhaSegura123",
             name: "John Doe",
             description: "Desenvolvedor backend com 5 anos de experiência",
-            cpf: "123.456.789-00", // ou "12345678900" dependendo da formatação
+            cpf: "123.456.789-00",
             birthday: birthdayDate,
             country: 'Brasil',
-            state: "São Paulo", // Estado deve existir na tabela 'states'
+            state: "São Paulo",
             postalCode: "12345-678",
             skills: ["Java", "SQL", "Spring", "Groovy"]
     ])
-// Criando o objeto Candidate
 
-// Verifique se todos os campos estão preenchidos
-    //assert candidate.isAllSet(): "Candidato não tem todos os campos obrigatórios"
-
-    boolean isSaved = dbManager.saveNewCandidateTESTE(candidate)
+    boolean isSaved = db.candidate.save(candidate)
     if (isSaved) {
         println("Candidato salvo com sucesso!")
     } else {
         println("Falha ao salvar candidato.")
     }
 
-    int id = dbManager.getUserIdByEmailAndPassword("john.doe@example.com", "senhaSegura123")
-    def oldCandidate = dbManager.getCandidateById(id)
+    int id = db.candidate.getUserIdByEmailAndPassword("john.doe@example.com", "senhaSegura123")
+    def oldCandidate = db.candidate.getById(id)
 
-    dbManager.updateCandidateTESTE(oldCandidate, new Candidate([
+    db.candidate.update(oldCandidate, new Candidate([
             email: "john.doe@example.com",
             password: "senhaSegura123",
             name: "DEU CERTO",
             description: "Desenvolvedor backend com 5 anos de experiência",
-            cpf: "123.456.789-00", // ou "12345678900" dependendo da formatação
+            cpf: "123.456.789-00",
             birthday: birthdayDate,
             country: 'Brasil',
-            state: "São Paulo", // Estado deve existir na tabela 'states'
+            state: "São Paulo",
             postalCode: "12345-678",
             skills: ["Java", "SQL", "Spring", "Groovy"]
     ]))
 
-    println dbManager.getCandidateById(id)
+    println db.candidate.getById(id)
 
-    if (dbManager.deleteCandidateByIdTESTE(id)) {
+    if (db.candidate.deleteById(id)) {
         println "candidato deletado com sucesso"
     } else {
         println "erro ao deletar usuário"
@@ -85,7 +94,7 @@ static void main(String[] args) {
             postalCode: "12345-678"
     ])
 
-    isSaved = dbManager.saveNewEnterpriseTESTE(enterprise)
+    isSaved = db.enterprise.save(enterprise)
     if (isSaved) {
         println("Empresa salva com sucesso!")
     } else {
@@ -93,11 +102,11 @@ static void main(String[] args) {
     }
 
 
-    id = dbManager.getUserIdByEmailAndPassword("empresa.teste@example.com", "senhaSegura123")
+    id = db.enterprise.getUserIdByEmailAndPassword("empresa.teste@example.com", "senhaSegura123")
 
-    def oldEnterprise = dbManager.getEnterpriseById(id)
+    def oldEnterprise = db.enterprise.getById(id)
 
-    dbManager.updateEnterpriseTESTE(oldEnterprise, new Enterprise([
+    db.enterprise.update(oldEnterprise, new Enterprise([
             email: "empresa.teste@example.com",
             password: "senhaSegura123",
             name: "Pontevi Teste ATUALIZADO",
@@ -108,9 +117,9 @@ static void main(String[] args) {
             postalCode: "12345-678"
     ]))
 
-    println dbManager.getEnterpriseById(id)
+    println db.enterprise.getById(id)
 
-    if (dbManager.deleteEnterpriseByIdTESTE(id)) {
+    if (db.enterprise.deleteById(id)) {
         println "Empresa deletada com sucesso"
     } else {
         println "erro ao deletar empresa"
@@ -128,18 +137,18 @@ static void main(String[] args) {
             skills: ["Java"]
     ])
 
-    isSaved = dbManager.saveNewEmploymentTESTE(employment)
+    isSaved = db.employment.save(employment)
     if (isSaved) {
         println("Vaga salva com sucesso!")
     } else {
         println("Falha ao salvar vaga.")
     }
 
-    id = dbManager.getEmploymentId(6, "Desenvolvedor Backend")
+    id = db.employment.getEmploymentId(6, "Desenvolvedor Backend")
 
-    def oldEmployment = dbManager.getEmploymentById(id)
+    def oldEmployment = db.employment.getById(id)
 
-    dbManager.updateEmploymentTESTE(oldEmployment, new Employment([
+    db.employment.update(oldEmployment, new Employment([
             enterpriseId: 6,
             name: "Desenvolvedor Backend ATUALIZADO",
             description: "Responsável pelo desenvolvimento e manutenção de APIs RESTful usando Java e Spring Boot.",
@@ -149,9 +158,9 @@ static void main(String[] args) {
             skills: ["Java"]
     ]))
 
-    println dbManager.getEmploymentById(id)
+    println db.employment.getById(id)
 
-    if (dbManager.deleteEmploymentByIdTESTE(id)) {
+    if (db.employment.deleteById(id)) {
         println "Vaga deletada com sucesso"
     } else {
         println "erro ao deletar vaga"
