@@ -9,6 +9,8 @@ import java.sql.SQLException
 import entities.Candidate
 import db.Queries
 
+import managers.TransactionManager
+
 class DatabaseManager {
 
     Connection connection
@@ -27,7 +29,7 @@ class DatabaseManager {
         connection.autoCommit = false
 
         try {
-            connection.createStatement().withCloseable { statement ->
+            this.connection.createStatement().withCloseable { statement ->
                 statement.execute(Queries.insertUsersTable(candidate))
                 if(!this.getPostalCodeId(candidate)){
                     statement.execute(Queries.insertPostalCodesTable(candidate))
@@ -51,6 +53,34 @@ class DatabaseManager {
             return false
         } finally {
             connection.autoCommit = originalAutoCommit
+        }
+    }
+
+    boolean saveNewCandidateTESTE(Candidate candidate) {
+        if (!candidate.isAllSet()) {
+            return false
+        }
+
+        try {
+            return TransactionManager.executeInTransaction(connection, {
+                this.connection.createStatement().withCloseable { statement ->
+                    statement.execute(Queries.insertUsersTable(candidate))
+                    if (!getPostalCodeId(candidate)) {
+                        statement.execute(Queries.insertPostalCodesTable(candidate))
+                    }
+                    statement.execute(Queries.insertCandidatesTable(candidate))
+                    candidate.getSkills().each { skill ->
+                        if (!getSkillIdByName(skill)) {
+                            statement.execute(Queries.insertSkillsTable(skill))
+                        }
+                    }
+                    statement.execute(Queries.insertCandidateSkillTable(candidate))
+                }
+                return true
+            })
+        } catch (SQLException e) {
+            e.printStackTrace()
+            return false
         }
     }
 
@@ -97,7 +127,7 @@ class DatabaseManager {
         connection.autoCommit = false
 
         try {
-            connection.createStatement().withCloseable { statement ->
+            this.connection.createStatement().withCloseable { statement ->
                 statement.execute(Queries.updateUsersTable(original, updated))
                 if(!this.getPostalCodeId(updated)){
                     statement.execute(Queries.updatePostalCodesTable(original, updated))
@@ -119,6 +149,36 @@ class DatabaseManager {
 
         } finally {
             connection.autoCommit = originalAutoCommit
+        }
+    }
+
+    boolean updateCandidateTESTE(Candidate original, Candidate updated) {
+        if (!original || !updated || !updated.isAllSet()) {
+            return false
+        }
+
+        if (!this.hasDifferences(original, updated)) {
+            return false
+        }
+
+        try {
+            return TransactionManager.executeInTransaction(connection, {
+                this.connection.createStatement().withCloseable { statement ->
+                    statement.execute(Queries.updateUsersTable(original, updated))
+                    if(!this.getPostalCodeId(updated)){
+                        statement.execute(Queries.updatePostalCodesTable(original, updated))
+                    }
+                    statement.execute(Queries.updateCandidatesTable(original, updated))
+                    statement.execute(Queries.deleteUnusedPostalCodes())
+                    statement.execute(Queries.updateCandidateSkillTable(original, updated))
+                    statement.execute(Queries.deleteUnusedSkills())
+                }
+                return true
+            })
+
+        } catch (SQLException e) {
+            e.printStackTrace()
+            return false
         }
     }
 
@@ -148,6 +208,28 @@ class DatabaseManager {
         }
     }
 
+    boolean deleteCandidateByIdTESTE(int id) {
+
+        boolean originalAutoCommit = connection.autoCommit
+        connection.autoCommit = false
+
+        try {
+            return TransactionManager.executeInTransaction(connection, {
+                this.connection.createStatement().withCloseable { statement ->
+                    statement.execute(Queries.deleteCandidateById(id))
+                    statement.execute(Queries.deleteUnusedPostalCodes())
+                    statement.execute(Queries.deleteUnusedSkills())
+                }
+
+                return true
+            })
+
+        } catch (SQLException e) {
+            e.printStackTrace()
+            return false
+        }
+    }
+
     //CRUD Enterprises
     boolean saveNewEnterprise(Enterprise enterprise) {
         if (!enterprise.isAllSet()) {
@@ -158,7 +240,7 @@ class DatabaseManager {
         connection.autoCommit = false
 
         try {
-            connection.createStatement().withCloseable { statement ->
+            this.connection.createStatement().withCloseable { statement ->
                 statement.execute(Queries.insertUsersTable(enterprise))
                 if(!this.getPostalCodeId(enterprise)){
                     statement.execute(Queries.insertPostalCodesTable(enterprise))
@@ -177,6 +259,29 @@ class DatabaseManager {
 
         } finally {
             connection.autoCommit = originalAutoCommit
+        }
+    }
+
+    boolean saveNewEnterpriseTESTE(Enterprise enterprise) {
+        if (!enterprise.isAllSet()) {
+            return false
+        }
+
+        try {
+            return TransactionManager.executeInTransaction(connection, {
+                this.connection.createStatement().withCloseable { statement ->
+                    statement.execute(Queries.insertUsersTable(enterprise))
+                    if(!this.getPostalCodeId(enterprise)){
+                        statement.execute(Queries.insertPostalCodesTable(enterprise))
+                    }
+                    statement.execute(Queries.insertEnterprisesTable(enterprise))
+                }
+                return true
+            })
+
+        } catch (SQLException e) {
+            e.printStackTrace()
+            return false
         }
     }
 
@@ -221,7 +326,7 @@ class DatabaseManager {
         connection.autoCommit = false
 
         try {
-            connection.createStatement().withCloseable { statement ->
+            this.connection.createStatement().withCloseable { statement ->
                 statement.execute(Queries.updateUsersTable(original, updated))
                 if(!this.getPostalCodeId(updated)){
                     statement.execute(Queries.updatePostalCodesTable(original, updated))
@@ -241,6 +346,34 @@ class DatabaseManager {
 
         } finally {
             connection.autoCommit = originalAutoCommit
+        }
+    }
+
+    boolean updateEnterpriseTESTE(Enterprise original, Enterprise updated) {
+        if (!original || !updated || !updated.isAllSet()) {
+            return false
+        }
+
+        if (!this.hasDifferences(original, updated)) {
+            return false
+        }
+
+        try {
+            return TransactionManager.executeInTransaction(connection, {
+                this.connection.createStatement().withCloseable { statement ->
+                    statement.execute(Queries.updateUsersTable(original, updated))
+                    if(!this.getPostalCodeId(updated)){
+                        statement.execute(Queries.updatePostalCodesTable(original, updated))
+                    }
+                    statement.execute(Queries.updateEnterprisesTable(original, updated))
+                    statement.execute(Queries.deleteUnusedPostalCodes())
+                }
+                return true
+            })
+
+        } catch (SQLException e) {
+            e.printStackTrace()
+            return false
         }
     }
 
@@ -272,6 +405,26 @@ class DatabaseManager {
         }
     }
 
+    boolean deleteEnterpriseByIdTESTE(int id) {
+
+        try {
+            return TransactionManager.executeInTransaction(connection, {
+                this.connection.createStatement().withCloseable { statement ->
+                    this.getEmploymentIds(id).each {employmentId ->
+                        this.deleteEmploymentById(employmentId as Integer)
+                    }
+                    statement.execute(Queries.deleteEnterpriseById(id))
+                    statement.execute(Queries.deleteUnusedPostalCodes())
+                }
+                return true
+            })
+
+        } catch (SQLException e) {
+            e.printStackTrace()
+            return false
+        }
+    }
+
     //CRUD Employments
     boolean saveNewEmployment(Employment employment) {
         if (!employment.isAllSet()) {
@@ -282,7 +435,7 @@ class DatabaseManager {
         connection.autoCommit = false
 
         try {
-            connection.createStatement().withCloseable { statement ->
+            this.connection.createStatement().withCloseable { statement ->
                 if(!this.getPostalCodeId(employment)){
                     statement.execute(Queries.insertPostalCodesTable(employment))
                 }
@@ -306,6 +459,34 @@ class DatabaseManager {
 
         } finally {
             connection.autoCommit = originalAutoCommit
+        }
+    }
+
+    boolean saveNewEmploymentTESTE(Employment employment) {
+        if (!employment.isAllSet()) {
+            return false
+        }
+
+        try {
+            return TransactionManager.executeInTransaction(connection, {
+                this.connection.createStatement().withCloseable { statement ->
+                    if(!this.getPostalCodeId(employment)){
+                        statement.execute(Queries.insertPostalCodesTable(employment))
+                    }
+                    statement.execute(Queries.insertEmploymentsTable(employment))
+                    employment.getSkills().each { skill ->
+                        if (this.getSkillIdByName(skill)) {
+                            return
+                        }
+                        statement.execute(Queries.insertSkillsTable(skill))
+                    }
+                    statement.execute(Queries.insertEmploymentSkillTable(employment))
+                }
+                return true
+            })
+        } catch (SQLException e) {
+            e.printStackTrace()
+            return false
         }
     }
 
@@ -349,7 +530,7 @@ class DatabaseManager {
         connection.autoCommit = false
 
         try {
-            connection.createStatement().withCloseable { statement ->
+            this.connection.createStatement().withCloseable { statement ->
                 if(!this.getPostalCodeId(updated)){
                     statement.execute(Queries.updatePostalCodesTable(original, updated))
                 }
@@ -379,6 +560,40 @@ class DatabaseManager {
         }
     }
 
+    boolean updateEmploymentTESTE(Employment original, Employment updated) {
+        if (!original || !updated || !updated.isAllSet()) {
+            return false
+        }
+
+        if (!this.hasDifferences(original, updated)) {
+            return false
+        }
+
+        try {
+            return TransactionManager.executeInTransaction(connection, {
+                this.connection.createStatement().withCloseable { statement ->
+                    if(!this.getPostalCodeId(updated)){
+                        statement.execute(Queries.updatePostalCodesTable(original, updated))
+                    }
+                    statement.execute(Queries.updateEmploymentsTable(original, updated))
+                    statement.execute(Queries.deleteUnusedPostalCodes())
+                    updated.getSkills().each { skill ->
+                        if (this.getSkillIdByName(skill)) {
+                            return
+                        }
+                        statement.execute(Queries.insertSkillsTable(skill))
+                    }
+                    statement.execute(Queries.updateEmploymentSkillTable(original, updated))
+                    statement.execute(Queries.deleteUnusedSkills())
+                }
+                return true
+            })
+        } catch (SQLException e) {
+            e.printStackTrace()
+            return false
+        }
+    }
+
     boolean deleteEmploymentById(int id) {
 
         boolean originalAutoCommit = connection.autoCommit
@@ -405,6 +620,23 @@ class DatabaseManager {
         }
     }
 
+    boolean deleteEmploymentByIdTESTE(int id) {
+
+        try {
+            return TransactionManager.executeInTransaction(connection, {
+                this.connection.createStatement().withCloseable { statement ->
+                    statement.execute(Queries.deleteEmploymentById(id))
+                    statement.execute(Queries.deleteUnusedPostalCodes())
+                    statement.execute(Queries.deleteUnusedSkills())
+                }
+                return true
+            })
+        } catch (SQLException e) {
+            e.printStackTrace()
+            return false
+        }
+    }
+
     //CRUD Skills
     boolean saveNewSkill(String skill) {
         if (this.getSkillIdByName(skill)) {
@@ -415,7 +647,7 @@ class DatabaseManager {
         connection.autoCommit = false
 
         try {
-            connection.createStatement().withCloseable { statement ->
+            this.connection.createStatement().withCloseable { statement ->
                 statement.execute(Queries.insertSkillsTable(skill))
             }
 
@@ -557,7 +789,7 @@ class DatabaseManager {
         }
     }
 
-    boolean hasDifferences(entity1, entity2, boolean ignoreId = false) {
+    public boolean hasDifferences(entity1, entity2, boolean ignoreId = false) {
         return entity1.properties.any { key, value ->
             boolean shouldIgnore = key == 'class' || (ignoreId && key == 'id')
             !shouldIgnore && entity2.properties[key] != value

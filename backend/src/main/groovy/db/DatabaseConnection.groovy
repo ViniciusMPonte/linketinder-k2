@@ -9,7 +9,7 @@ class DatabaseConnection {
     static Connection connect() {
         String url = "jdbc:postgresql://localhost:5432/db_linketinder"
         String user = "postgres"
-        String password = "senhasegura"
+        String password = "01020330"
 
         try {
             Class.forName("org.postgresql.Driver")

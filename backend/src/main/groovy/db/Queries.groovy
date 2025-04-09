@@ -19,12 +19,13 @@ class Queries {
     }
 
     static String insertCandidatesTable(Candidate candidate) {
+        def sdf = new java.text.SimpleDateFormat("yyyy-MM-dd")
         String query = "INSERT INTO candidates (user_id, name, description, birthday, cpf, postal_code_id)\n" +
                 "VALUES (\n" +
                 "    (SELECT id FROM users WHERE email = '" + candidate.getEmail() + "'),\n" +
                 "    '" + candidate.getName() + "',\n" +
                 "    '" + candidate.getDescription() + "',\n" +
-                "    '" + candidate.getBirthday().format("yyyy-MM-dd") + "',\n" + // Formato esperado: 'YYYY-MM-DD'
+                "    '" + sdf.format(candidate.getBirthday()) + "',\n" + // Formato esperado: 'YYYY-MM-DD'
                 "    '" + candidate.getCpf() + "',\n" +
                 "    (SELECT id FROM postal_codes WHERE postal_code = '" + candidate.getPostalCode() + "')\n" +
                 ");\n"
