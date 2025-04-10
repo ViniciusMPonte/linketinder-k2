@@ -1,15 +1,17 @@
 package aczg.gradleproject
 //Feito por Vinícius Menezes Pontes
 
-import db.DatabaseConnection
 import entities.Candidate
 import entities.Enterprise
 import entities.Employment
 import services.SectionService
+import view.CandidateOptions
+import view.EmploymentOptions
+import view.EnterpriseOptions
+
 import view.Menu
-import managers.DatabaseManager
+
 import java.text.SimpleDateFormat
-import managers.TransactionManager
 
 import db.*
 
@@ -17,21 +19,27 @@ static void main(String[] args) {
 
     def conn = DatabaseConnection.connect()
     def transactionManager = new TransactionManager(conn)
-    def dbManager = new DatabaseManager(conn, transactionManager)
+
     def dbCandidate = new CRUDCandidate(conn, transactionManager)
     def dbEnterprise = new CRUDEnterprise(conn, transactionManager)
     def dbEmployment = new CRUDEmployment(conn, transactionManager)
-    
-    def db =  [
+    def dbUtils = new DatabaseUtils(conn, transactionManager)
+    Scanner input = new Scanner(System.in)
+    def db = [
             candidate : dbCandidate,
             enterprise: dbEnterprise,
-            employment: dbEmployment
+            employment: dbEmployment,
+            utils: dbUtils
     ]
-    
-    
-    Scanner input = new Scanner(System.in)
     def section = new SectionService(input, db)
-    def menu = new Menu(section)
+    def candidateOptions = new CandidateOptions(section)
+    def enterpriseOptions = new EnterpriseOptions(section)
+    def employmentOptions = new EmploymentOptions(section)
+    def menu = new Menu(section, [
+            candidate: candidateOptions,
+            enterprise: enterpriseOptions,
+            employment: employmentOptions
+    ])
 
     //TESTES-------------------
 

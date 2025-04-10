@@ -1,7 +1,7 @@
 import db.CRUDCandidate
 import entities.Candidate
 import java.text.SimpleDateFormat
-import managers.TransactionManager
+import db.TransactionManager
 
 static void main(String[] args) {
 

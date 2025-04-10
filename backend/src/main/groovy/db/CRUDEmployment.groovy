@@ -1,14 +1,12 @@
 package db
 
 import entities.Employment
-import managers.DatabaseManager
-import managers.TransactionManager
 
 import java.sql.Connection
 import java.sql.SQLException
 
 
-class CRUDEmployment extends DatabaseManager{
+class CRUDEmployment extends DatabaseUtils{
 
     CRUDEmployment (Connection connection, TransactionManager transactionManager) {
         super(connection, transactionManager)

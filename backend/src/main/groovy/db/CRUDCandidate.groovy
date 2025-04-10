@@ -1,14 +1,12 @@
 package db
 
 import entities.Candidate
-import managers.DatabaseManager
-import managers.TransactionManager
 
 import java.sql.Connection
 import java.sql.SQLException
 
 
-class CRUDCandidate extends DatabaseManager{
+class CRUDCandidate extends DatabaseUtils{
 
     CRUDCandidate(Connection connection, TransactionManager transactionManager){
         super(connection, transactionManager)

@@ -1,7 +1,5 @@
 package services
 
-import managers.DatabaseManager
-
 class SectionService {
 
     public def userLogged

@@ -1,17 +1,18 @@
 package view
 
-import entities.Employment
+
 import entities.Candidate
 import entities.Enterprise
 import services.SectionService
 
-
 class Menu {
 
     SectionService section
+    def entitiesOptions
 
-    Menu(section) {
+    Menu(section, entitiesOptions) {
         this.section = section
+        this.entitiesOptions = entitiesOptions
     }
 
     def startMenu() {
@@ -35,16 +36,16 @@ class Menu {
 
             switch (this.section.input.nextLine()) {
                 case "1":
-                    this.loginEnterprise()
+                    this.entitiesOptions.enterprise.login()
                     break
                 case "2":
-                    this.loginCandidate()
+                    this.entitiesOptions.candidate.login()
                     break
                 case "3":
-                    this.registerEnterprise()
+                    this.entitiesOptions.enterprise.register()
                     break
                 case "4":
-                    this.registerCandidate()
+                    this.entitiesOptions.candidate.register()
                     break
                 case "0":
                     println "Saindo..."
@@ -55,107 +56,6 @@ class Menu {
 
         }
         this.startMenu()
-    }
-
-    void loginEnterprise() {
-
-        println "=== Login ==="
-
-        def email = this.getQuestionResult("\nDigite o email: ")
-        def password = this.getQuestionResult("\nDigite a senha: ")
-
-        Integer enterpriseId = this.section.db.enterprise.getUserIdByEmailAndPassword(email, password)
-
-        if (enterpriseId) {
-            this.section.userLogged = this.section.db.enterprise.getById(enterpriseId)
-            return
-        }
-
-        this.errorMenu("Empresa não encontrada", this.&loginEnterprise)
-    }
-
-    void loginCandidate() {
-
-        println "=== Login ==="
-
-        def email = this.getQuestionResult("\nDigite o email: ")
-        def password = this.getQuestionResult("\nDigite a senha: ")
-
-        Integer candidateId = this.section.db.candidate.getUserIdByEmailAndPassword(email, password)
-
-        if (candidateId) {
-            this.section.userLogged = this.section.db.candidate.getById(candidateId)
-            return
-        }
-
-        println """
-        
-        Candidato não encontrado
-        
-        1. tentar novamente
-        0. Voltar
-        """.stripIndent()
-
-        switch (this.section.input.nextLine()) {
-            case "1":
-                this.loginCandidate()
-                break
-            case "0":
-                println "Voltando..."
-                break
-            default:
-                println "Opção inválida, voltando..."
-        }
-    }
-
-    void registerEnterprise() {
-
-        println "=== Cadastrar Empresa ==="
-
-        Map params = [
-                email      : this.getQuestionResult("\nDigite o email: "),
-                password   : this.getQuestionResult("\nDigite a senha: "),
-                name       : this.getQuestionResult("\nDigite o nome da empresa: "),
-                description: this.getQuestionResult("\nDescreva a empresa: "),
-                cnpj       : this.getQuestionResult("\nDigite o CNPJ da empresa: "),
-                country    : this.getQuestionResult("\nDigite o país da empresa (Brasil): "),
-                state      : this.getQuestionResult("\nDigite o estado da empresa: "),
-                postalCode : this.getQuestionResult("\nDigite o CEP da empresa: ")
-        ]
-
-        if (this.section.db.enterprise.save(new Enterprise(params))) {
-            println "\nEmpresa cadastrada com sucesso."
-            return
-        }
-
-        this.errorMenu("Falha ao cadastrar empresa", this.&registerEnterprise)
-    }
-
-    void registerCandidate() {
-
-        println "=== Cadastrar Candidato ==="
-
-        Map params = [
-                email      : this.getQuestionResult("\nDigite o email: "),
-                password   : this.getQuestionResult("\nDigite sua senha: "),
-                name       : this.getQuestionResult("\nDigite seu nome: "),
-                description: this.getQuestionResult("\nDescreva-se: "),
-                cpf        : this.getQuestionResult("\nDigite seu CPF: "),
-                birthday   : this.getQuestionResult("\nDigite a data do seu aniversário [YYYY-MM-DD]: "),
-                country    : this.getQuestionResult("\nDigite o páis que mora (Brasil): "),
-                state      : this.getQuestionResult("\nDigite o estado que você mora: "),
-                postalCode : this.getQuestionResult("\nDigite seu CEP: "),
-                skills     : this.getQuestionResult(
-                        "\nDigite suas habilidades, separadas por virgula: "
-                )?.replaceAll(/ /, '')?.split(',')?.toList() ?: []
-        ]
-
-        if (this.section.db.candidate.save(new Candidate(params))) {
-            println "\nCandidato cadastrado com sucesso."
-            return
-        }
-
-        this.errorMenu("Falha ao cadastrar candidato", this.&registerCandidate)
     }
 
     def mainMenuCandidate() {
@@ -170,7 +70,7 @@ class Menu {
 
         switch (this.section.input.nextLine()) {
             case "1":
-                this.chooseEmploymentToLike()
+                this.entitiesOptions.candidate.chooseEmploymentToLike()
                 break
             case "2":
                 this.RUDMenuCandidate()
@@ -182,15 +82,6 @@ class Menu {
             default:
                 println "Opção inválida, tente novamente."
         }
-    }
-
-    void chooseEmploymentToLike() {
-
-        int[] employmentIds = this.section.db.employment.getEmploymentIds()
-        employmentIds.each { id ->
-            println this.section.db.employment.getById(id as int)
-        }
-
     }
 
     def RUDMenuCandidate() {
@@ -206,13 +97,13 @@ class Menu {
 
         switch (this.section.input.nextLine()) {
             case "1":
-                this.readCandidateProfile()
+                this.entitiesOptions.candidate.readProfile()
                 break
             case "2":
-                this.updateCandidate()
+                this.entitiesOptions.candidate.update()
                 break
             case "3":
-                this.deleteCandidate()
+                this.entitiesOptions.candidate.delete()
                 break
             case "0":
                 println "Voltando..."
@@ -223,48 +114,6 @@ class Menu {
 
         if (this.section.userLogged == null) return
         this.RUDMenuCandidate()
-    }
-
-    void readCandidateProfile() {
-        println this.section.userLogged
-    }
-
-    void updateCandidate() {
-
-        println "=== Editar Candidato ==="
-
-        Map params = [
-                email      : this.getQuestionResult("\nDigite o email: "),
-                password   : this.getQuestionResult("\nDigite sua senha: "),
-                name       : this.getQuestionResult("\nDigite seu nome: "),
-                description: this.getQuestionResult("\nDescreva-se: "),
-                cpf        : this.getQuestionResult("\nDigite seu CPF: "),
-                birthday   : this.getQuestionResult("\nDigite a data do seu aniversário [YYYY-MM-DD]: "),
-                country    : this.getQuestionResult("\nDigite o páis que mora (Brasil): "),
-                state      : this.getQuestionResult("\nDigite o estado que você mora: "),
-                postalCode : this.getQuestionResult("\nDigite seu CEP: "),
-                skills     : this.getQuestionResult(
-                        "\nDigite suas habilidades, separadas por virgula: "
-                )?.replaceAll(/ /, '')?.split(',')?.toList() ?: []
-        ]
-
-        if (this.section.db.candidate.update(this.section.userLogged as Candidate, new Candidate(params))) {
-            this.section.userLogged = this.section.db.candidate.getById(this.section.userLogged.getId())
-            println "\nPerfil editado com sucesso."
-            return
-        }
-
-        this.errorMenu("Falha ao tentar editar perfil do candidato.", this.&registerCandidate)
-    }
-
-    void deleteCandidate() {
-        this.section.db.candidate.delete(this.section.userLogged.getId())
-        if (!this.section.db.candidate.getById(this.section.userLogged.getId())) {
-            this.section.userLogged = null
-            println "\nCandidato Excluído com sucesso!"
-            return
-        }
-        this.errorMenu("Erro ao tentar excluir candidato", this.&deleteCandidate)
     }
 
     def mainMenuEnterprise() {
@@ -280,7 +129,7 @@ class Menu {
 
         switch (this.section.input.nextLine()) {
             case "1":
-                this.chooseCandidateToLike()
+                this.entitiesOptions.enterprise.chooseCandidateToLike()
                 break
             case "2":
                 this.RUDMenuEmployment()
@@ -297,13 +146,36 @@ class Menu {
         }
     }
 
-    void chooseCandidateToLike() {
+    def RUDMenuEnterprise() {
+        println """
+        === Perfil da Empresa ===
+        1. Visualizar Perfil
+        2. Editar Perfil
+        3. Excluir Perfil
+        0. Voltar
+        """.stripIndent()
 
-        int[] candidatesIds = this.section.db.candidate.getCandidateIds()
-        candidatesIds.each { id ->
-            println this.section.db.candidate.getById(id as int)
+        print "Escolha uma opção: "
+
+        switch (this.section.input.nextLine()) {
+            case "1":
+                this.entitiesOptions.enterprise.readProfile()
+                break
+            case "2":
+                this.entitiesOptions.enterprise.update()
+                break
+            case "3":
+                this.entitiesOptions.enterprise.delete()
+                break
+            case "0":
+                println "Voltando..."
+                return
+            default:
+                println "Opção inválida, tente novamente."
         }
 
+        if (this.section.userLogged == null) return
+        this.RUDMenuEnterprise()
     }
 
     def RUDMenuEmployment() {
@@ -320,16 +192,16 @@ class Menu {
 
         switch (this.section.input.nextLine()) {
             case "1":
-                this.readEmployments()
+                this.entitiesOptions.employment.readAll()
                 break
             case "2":
-                this.createEmployment()
+                this.entitiesOptions.employment.create()
                 break
             case "3":
-                this.updateEmployment()
+                this.entitiesOptions.employment.update()
                 break
             case "4":
-                this.deleteEmployment()
+                this.entitiesOptions.employment.delete()
                 break
             case "0":
                 println "Voltando..."
@@ -340,192 +212,5 @@ class Menu {
 
         if (this.section.userLogged == null) return
         this.RUDMenuEmployment()
-    }
-
-    void createEmployment() {
-
-        println "=== Criar Vaga ==="
-
-        Map params = [
-                enterpriseId: this.section.userLogged.getId(),
-                name       : this.getQuestionResult("\nDigite o nome da vaga: "),
-                description: this.getQuestionResult("\nDescreva a vaga: "),
-                country    : this.getQuestionResult("\nDigite o país da vaga (Brasil): "),
-                state      : this.getQuestionResult("\nDigite o estado onde a vaga se localiza: "),
-                postalCode : this.getQuestionResult("\nDigite o CEP: "),
-                skills     : this.getQuestionResult(
-                        "\nDigite as habilidades desejadas, separadas por virgula: "
-                )?.replaceAll(/ /, '')?.split(',')?.toList() ?: []
-        ]
-
-        if (this.section.db.employment.save(new Employment(params))) {
-            println "\nVaga cadastrada com sucesso."
-            return
-        }
-
-        this.errorMenu("Falha ao cadastrar vaga", this.&createEmployment)
-    }
-
-    void readEmployments() {
-
-        int[] employmentsIds = this.section.db.employment.getEmploymentIds(this.section.userLogged.getId())
-        employmentsIds.each { id ->
-            println this.section.db.employment.getById(id as int)
-        }
-
-        if(employmentsIds.length == 0){
-            println "\nNenhuma vaga encontrada"
-        }
-
-    }
-
-    void updateEmployment() {
-
-        println "=== Editar Vaga ==="
-
-        Integer employmentId = this.safeToInteger(this.getQuestionResult("\nDigite o ID da vaga à ser editada: "))
-
-        Employment originalEmployment = this.section.db.employment.getById(employmentId)
-        List<Integer> employmentsIdList = this.section.db.employment.getEmploymentIds(this.section.userLogged.getId())
-
-        if(originalEmployment && employmentsIdList.contains(employmentId)){
-            Map params = [
-                    enterpriseId: this.section.userLogged.getId(),
-                    name       : this.getQuestionResult("\nDigite o nome da vaga: "),
-                    description: this.getQuestionResult("\nDescreva a vaga: "),
-                    country    : this.getQuestionResult("\nDigite o país da vaga (Brasil): "),
-                    state      : this.getQuestionResult("\nDigite o estado onde a vaga se localiza: "),
-                    postalCode : this.getQuestionResult("\nDigite o CEP: "),
-                    skills     : this.getQuestionResult(
-                            "\nDigite as habilidades desejadas, separadas por virgula: "
-                    )?.replaceAll(/ /, '')?.split(',')?.toList() ?: []
-            ]
-
-            if (this.section.db.employment.update(originalEmployment, new Employment(params))) {
-                println "\nVaga editada com sucesso."
-                return
-            }
-        }
-
-        this.errorMenu("Falha ao tentar editar vaga.", this.&updateEmployment)
-    }
-
-    void deleteEmployment() {
-
-        Integer employmentId = this.safeToInteger(this.getQuestionResult("\nDigite o ID da vaga à ser deletada: "))
-
-        Employment originalEmployment = this.section.db.employment.getById(employmentId)
-        List<Integer> employmentsIdList = this.section.db.employment.getEmploymentIds(this.section.userLogged.getId())
-
-        if (originalEmployment && employmentsIdList.contains(employmentId)){
-            this.section.db.employment.deleteById(employmentId)
-            if (!this.section.db.employment.getById(employmentId)) {
-                println "\nVaga Excluída com sucesso!"
-                return
-            }
-        }
-
-        this.errorMenu("Erro ao tentar excluir candidato", this.&deleteCandidate)
-    }
-
-    def RUDMenuEnterprise() {
-        println """
-        === Perfil da Empresa ===
-        1. Visualizar Perfil
-        2. Editar Perfil
-        3. Excluir Perfil
-        0. Voltar
-        """.stripIndent()
-
-        print "Escolha uma opção: "
-
-        switch (this.section.input.nextLine()) {
-            case "1":
-                this.readEnterpriseProfile()
-                break
-            case "2":
-                this.updateEnterprise()
-                break
-            case "3":
-                this.deleteEnterprise()
-                break
-            case "0":
-                println "Voltando..."
-                return
-            default:
-                println "Opção inválida, tente novamente."
-        }
-
-        if (this.section.userLogged == null) return
-        this.RUDMenuEnterprise()
-    }
-
-    void readEnterpriseProfile() {
-        println this.section.userLogged
-    }
-
-    void updateEnterprise() {
-
-        println "=== Editar Empresa ==="
-
-        Map params = [
-                email      : this.getQuestionResult("\nDigite o email: "),
-                password   : this.getQuestionResult("\nDigite a senha: "),
-                name       : this.getQuestionResult("\nDigite o nome da empresa: "),
-                description: this.getQuestionResult("\nDescreva a empresa: "),
-                cnpj       : this.getQuestionResult("\nDigite seu CNPJ: "),
-                country    : this.getQuestionResult("\nDigite o país da empresa (Brasil): "),
-                state      : this.getQuestionResult("\nDigite o estado onde a empresa se localiza: "),
-                postalCode : this.getQuestionResult("\nDigite o CEP: ")
-        ]
-
-        if (this.section.db.enterprise.update(this.section.userLogged as Enterprise, new Enterprise(params))) {
-            this.section.userLogged = this.section.db.enterprise.getById(this.section.userLogged.getId())
-            println "\nPerfil editado com sucesso."
-            return
-        }
-
-        this.errorMenu("Falha ao tentar editar perfil da empresa.", this.&registerEnterprise)
-    }
-
-    void deleteEnterprise() {
-        this.section.db.enterprise.deleteById(this.section.userLogged.getId())
-        if (!this.section.db.enterprise.getById(this.section.userLogged.getId())) {
-            this.section.userLogged = null
-            println "\nEmpresa Excluída com sucesso!"
-            return
-        }
-        this.errorMenu("Erro ao tentar excluir empresa", this.&deleteEnterprise)
-    }
-
-    //UTILS
-    String getQuestionResult(String question) {
-        print question
-        return this.section.input.nextLine()
-    }
-
-    void errorMenu(String message, Closure callback) {
-        println """
-    
-        $message
-        
-        1. Tentar novamente
-        0. Voltar
-        """.stripIndent()
-
-        switch (this.section.input.nextLine()) {
-            case "1":
-                callback.call()
-                break
-            case "0":
-                println "Voltando..."
-                break
-            default:
-                println "Opção inválida, voltando..."
-        }
-    }
-
-    Integer safeToInteger(String value) {
-        return value?.isInteger() ? value.toInteger() : null
     }
 }

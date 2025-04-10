@@ -1,26 +1,17 @@
-package managers
-
-import entities.Candidate
-import entities.Employment
-import entities.Enterprise
+package db
 
 import java.sql.Connection
 import java.sql.SQLException
 
-import db.Queries
-
-import managers.TransactionManager
-
-class DatabaseManager {
+class DatabaseUtils {
 
     Connection connection
     TransactionManager transactionManager
 
-    DatabaseManager(Connection connection, TransactionManager transactionManager){
+    DatabaseUtils(Connection connection, TransactionManager transactionManager) {
         this.connection = connection
         this.transactionManager = transactionManager
     }
-
 
     boolean deleteEmploymentById(int id) {
         try {
@@ -38,37 +29,24 @@ class DatabaseManager {
         }
     }
 
-
-
-    //CRUD Skills
     boolean saveNewSkill(String skill) {
         if (this.getSkillIdByName(skill)) {
             return true
         }
 
-        boolean originalAutoCommit = connection.autoCommit
-        connection.autoCommit = false
-
         try {
-            this.connection.createStatement().withCloseable { statement ->
-                statement.execute(Queries.insertSkillsTable(skill))
-            }
-
-            connection.commit()
-            return true
-
+            return this.transactionManager.executeInTransaction({
+                this.connection.createStatement().withCloseable { statement ->
+                    statement.execute(Queries.insertSkillsTable(skill))
+                }
+                return true
+            })
         } catch (SQLException e) {
-
-            connection.rollback()
             e.printStackTrace()
             return false
-
-        } finally {
-            connection.autoCommit = originalAutoCommit
         }
     }
 
-    //UTILS
     Integer getUserIdByEmail(String email) {
         try {
             return this.connection.createStatement().withCloseable { statement ->
@@ -120,7 +98,7 @@ class DatabaseManager {
         }
     }
 
-   Integer getPostalCodeId(update) {
+    Integer getPostalCodeId(update) {
         try {
             return this.connection.createStatement().withCloseable { statement ->
                 statement.executeQuery(Queries.selectPostalCodeId(update.getPostalCode(), update.getState())).withCloseable { resultSet ->
@@ -192,7 +170,7 @@ class DatabaseManager {
         }
     }
 
-    public boolean hasDifferences(entity1, entity2, boolean ignoreId = false) {
+    boolean hasDifferences(entity1, entity2, boolean ignoreId = false) {
         return entity1.properties.any { key, value ->
             boolean shouldIgnore = key == 'class' || (ignoreId && key == 'id')
             !shouldIgnore && entity2.properties[key] != value
