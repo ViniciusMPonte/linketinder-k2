@@ -22,7 +22,7 @@ class CRUDCandidate extends DatabaseUtils{
             return this.transactionManager.executeInTransaction({
                 this.connection.createStatement().withCloseable({ statement ->
                     statement.execute(Queries.insertUsersTable(candidate))
-                    if (!getPostalCodeId(candidate)) {
+                    if (!this.getPostalCodeId(candidate)) {
                         statement.execute(Queries.insertPostalCodesTable(candidate))
                     }
                     statement.execute(Queries.insertCandidatesTable(candidate))
