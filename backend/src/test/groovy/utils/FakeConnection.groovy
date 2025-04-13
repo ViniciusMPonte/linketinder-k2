@@ -1,6 +1,7 @@
 package utils
 
 import entities.Candidate
+import entities.Enterprise
 
 import java.sql.Connection
 import java.sql.ResultSet
@@ -14,18 +15,18 @@ class FakeConnection {
     public String sqlResult = ""
 
 
-    public FakeConnection(Candidate candidate){
-        this.setResultSet(candidate)
+    public FakeConnection(entity){
+        this.setResultSet(entity)
     }
 
-    def setResultSet(Candidate candidate){
+    def setResultSet(entity){
         this.mockResultSet = [
                 next         : { -> true },
 
                 getInt       : { String columnName ->
                     switch (columnName) {
                         case "id":
-                            return candidate.getId() ? candidate.getId() : 1
+                            return entity.getId() ? entity.getId() : 1
                         default:
                             return 0
                     }
@@ -34,23 +35,23 @@ class FakeConnection {
                 getString    : { String columnName ->
                     switch (columnName) {
                         case "email":
-                            return candidate.getEmail()
+                            return entity.getEmail()
                         case "password":
-                            return candidate.getPassword()
+                            return entity.getPassword()
                         case "name":
-                            return candidate.getName()
+                            return entity.getName()
                         case "description":
-                            return candidate.getDescription()
+                            return entity.getDescription()
                         case "cpf":
-                            return candidate.getCpf()
+                            return entity.getCpf()
                         case "country":
-                            return candidate.getCountry()
+                            return entity.getCountry()
                         case "state":
-                            return candidate.getState()
+                            return entity.getState()
                         case "postalCode":
-                            return candidate.getPostalCode()
+                            return entity.getPostalCode()
                         case "skills":
-                            return "{" + candidate.getSkills().join(",") + "}"
+                            return "{" + entity.getSkills().join(",") + "}"
                         default:
                             return null
                     }
@@ -58,7 +59,7 @@ class FakeConnection {
 
                 getDate: { String columnName ->
                     if (columnName == "birthday") {
-                        def date = candidate.getBirthday()
+                        def date = entity.getBirthday()
                         return date != null ? new java.sql.Date(date.getTime()) : null
                     }
                     return null
