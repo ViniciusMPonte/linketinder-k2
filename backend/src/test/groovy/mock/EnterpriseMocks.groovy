@@ -2,8 +2,6 @@ package mock
 
 import entities.Enterprise
 
-import java.text.SimpleDateFormat
-
 class EnterpriseMocks {
 
     static def save = [

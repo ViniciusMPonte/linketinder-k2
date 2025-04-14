@@ -1,25 +1,19 @@
 package utils
 
-import entities.Candidate
-import entities.Enterprise
-
 import java.sql.Connection
 import java.sql.ResultSet
 import java.sql.Statement
 
 class FakeConnection {
 
-
     public def mockResultSet
-
     public String sqlResult = ""
 
-
-    public FakeConnection(entity){
+    FakeConnection(entity) {
         this.setResultSet(entity)
     }
 
-    def setResultSet(entity){
+    def setResultSet(entity) {
         this.mockResultSet = [
                 next         : { -> true },
 
@@ -57,7 +51,7 @@ class FakeConnection {
                     }
                 },
 
-                getDate: { String columnName ->
+                getDate      : { String columnName ->
                     if (columnName == "birthday") {
                         def date = entity.getBirthday()
                         return date != null ? new java.sql.Date(date.getTime()) : null
@@ -75,7 +69,7 @@ class FakeConnection {
         return [
                 createStatement: { ->
                     return [
-                            execute: { String sql ->
+                            execute     : { String sql ->
                                 this.sqlResult = this.sqlResult + sql
                                 return true
                             },
@@ -83,7 +77,7 @@ class FakeConnection {
                                 this.sqlResult = this.sqlResult + sql
                                 return this.mockResultSet
                             },
-                            close: { -> }
+                            close       : { -> }
                     ] as Statement
                 }
         ] as Connection

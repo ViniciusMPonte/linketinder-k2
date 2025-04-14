@@ -1,29 +1,9 @@
-import db.CRUDCandidate
 import db.CRUDCandidateTests
+import db.CRUDEmploymentTests
 import db.CRUDEnterpriseTests
-import entities.Candidate
-import utils.FakeConnection
-
-import java.text.SimpleDateFormat
 import db.TransactionManager
 
 static void main(String[] args) {
-
-    Candidate candidate = new Candidate([
-            email: "john.doe@example.com",
-            password: "senhaSegura123",
-            name: "John Doe",
-            description: "Desenvolvedor backend com 5 anos de experiência",
-            cpf: "123.456.789-00",
-            birthday: new SimpleDateFormat("yyyy-MM-dd").parse("1990-05-15"),
-            country: 'Brasil',
-            state: "São Paulo",
-            postalCode: "12345-678",
-            skills: ["Java", "SQL", "Spring", "Groovy"]
-    ])
-
-    //def fakeConnection = new FakeConnection(candidate).connect()
-
 
     def fakeTransactionManager = new TransactionManager(null) {
         @Override
@@ -32,9 +12,9 @@ static void main(String[] args) {
         }
     }
 
-
     def dbCandidate = new CRUDCandidateTests(fakeTransactionManager)
     def dbEnterprise = new CRUDEnterpriseTests(fakeTransactionManager)
+    def dbEmployment = new CRUDEmploymentTests(fakeTransactionManager)
 
     println((dbCandidate.save()  ? "[PASSED]" : "[FAILED]") + " dbCandidate.save")
     println((dbCandidate.getById()  ? "[PASSED]" : "[FAILED]") + " dbCandidate.getById")
@@ -46,9 +26,8 @@ static void main(String[] args) {
     println((dbEnterprise.update()  ? "[PASSED]" : "[FAILED]") + " dbEnterprise.update")
     println((dbEnterprise.deleteById()  ? "[PASSED]" : "[FAILED]") + " dbEnterprise.deleteById")
 
-
-
-
-
-
+    println((dbEmployment.save()  ? "[PASSED]" : "[FAILED]") + " dbEmployment.save")
+    println((dbEmployment.getById()  ? "[PASSED]" : "[FAILED]") + " dbEmployment.getById")
+    println((dbEmployment.update()  ? "[PASSED]" : "[FAILED]") + " dbEmployment.update")
+    println((dbEmployment.deleteById()  ? "[PASSED]" : "[FAILED]") + " dbEmployment.deleteById")
 }

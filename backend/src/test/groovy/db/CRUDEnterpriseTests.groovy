@@ -4,8 +4,6 @@ import entities.Enterprise
 import utils.FakeConnection
 import mock.EnterpriseMocks
 
-import java.sql.SQLException
-
 class CRUDEnterpriseTests extends FakeConnection {
 
     TransactionManager fakeTransactionManager
@@ -49,7 +47,6 @@ class CRUDEnterpriseTests extends FakeConnection {
         this.dbEnterprise.save(EnterpriseMocks.save.input)
 
         def result = this.normalize(this.sqlResult) == this.normalize(EnterpriseMocks.save.output)
-        //println this.sqlResult
 
         this.sqlResult = ""
         return result
@@ -60,7 +57,6 @@ class CRUDEnterpriseTests extends FakeConnection {
         this.dbEnterprise.getById(EnterpriseMocks.getById.input.getId())
 
         def result = this.normalize(this.sqlResult) == this.normalize(EnterpriseMocks.getById.output)
-        //println this.sqlResult
 
         this.sqlResult = ""
         return result
@@ -70,7 +66,6 @@ class CRUDEnterpriseTests extends FakeConnection {
         this.dbEnterprise.update(EnterpriseMocks.update.input.original, EnterpriseMocks.update.input.updated)
 
         def result = this.normalize(this.sqlResult) == this.normalize(EnterpriseMocks.update.output)
-        //println this.sqlResult
 
         this.sqlResult = ""
         return result
@@ -80,7 +75,6 @@ class CRUDEnterpriseTests extends FakeConnection {
         this.dbEnterprise.deleteById(EnterpriseMocks.deleteById.input)
 
         def result = this.normalize(this.sqlResult) == this.normalize(EnterpriseMocks.deleteById.output)
-        //println this.sqlResult
 
         this.sqlResult = ""
         return result

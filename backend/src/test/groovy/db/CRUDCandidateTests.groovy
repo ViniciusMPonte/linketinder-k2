@@ -31,7 +31,7 @@ class CRUDCandidateTests extends FakeConnection {
         }
     }
 
-    String normalize(str){
+    String normalize(str) {
         return str.replaceAll(/[\n\r\t]+/, "")
                 .replaceAll(/ */, "")
                 .trim()
@@ -42,7 +42,6 @@ class CRUDCandidateTests extends FakeConnection {
         this.dbCandidate.save(CandidateMocks.save.input)
 
         def result = this.normalize(this.sqlResult) == this.normalize(CandidateMocks.save.output)
-        //println this.sqlResult
 
         this.sqlResult = ""
         return result
@@ -53,7 +52,6 @@ class CRUDCandidateTests extends FakeConnection {
         this.dbCandidate.getById(CandidateMocks.getById.input.getId())
 
         def result = this.normalize(this.sqlResult) == this.normalize(CandidateMocks.getById.output)
-        //println this.sqlResult
 
         this.sqlResult = ""
         return result
@@ -63,7 +61,6 @@ class CRUDCandidateTests extends FakeConnection {
         this.dbCandidate.update(CandidateMocks.update.input.original, CandidateMocks.update.input.updated)
 
         def result = this.normalize(this.sqlResult) == this.normalize(CandidateMocks.update.output)
-        //println this.sqlResult
 
         this.sqlResult = ""
         return result
@@ -73,7 +70,6 @@ class CRUDCandidateTests extends FakeConnection {
         this.dbCandidate.deleteById(CandidateMocks.deleteById.input)
 
         def result = this.normalize(this.sqlResult) == this.normalize(CandidateMocks.deleteById.output)
-        //println this.sqlResult
 
         this.sqlResult = ""
         return result
