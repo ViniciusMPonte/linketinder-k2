@@ -78,4 +78,23 @@ export default class DOMQuery {
         } as EmploymentConfig
     }
 
+    getChart(){
+        return document.getElementById("myChart") as HTMLCanvasElement
+    }
+
+    getCandidateslist(){
+        return document.querySelector("#candidates-list") as HTMLElement | null
+    }
+
+    getCandidateProfile(){
+        return document.querySelector("#candidate-profile") as HTMLElement | null
+    }
+
+    getEnterpriseProfile(){
+        return document.querySelector("#enterprise-profile") as HTMLElement | null
+    }
+
+    getEmploymentsList(){
+        return document.querySelector("#employments-list") as HTMLElement | null
+    }
 }
