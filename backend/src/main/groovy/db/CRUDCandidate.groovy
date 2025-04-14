@@ -1,14 +1,13 @@
 package db
 
 import entities.Candidate
-
 import java.sql.Connection
 import java.sql.SQLException
 
 
-class CRUDCandidate extends DatabaseUtils{
+class CRUDCandidate extends DatabaseUtils {
 
-    CRUDCandidate(Connection connection, TransactionManager transactionManager){
+    CRUDCandidate(Connection connection, TransactionManager transactionManager) {
         super(connection, transactionManager)
     }
 
@@ -47,17 +46,17 @@ class CRUDCandidate extends DatabaseUtils{
                 statement.executeQuery(Queries.selectCandidateById(id)).withCloseable { resultSet ->
                     if (resultSet.next()) {
                         Map params = [
-                                id: resultSet.getInt("id"),
-                                email: resultSet.getString("email"),
-                                password: resultSet.getString("password"),
-                                name: resultSet.getString("name"),
+                                id         : resultSet.getInt("id"),
+                                email      : resultSet.getString("email"),
+                                password   : resultSet.getString("password"),
+                                name       : resultSet.getString("name"),
                                 description: resultSet.getString("description"),
-                                cpf: resultSet.getString("cpf"),
-                                birthday: resultSet.getDate("birthday"),
-                                country: resultSet.getString("country"),
-                                state: resultSet.getString("state"),
-                                postalCode: resultSet.getString("postalCode"),
-                                skills: resultSet.getString("skills")?.replaceAll(/[{}]/, '')?.split(',')?.toList() ?: []
+                                cpf        : resultSet.getString("cpf"),
+                                birthday   : resultSet.getDate("birthday"),
+                                country    : resultSet.getString("country"),
+                                state      : resultSet.getString("state"),
+                                postalCode : resultSet.getString("postalCode"),
+                                skills     : resultSet.getString("skills")?.replaceAll(/[{}]/, '')?.split(',')?.toList() ?: []
                         ]
                         return new Candidate(params)
                     } else {
@@ -84,7 +83,7 @@ class CRUDCandidate extends DatabaseUtils{
             return this.transactionManager.executeInTransaction({
                 this.connection.createStatement().withCloseable { statement ->
                     statement.execute(Queries.updateUsersTable(original, updated))
-                    if(!this.getPostalCodeId(updated)){
+                    if (!this.getPostalCodeId(updated)) {
                         statement.execute(Queries.updatePostalCodesTable(original, updated))
                     }
                     statement.execute(Queries.updateCandidatesTable(original, updated))

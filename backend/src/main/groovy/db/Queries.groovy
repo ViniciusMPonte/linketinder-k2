@@ -218,13 +218,13 @@ class Queries {
 
     static String updateCandidatesTable(original, updated) {
         String query = ""
-        if(
+        if (
                 !original.getName().equals(updated.getName()) ||
                 !original.getDescription().equals(updated.getDescription()) ||
                 !original.getBirthday().equals(updated.getBirthday()) ||
                 !original.getCpf().equals(updated.getCpf()) ||
                 !original.getPostalCode().equals(updated.getPostalCode())
-        ){
+        ) {
             query += "UPDATE candidates SET\n"
         }
 
@@ -255,12 +255,12 @@ class Queries {
 
     static String updateEnterprisesTable(original, updated) {
         String query = ""
-        if(
+        if (
                 !original.getName().equals(updated.getName()) ||
                         !original.getDescription().equals(updated.getDescription()) ||
                         !original.getCnpj().equals(updated.getCnpj()) ||
                         !original.getPostalCode().equals(updated.getPostalCode())
-        ){
+        ) {
             query += "UPDATE enterprises SET\n"
         }
 
@@ -289,14 +289,14 @@ class Queries {
 
     static String updateEmploymentsTable(Employment original, Employment updated) {
         String query = ""
-        if(
+        if (
                 !original.getName().equals(updated.getName()) ||
-                !original.getDescription().equals(updated.getDescription()) ||
-                !original.getPostalCode().equals(updated.getPostalCode()) ||
-                !original.getCountry().equals(updated.getCountry()) ||
-                !original.getState().equals(updated.getState()) ||
-                !original.getEnterpriseId().equals(updated.getEnterpriseId())
-        ){
+                        !original.getDescription().equals(updated.getDescription()) ||
+                        !original.getPostalCode().equals(updated.getPostalCode()) ||
+                        !original.getCountry().equals(updated.getCountry()) ||
+                        !original.getState().equals(updated.getState()) ||
+                        !original.getEnterpriseId().equals(updated.getEnterpriseId())
+        ) {
             query += "UPDATE employments SET\n"
         }
 
@@ -364,25 +364,25 @@ class Queries {
     }
 
     static String deleteCandidateById(int id) {
-        return  "DELETE FROM candidate_skill WHERE candidate_id = " + id + ";\n" +
+        return "DELETE FROM candidate_skill WHERE candidate_id = " + id + ";\n" +
                 "DELETE FROM matches WHERE candidate_id = " + id + ";\n" +
                 "DELETE FROM candidates WHERE user_id = " + id + ";\n" +
                 "DELETE FROM users WHERE id = " + id + ";"
     }
 
     static String deleteEmploymentById(int id) {
-        return  "DELETE FROM employment_skill WHERE employment_id = " + id + ";\n" +
+        return "DELETE FROM employment_skill WHERE employment_id = " + id + ";\n" +
                 "DELETE FROM matches WHERE employment_id = " + id + ";\n" +
                 "DELETE FROM employments WHERE id = " + id + ";"
     }
 
     static String deleteEnterpriseById(int id) {
-        return  "DELETE FROM enterprises WHERE user_id = " + id + ";\n" +
+        return "DELETE FROM enterprises WHERE user_id = " + id + ";\n" +
                 "DELETE FROM users WHERE id = " + id + ";"
     }
 
     static String deleteUnusedPostalCodes() {
-        return  "DELETE FROM postal_codes\n" +
+        return "DELETE FROM postal_codes\n" +
                 "WHERE NOT EXISTS (\n" +
                 "    SELECT 1 FROM candidates \n" +
                 "    WHERE candidates.postal_code_id = postal_codes.id\n" +
@@ -420,11 +420,11 @@ class Queries {
         return query
     }
 
-    static String selectAllCandidatesIds(){
+    static String selectAllCandidatesIds() {
         return "SELECT user_id FROM candidates;"
     }
 
-    static String selectAllEmploymentsIds(Integer enterpriseId = null){
+    static String selectAllEmploymentsIds(Integer enterpriseId = null) {
         String filterQuery = enterpriseId ? " WHERE enterprise_id = " + enterpriseId : ""
         return "SELECT id FROM employments$filterQuery;"
     }
@@ -442,7 +442,7 @@ class Queries {
     }
 
     static String deleteUnusedSkills() {
-        return  "DELETE FROM skills\n" +
+        return "DELETE FROM skills\n" +
                 "WHERE NOT EXISTS (\n" +
                 "    SELECT 1 FROM candidate_skill \n" +
                 "    WHERE candidate_skill.skill_id = skills.id\n" +

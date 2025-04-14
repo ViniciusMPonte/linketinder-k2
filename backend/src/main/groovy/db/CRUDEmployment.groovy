@@ -1,14 +1,13 @@
 package db
 
 import entities.Employment
-
 import java.sql.Connection
 import java.sql.SQLException
 
 
-class CRUDEmployment extends DatabaseUtils{
+class CRUDEmployment extends DatabaseUtils {
 
-    CRUDEmployment (Connection connection, TransactionManager transactionManager) {
+    CRUDEmployment(Connection connection, TransactionManager transactionManager) {
         super(connection, transactionManager)
     }
 
@@ -20,7 +19,7 @@ class CRUDEmployment extends DatabaseUtils{
         try {
             return this.transactionManager.executeInTransaction({
                 this.connection.createStatement().withCloseable { statement ->
-                    if(!this.getPostalCodeId(employment)){
+                    if (!this.getPostalCodeId(employment)) {
                         statement.execute(Queries.insertPostalCodesTable(employment))
                     }
                     statement.execute(Queries.insertEmploymentsTable(employment))
@@ -46,14 +45,14 @@ class CRUDEmployment extends DatabaseUtils{
                 statement.executeQuery(Queries.selectEmploymentById(id)).withCloseable { resultSet ->
                     if (resultSet.next()) {
                         Map params = [
-                                id: resultSet.getInt("id"),
+                                id          : resultSet.getInt("id"),
                                 enterpriseId: resultSet.getInt("enterpriseId"),
-                                name: resultSet.getString("name"),
-                                description: resultSet.getString("description"),
-                                country: resultSet.getString("country"),
-                                state: resultSet.getString("state"),
-                                postalCode: resultSet.getString("postalCode"),
-                                skills: resultSet.getString("skills")?.replaceAll(/[{}]/, '')?.split(',')?.toList() ?: []
+                                name        : resultSet.getString("name"),
+                                description : resultSet.getString("description"),
+                                country     : resultSet.getString("country"),
+                                state       : resultSet.getString("state"),
+                                postalCode  : resultSet.getString("postalCode"),
+                                skills      : resultSet.getString("skills")?.replaceAll(/[{}]/, '')?.split(',')?.toList() ?: []
                         ]
                         return new Employment(params)
                     } else {
@@ -79,7 +78,7 @@ class CRUDEmployment extends DatabaseUtils{
         try {
             return this.transactionManager.executeInTransaction({
                 this.connection.createStatement().withCloseable { statement ->
-                    if(!this.getPostalCodeId(updated)){
+                    if (!this.getPostalCodeId(updated)) {
                         statement.execute(Queries.updatePostalCodesTable(original, updated))
                     }
                     statement.execute(Queries.updateEmploymentsTable(original, updated))
