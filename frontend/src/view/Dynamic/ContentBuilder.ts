@@ -1,15 +1,15 @@
+import UIServices from "../../dependencies/UIServices"
+import EntityFactories from "../../dependencies/EntityFactories"
+import ValidationServices from "../../dependencies/ValidationServices"
 import CoreServices from "../../dependencies/CoreServices"
 import Components from "../../dependencies/Components"
-import Chart from "../../components/Chart"
-import {Enterprise} from "../../entities/Enterprise"
-import {ProfileCandidate, ProfileEnterprise} from "../../components/Profile"
-import UIServices from "../../dependencies/UIServices"
 import {Candidate} from "../../entities/Candidate"
+import {Enterprise} from "../../entities/Enterprise"
 import CandidateFormsManager from "../forms/CandidateFormsManager"
 import EnterpriseFormsManager from "../forms/EnterpriseFormsManager"
 import EmploymentFormsManager from "../forms/EmploymentFormsManager"
-import EntityFactories from "../../dependencies/EntityFactories"
-import ValidationServices from "../../dependencies/ValidationServices"
+import {ProfileCandidate, ProfileEnterprise} from "../../components/Profile"
+import Chart from "../../components/Chart"
 
 interface ContentBuilderConfig {
     components: Components

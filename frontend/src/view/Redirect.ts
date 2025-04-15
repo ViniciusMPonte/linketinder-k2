@@ -1,7 +1,7 @@
-import CoreServices from "../dependencies/CoreServices"
+import LoginManager from "../services/LoginManager"
 
 interface RedirectConfig {
-    coreServices: CoreServices
+    loginManager: LoginManager
 }
 
 interface RouteConfig {
@@ -10,12 +10,11 @@ interface RouteConfig {
 
 export default class Redirect {
 
-    private readonly coreServices
+    private readonly loginManager
 
 
-    constructor({coreServices}: RedirectConfig) {
-        this.coreServices = coreServices
-
+    constructor({loginManager}: RedirectConfig) {
+        this.loginManager = loginManager
     }
 
     routes: Record<string, RouteConfig> = {
@@ -56,17 +55,17 @@ export default class Redirect {
 
     redirectAuthenticatedUserByRole(): boolean {
         let isRedirected = false
-        if (this.coreServices.loginManager.loggedIn) {
+        if (this.loginManager.loggedIn) {
             isRedirected = true
-            if (this.coreServices.loginManager.isCandidate) this.candidateEmploymentsList()
-            if (this.coreServices.loginManager.isEnterprise) this.enterpriseCandidatesList()
+            if (this.loginManager.isCandidate) this.candidateEmploymentsList()
+            if (this.loginManager.isEnterprise) this.enterpriseCandidatesList()
         }
         return isRedirected
     }
 
     redirectIfUnauthorizedRole(expectedRole: string): boolean {
-        const isAuthorized = (expectedRole === "candidate" && this.coreServices.loginManager.isCandidate) ||
-            (expectedRole === "enterprise" && this.coreServices.loginManager.isEnterprise)
+        const isAuthorized = (expectedRole === "candidate" && this.loginManager.isCandidate) ||
+            (expectedRole === "enterprise" && this.loginManager.isEnterprise)
 
         if (!isAuthorized) this.home()
         return !isAuthorized
