@@ -17,7 +17,7 @@ class Section {
     readonly loginManager = new LoginManager()
     readonly domQuery = new DOMQuery()
     readonly notification = new Notification()
-    readonly redirect = new Redirect(new LoginManager())
+    //readonly redirect = new Redirect(new LoginManager())
     readonly candidateValidation = new CandidateValidation()
     readonly enterpriseValidation = new EnterpriseValidation()
     readonly employmentValidation = new EmploymentValidation()

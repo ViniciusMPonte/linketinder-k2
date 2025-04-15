@@ -11,34 +11,25 @@ interface ComponentsConfig {
     profileCandidate: ProfileCandidate
 }
 
-// export default class Components {
-//
-//     private readonly card
-//     private readonly chart
-//     private readonly nav
-//     private readonly profileEnterprise
-//     private readonly profileCandidate
-//
-//     constructor({
-//                     card,
-//                     chart,
-//                     nav,
-//                     profileEnterprise,
-//                     profileCandidate
-//                 }:ComponentsConfig) {
-//         this.card = card
-//         this.chart = chart
-//         this.nav = nav
-//         this.profileEnterprise = profileEnterprise
-//         this.profileCandidate = profileCandidate
-//     }
-// }
-
 export default class Components {
 
     public readonly card
+    public readonly chart
+    public readonly nav
+    public readonly profileEnterprise
+    public readonly profileCandidate
 
-    constructor(card: Card) {
+    constructor({
+                    card,
+                    chart,
+                    nav,
+                    profileEnterprise,
+                    profileCandidate
+                }:ComponentsConfig) {
         this.card = card
+        this.chart = chart
+        this.nav = nav
+        this.profileEnterprise = profileEnterprise
+        this.profileCandidate = profileCandidate
     }
 }

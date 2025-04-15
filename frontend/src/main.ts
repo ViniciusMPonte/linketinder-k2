@@ -16,7 +16,7 @@ import DatabaseValidation from "./services/validation/DatabaseValidation"
 //UIServices
 import DOMQuery from "./view/DOMQuery"
 import Notification from "./view/Notification"
-import Redirect from "./view/Redirect"
+
 
 //Components
 import Card from "./components/Card"
@@ -31,13 +31,16 @@ import ValidationServices from "./dependencies/ValidationServices"
 import UIServices from "./dependencies/UIServices"
 import Components from "./dependencies/Components"
 
+import Redirect from "./view/Redirect"
+import ContentBuilder from "./view/Dynamic/ContentBuilder"
+
 //------------------------------
 const dbManager = new DatabaseManager()
 const loginManager = new LoginManager()
 
 const domQuery = new DOMQuery()
 const notification = new Notification()
-const redirect = new Redirect(loginManager)
+
 
 const candidateValidation = new CandidateValidation()
 const enterpriseValidation = new EnterpriseValidation()
@@ -45,6 +48,10 @@ const employmentValidation = new EmploymentValidation()
 const databaseValidation = new DatabaseValidation({dbManager, notification})
 
 const card = new Card(dbManager)
+const chart = new Chart()
+const nav = new Nav()
+const profileEnterprise = new ProfileEnterprise()
+const profileCandidate = new ProfileCandidate()
 
 
 
@@ -59,18 +66,30 @@ const validationServices = new ValidationServices({
     employment: employmentValidation,
     database: databaseValidation
 })
+
+const redirect = new Redirect({coreServices})
+
 const uiServices = new UIServices({
     domQuery: domQuery,
     notification: notification,
     redirect: redirect
 })
-const components = new Components(card)
+const components = new Components({
+    card: card,
+    chart: chart,
+    nav: nav,
+    profileEnterprise: profileEnterprise,
+    profileCandidate: profileCandidate
+})
+
+//const dependencies = {entityFactories, coreServices, validationServices, uiServices, components}
+const contentBuilder = new ContentBuilder({entityFactories, coreServices, validationServices, uiServices, components})
 
 //------------------------------
-export {entityFactories, coreServices, validationServices, uiServices, components}
+export {entityFactories, coreServices, validationServices, uiServices, components, contentBuilder}
 
 //------------------------------
+
 import NavigationManager from "./services/NavigationManager"
-
-const navigationManager = new NavigationManager()
+const navigationManager = new NavigationManager({uiServices, contentBuilder})
 navigationManager.router()

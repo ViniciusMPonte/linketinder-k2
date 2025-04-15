@@ -2,7 +2,7 @@
 
 
 
-export default class DynamicContentLoader {
+export default class ContentLoader {
 
     buildPage(){
 

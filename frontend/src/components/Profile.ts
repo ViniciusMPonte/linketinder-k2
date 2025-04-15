@@ -11,12 +11,18 @@ export class ProfileEnterprise {
     description: string = '';
     cnpj: string = '';
 
-    constructor(config: EnterpriseConfig) {
-        if (config.name) this.name = config.name
+    constructor(config?: EnterpriseConfig) {
+        if (config) {
+            this.setConfig(config);
+        }
+    }
+
+    setConfig(config: EnterpriseConfig): void {
+        if (config.name) this.name = config.name;
         if (config.email) this.email = config.email;
-        if (config.description) this.description = config.description
-        if (config.country) this.country = config.country
-        if (config.state) this.state = config.state
+        if (config.description) this.description = config.description;
+        if (config.country) this.country = config.country;
+        if (config.state) this.state = config.state;
         if (config.cep) this.cep = config.cep;
         if (config.cnpj) this.cnpj = config.cnpj;
     }
@@ -114,17 +120,22 @@ export class ProfileCandidate {
     age: number = 0;
     skills: string[] = [];
 
-    constructor(config: CandidateConfig) {
-        if (config.name) this.name = config.name
+    constructor(config?: CandidateConfig) {
+        if (config) {
+            this.setConfig(config);
+        }
+    }
+
+    setConfig(config: CandidateConfig): void {
+        if (config.name) this.name = config.name;
         if (config.email) this.email = config.email;
-        if (config.description) this.description = config.description
-        if (config.country) this.country = config.country
-        if (config.state) this.state = config.state
+        if (config.description) this.description = config.description;
+        if (config.country) this.country = config.country;
+        if (config.state) this.state = config.state;
         if (config.cep) this.cep = config.cep;
         if (config.cpf) this.cpf = config.cpf;
-        if (config.age) this.age = config.age;
-        if (config.skills) this.skills = config.skills;
-
+        if (typeof config.age === 'number') this.age = config.age;
+        if (Array.isArray(config.skills)) this.skills = config.skills;
     }
 
     get(): string {

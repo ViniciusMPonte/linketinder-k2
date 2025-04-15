@@ -4,15 +4,15 @@ import {EmploymentConfig} from "../entities/Employment"
 
 export default class DOMQuery {
 
-    getCreateCandidateButton(){
+    getCreateCandidateButton() {
         return document.querySelector('.card-body #create-candidate-btn')
     }
 
-    getCreateEnterpriseButton(){
+    getCreateEnterpriseButton() {
         return document.querySelector(".card-body #create-enterprise-btn")
     }
 
-    getInputForNewCandidate(){
+    getInputForNewCandidate() {
         const newCandidateData: CandidateConfig = {
             name: (document.getElementById('candidate-name-input') as HTMLInputElement)?.value || '',
             email: (document.getElementById('candidate-email-input') as HTMLInputElement)?.value || '',
@@ -28,7 +28,7 @@ export default class DOMQuery {
         return newCandidateData
     }
 
-    getInputForNewEnterprise(){
+    getInputForNewEnterprise() {
         const newEnterpriseData: EnterpriseConfig = {
             name: (document.getElementById("enterprise-name-input") as HTMLInputElement)?.value || "",
             email: (document.getElementById("enterprise-email-input") as HTMLInputElement)?.value || "",
@@ -42,15 +42,15 @@ export default class DOMQuery {
         return newEnterpriseData
     }
 
-    getLoginCandidateButton(){
+    getLoginCandidateButton() {
         return document.querySelector(".card-body #login-candidate-btn")
     }
 
-    getLoginEnterpriseButton(){
+    getLoginEnterpriseButton() {
         return document.querySelector(".card-body #login-enterprise-btn")
     }
 
-    getInputForLoginCandidate(){
+    getInputForLoginCandidate() {
         const loginData: CandidateConfig = {
             email: (document.getElementById("candidate-email-input") as HTMLInputElement)?.value || "",
             password: (document.getElementById("candidate-password-input") as HTMLInputElement)?.value || "",
@@ -58,7 +58,7 @@ export default class DOMQuery {
         return loginData
     }
 
-    getInputForLoginEnterprise(){
+    getInputForLoginEnterprise() {
         const loginData: EnterpriseConfig = {
             email: (document.getElementById("enterprise-email-input") as HTMLInputElement)?.value || "",
             password: (document.getElementById("enterprise-password-input") as HTMLInputElement)?.value || "",
@@ -66,11 +66,11 @@ export default class DOMQuery {
         return loginData
     }
 
-    getCreateEmploymentButton(){
+    getCreateEmploymentButton() {
         return document.querySelector(".card-body #create-employment-btn")
     }
 
-    getInputForCreateEmployment(){
+    getInputForCreateEmployment() {
         return {
             name: (document.getElementById("employment-name-input") as HTMLInputElement)?.value || "",
             description: (document.getElementById("employment-description-input") as HTMLInputElement)?.value || "",
@@ -78,23 +78,35 @@ export default class DOMQuery {
         } as EmploymentConfig
     }
 
-    getChart(){
+    getChart() {
         return document.getElementById("myChart") as HTMLCanvasElement
     }
 
-    getCandidateslist(){
+    getCandidateslist() {
         return document.querySelector("#candidates-list") as HTMLElement | null
     }
 
-    getCandidateProfile(){
+    getCandidateProfile() {
         return document.querySelector("#candidate-profile") as HTMLElement | null
     }
 
-    getEnterpriseProfile(){
+    getEnterpriseProfile() {
         return document.querySelector("#enterprise-profile") as HTMLElement | null
     }
 
-    getEmploymentsList(){
+    getEmploymentsList() {
         return document.querySelector("#employments-list") as HTMLElement | null
+    }
+
+    getBody() {
+        return document.querySelector("body")
+    }
+
+    getLogoutBtn() {
+        return document.querySelector("#logout-btn")
+    }
+
+    getResetDBBtn() {
+        return document.querySelector("#reset-db-btn")
     }
 }

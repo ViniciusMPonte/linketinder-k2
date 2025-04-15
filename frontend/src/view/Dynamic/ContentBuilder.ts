@@ -1,17 +1,27 @@
-import CoreServices from "../dependencies/CoreServices"
-import Components from "../dependencies/Components"
-import Chart from "../components/Chart"
-import {Enterprise} from "../entities/Enterprise"
-import {ProfileCandidate, ProfileEnterprise} from "../components/Profile"
-import UIServices from "../dependencies/UIServices"
-import {Candidate} from "../entities/Candidate"
+import CoreServices from "../../dependencies/CoreServices"
+import Components from "../../dependencies/Components"
+import Chart from "../../components/Chart"
+import {Enterprise} from "../../entities/Enterprise"
+import {ProfileCandidate, ProfileEnterprise} from "../../components/Profile"
+import UIServices from "../../dependencies/UIServices"
+import {Candidate} from "../../entities/Candidate"
+import CandidateFormsManager from "../forms/CandidateFormsManager"
+import EnterpriseFormsManager from "../forms/EnterpriseFormsManager"
+import EmploymentFormsManager from "../forms/EmploymentFormsManager"
+import EntityFactories from "../../dependencies/EntityFactories"
+import ValidationServices from "../../dependencies/ValidationServices"
 
 interface ContentBuilderConfig {
-    components: Components,
+    components: Components
     coreServices: CoreServices
     uiServices: UIServices
+    entityFactories: EntityFactories
+    validationServices: ValidationServices
 }
 
+interface builderConfig {
+    action?: () => void;
+}
 
 export default class ContentBuilder {
 
@@ -19,10 +29,19 @@ export default class ContentBuilder {
     private readonly coreServices
     private readonly uiServices
 
-    constructor({components, coreServices, uiServices}: ContentBuilderConfig) {
+    candidateFormsManager
+    enterpriseFormsManager
+    employmentFormsManager
+
+    constructor({entityFactories, coreServices, validationServices, uiServices, components}: ContentBuilderConfig) {
         this.components = components
         this.coreServices = coreServices
         this.uiServices = uiServices
+
+        const dependencies = {entityFactories, coreServices, validationServices, uiServices, components}
+        this.candidateFormsManager = new CandidateFormsManager(dependencies)
+        this.enterpriseFormsManager = new EnterpriseFormsManager(dependencies)
+        this.employmentFormsManager = new EmploymentFormsManager(dependencies)
     }
 
     //Enterprise
@@ -110,7 +129,7 @@ export default class ContentBuilder {
 
     candidateProfile() {
         if (!this.coreServices.loginManager.isCandidate) {
-            window.location.href = "/candidate/register-candidate.html"
+            window.location.href = "../../../public/candidate/register-candidate.html"
             return
         }
 
@@ -125,5 +144,41 @@ export default class ContentBuilder {
             tag.innerHTML += output
         }
     }
+
+    routes: Record<string, builderConfig> = {
+        "/": {
+        },
+        "/candidate/register-candidate.html": {
+            action: () => this.candidateFormsManager.activeCandidateCreateFormListener(),
+        },
+        "/enterprise/register-enterprise.html": {
+            action: () => this.enterpriseFormsManager.activeEnterpriseCreateFormListener(),
+        },
+        "/candidate/login-candidate.html": {
+            action: () => this.candidateFormsManager.activeCandidateLoginFormListener(),
+        },
+        "/enterprise/login-enterprise.html": {
+            action: () => this.enterpriseFormsManager.activeEnterpriseLoginFormListener(),
+        },
+        "/candidate/profile.html": {
+            action: () => this.candidateProfile(),
+        },
+        "/enterprise/profile.html": {
+            action: () => this.enterpriseProfile(),
+        },
+        "/candidate/employments-list.html": {
+            action: () => this.candidateEmploymentsList(),
+        },
+        "/enterprise/candidates-list.html": {
+            action: () => this.enterpriseCandidatesList(),
+        },
+        "/enterprise/my-employments.html": {
+            action: () => this.enterpriseMyEmploymentsList(),
+        },
+        "/enterprise/register-employment.html": {
+            action: () => this.employmentFormsManager.activeEmploymentCreateFormListener(),
+        },
+    }
+
 
 }
