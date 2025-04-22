@@ -1,9 +1,9 @@
 package view
 
 
-import entities.Candidate
-import entities.Enterprise
-import services.SectionService
+import model.entities.Candidate
+import model.entities.Enterprise
+import controller.services.SectionService
 
 class Menu {
 

@@ -1,4 +1,4 @@
-package entities
+package model.entities
 
 class Employment implements Entity {
 

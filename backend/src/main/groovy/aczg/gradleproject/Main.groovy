@@ -1,14 +1,15 @@
 //Feito por Vinícius Menezes Pontes
 package aczg.gradleproject
 
-import entities.EntityFactory
-import services.SectionService
+import model.entities.EntityFactory
+import controller.services.SectionService
 import view.CandidateOptions
 import view.EmploymentOptions
 import view.EnterpriseOptions
 
 import view.Menu
-import db.*
+import model.db.*
+import controller.db.*
 
 static void main(String[] args) {
 

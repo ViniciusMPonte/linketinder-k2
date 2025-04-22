@@ -1,6 +1,6 @@
 package view
 
-import entities.Enterprise
+import model.entities.Enterprise
 
 class EnterpriseOptions extends UtilsOptions {
 

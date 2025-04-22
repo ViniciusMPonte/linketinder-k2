@@ -1,7 +1,7 @@
 package view
 
 
-import entities.Employment
+import model.entities.Employment
 
 class EmploymentOptions extends UtilsOptions {
 

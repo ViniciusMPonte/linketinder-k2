@@ -1,8 +1,8 @@
 import db.CRUDCandidateTests
 import db.CRUDEmploymentTests
 import db.CRUDEnterpriseTests
-import db.TransactionManager
-import entities.EntityFactory
+import model.db.TransactionManager
+import model.entities.EntityFactory
 
 static void main(String[] args) {
 

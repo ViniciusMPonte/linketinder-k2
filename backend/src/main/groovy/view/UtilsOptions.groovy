@@ -1,6 +1,6 @@
 package view
 
-import services.SectionService
+import controller.services.SectionService
 
 class UtilsOptions {
 

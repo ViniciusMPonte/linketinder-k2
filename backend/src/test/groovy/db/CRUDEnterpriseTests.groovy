@@ -1,7 +1,9 @@
 package db
 
-import entities.Enterprise
-import entities.EntityFactory
+import controller.db.CRUDEnterprise
+import model.db.TransactionManager
+import model.entities.Enterprise
+import model.entities.EntityFactory
 import utils.FakeConnection
 import mock.EnterpriseMocks
 

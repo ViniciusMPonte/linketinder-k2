@@ -1,6 +1,6 @@
 package mock
 
-import entities.Candidate
+import model.entities.Candidate
 import java.text.SimpleDateFormat
 
 class CandidateMocks {

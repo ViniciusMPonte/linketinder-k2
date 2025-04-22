@@ -1,4 +1,7 @@
-package db
+package controller.db
+
+import model.db.Queries
+import model.db.TransactionManager
 
 import java.sql.Connection
 import java.sql.SQLException

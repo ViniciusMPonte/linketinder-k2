@@ -1,7 +1,9 @@
 package db
 
-import entities.Employment
-import entities.EntityFactory
+import controller.db.CRUDEmployment
+import model.db.TransactionManager
+import model.entities.Employment
+import model.entities.EntityFactory
 import utils.FakeConnection
 import mock.EmploymentMocks
 

@@ -1,6 +1,6 @@
 package mock
 
-import entities.Enterprise
+import model.entities.Enterprise
 
 class EnterpriseMocks {
 

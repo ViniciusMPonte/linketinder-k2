@@ -1,8 +1,8 @@
-package db
+package model.db
 
-import entities.Employment
-import entities.Candidate
-import entities.Enterprise
+import model.entities.Employment
+import model.entities.Candidate
+import model.entities.Enterprise
 
 class Queries {
 

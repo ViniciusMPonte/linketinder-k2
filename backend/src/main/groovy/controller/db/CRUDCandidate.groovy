@@ -1,46 +1,56 @@
-package db
+package controller.db
 
-import entities.*
+import model.entities.*
+import model.db.Queries
+import model.db.TransactionManager
+import model.entities.EntityFactory
+
 import java.sql.Connection
 import java.sql.SQLException
 
 
-class CRUDEnterprise extends DatabaseUtils {
+class CRUDCandidate extends DatabaseUtils {
 
     EntityFactory entityFactory
 
-    CRUDEnterprise(Connection connection, TransactionManager transactionManager, EntityFactory entityFactory) {
+    CRUDCandidate(Connection connection, TransactionManager transactionManager, EntityFactory entityFactory) {
         super(connection, transactionManager)
         this.entityFactory = entityFactory
     }
 
-    boolean save(Enterprise enterprise) {
-        if (!enterprise.isAllSet()) {
+
+    boolean save(Candidate candidate) {
+        if (!candidate.isAllSet()) {
             return false
         }
 
         try {
             return this.transactionManager.executeInTransaction({
-                this.connection.createStatement().withCloseable { statement ->
-                    statement.execute(Queries.insertUsersTable(enterprise))
-                    if (!this.getPostalCodeId(enterprise)) {
-                        statement.execute(Queries.insertPostalCodesTable(enterprise))
+                this.connection.createStatement().withCloseable({ statement ->
+                    statement.execute(Queries.insertUsersTable(candidate))
+                    if (!this.getPostalCodeId(candidate)) {
+                        statement.execute(Queries.insertPostalCodesTable(candidate))
                     }
-                    statement.execute(Queries.insertEnterprisesTable(enterprise))
-                }
+                    statement.execute(Queries.insertCandidatesTable(candidate))
+                    candidate.getSkills().each { skill ->
+                        if (!getSkillIdByName(skill)) {
+                            statement.execute(Queries.insertSkillsTable(skill))
+                        }
+                    }
+                    statement.execute(Queries.insertCandidateSkillTable(candidate))
+                })
                 return true
             })
-
         } catch (SQLException e) {
             e.printStackTrace()
             return false
         }
     }
 
-    Enterprise getById(int id) {
+    Candidate getById(int id) {
         try {
             return this.connection.createStatement().withCloseable { statement ->
-                statement.executeQuery(Queries.selectEnterpriseById(id)).withCloseable { resultSet ->
+                statement.executeQuery(Queries.selectCandidateById(id)).withCloseable { resultSet ->
                     if (resultSet.next()) {
                         Map params = [
                                 id         : resultSet.getInt("id"),
@@ -48,12 +58,14 @@ class CRUDEnterprise extends DatabaseUtils {
                                 password   : resultSet.getString("password"),
                                 name       : resultSet.getString("name"),
                                 description: resultSet.getString("description"),
-                                cnpj       : resultSet.getString("cnpj"),
+                                cpf        : resultSet.getString("cpf"),
+                                birthday   : resultSet.getDate("birthday"),
                                 country    : resultSet.getString("country"),
                                 state      : resultSet.getString("state"),
-                                postalCode : resultSet.getString("postalCode")
+                                postalCode : resultSet.getString("postalCode"),
+                                skills     : resultSet.getString("skills")?.replaceAll(/[{}]/, '')?.split(',')?.toList() ?: []
                         ]
-                        return this.entityFactory.create('Enterprise', params)
+                        return this.entityFactory.create('Candidate', params)
                     } else {
                         return null
                     }
@@ -65,7 +77,7 @@ class CRUDEnterprise extends DatabaseUtils {
         }
     }
 
-    boolean update(Enterprise original, Enterprise updated) {
+    boolean update(Candidate original, Candidate updated) {
         if (!original || !updated || !updated.isAllSet()) {
             return false
         }
@@ -81,8 +93,10 @@ class CRUDEnterprise extends DatabaseUtils {
                     if (!this.getPostalCodeId(updated)) {
                         statement.execute(Queries.updatePostalCodesTable(original, updated))
                     }
-                    statement.execute(Queries.updateEnterprisesTable(original, updated))
+                    statement.execute(Queries.updateCandidatesTable(original, updated))
                     statement.execute(Queries.deleteUnusedPostalCodes())
+                    statement.execute(Queries.updateCandidateSkillTable(original, updated))
+                    statement.execute(Queries.deleteUnusedSkills())
                 }
                 return true
             })
@@ -94,15 +108,12 @@ class CRUDEnterprise extends DatabaseUtils {
     }
 
     boolean deleteById(int id) {
-
         try {
             return this.transactionManager.executeInTransaction({
                 this.connection.createStatement().withCloseable { statement ->
-                    this.getEmploymentIds(id).each { employmentId ->
-                        this.deleteEmploymentById(employmentId as Integer)
-                    }
-                    statement.execute(Queries.deleteEnterpriseById(id))
+                    statement.execute(Queries.deleteCandidateById(id))
                     statement.execute(Queries.deleteUnusedPostalCodes())
+                    statement.execute(Queries.deleteUnusedSkills())
                 }
                 return true
             })

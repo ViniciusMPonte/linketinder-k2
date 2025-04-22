@@ -1,6 +1,6 @@
 package view
 
-import entities.Candidate
+import model.entities.Candidate
 
 class CandidateOptions extends UtilsOptions {
 

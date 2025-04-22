@@ -1,6 +1,6 @@
 package mock
 
-import entities.Employment
+import model.entities.Employment
 
 class EmploymentMocks {
 

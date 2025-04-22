@@ -1,7 +1,9 @@
 package db
 
-import entities.Candidate
-import entities.EntityFactory
+import controller.db.CRUDCandidate
+import model.db.TransactionManager
+import model.entities.Candidate
+import model.entities.EntityFactory
 import utils.FakeConnection
 import mock.CandidateMocks
 
