@@ -1,6 +1,7 @@
 package db
 
 import entities.Enterprise
+import entities.EntityFactory
 import utils.FakeConnection
 import mock.EnterpriseMocks
 
@@ -8,17 +9,19 @@ class CRUDEnterpriseTests extends FakeConnection {
 
     TransactionManager fakeTransactionManager
     CRUDEnterprise dbEnterprise
+    EntityFactory entityFactory
 
-    CRUDEnterpriseTests(TransactionManager fakeTransactionManager, Enterprise resultSetEnterprise = new Enterprise([:])) {
+    CRUDEnterpriseTests(TransactionManager fakeTransactionManager, EntityFactory entityFactory, Enterprise resultSetEnterprise = new Enterprise([:])) {
         super(resultSetEnterprise)
         this.fakeTransactionManager = fakeTransactionManager
         this.setGetterResult(resultSetEnterprise)
+        this.entityFactory = entityFactory
     }
 
 
     private void setGetterResult(Enterprise enterprise) {
         this.setResultSet(enterprise)
-        this.dbEnterprise = new CRUDEnterprise(this.connect(), this.fakeTransactionManager) {
+        this.dbEnterprise = new CRUDEnterprise(this.connect(), this.fakeTransactionManager, entityFactory) {
             @Override
             Integer getPostalCodeId(update) {
                 return 1

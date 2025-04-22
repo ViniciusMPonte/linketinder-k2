@@ -1,6 +1,7 @@
 //Feito por Vinícius Menezes Pontes
 package aczg.gradleproject
 
+import entities.EntityFactory
 import services.SectionService
 import view.CandidateOptions
 import view.EmploymentOptions
@@ -14,16 +15,18 @@ static void main(String[] args) {
     def conn = DatabaseConnection.connect()
     def transactionManager = new TransactionManager(conn)
 
-    def dbCandidate = new CRUDCandidate(conn, transactionManager)
-    def dbEnterprise = new CRUDEnterprise(conn, transactionManager)
-    def dbEmployment = new CRUDEmployment(conn, transactionManager)
+    def entityFactory = new EntityFactory()
+    def dbCandidate = new CRUDCandidate(conn, transactionManager, entityFactory)
+    def dbEnterprise = new CRUDEnterprise(conn, transactionManager, entityFactory)
+    def dbEmployment = new CRUDEmployment(conn, transactionManager, entityFactory)
     def dbUtils = new DatabaseUtils(conn, transactionManager)
     Scanner input = new Scanner(System.in)
     def db = [
             candidate : dbCandidate,
             enterprise: dbEnterprise,
             employment: dbEmployment,
-            utils: dbUtils
+            utils: dbUtils,
+            entityFactory: entityFactory
     ]
     def section = new SectionService(input, db)
     def candidateOptions = new CandidateOptions(section)

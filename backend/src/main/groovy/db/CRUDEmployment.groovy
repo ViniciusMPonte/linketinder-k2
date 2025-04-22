@@ -1,14 +1,17 @@
 package db
 
-import entities.Employment
+import entities.*
 import java.sql.Connection
 import java.sql.SQLException
 
 
 class CRUDEmployment extends DatabaseUtils {
 
-    CRUDEmployment(Connection connection, TransactionManager transactionManager) {
+    EntityFactory entityFactory
+
+    CRUDEmployment(Connection connection, TransactionManager transactionManager, EntityFactory entityFactory) {
         super(connection, transactionManager)
+        this.entityFactory = entityFactory
     }
 
     boolean save(Employment employment) {
@@ -54,7 +57,8 @@ class CRUDEmployment extends DatabaseUtils {
                                 postalCode  : resultSet.getString("postalCode"),
                                 skills      : resultSet.getString("skills")?.replaceAll(/[{}]/, '')?.split(',')?.toList() ?: []
                         ]
-                        return new Employment(params)
+                        return this.entityFactory.create('Employment', params)
+
                     } else {
                         return null
                     }

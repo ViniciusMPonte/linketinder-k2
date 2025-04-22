@@ -1,6 +1,7 @@
 package db
 
 import entities.Candidate
+import entities.EntityFactory
 import utils.FakeConnection
 import mock.CandidateMocks
 
@@ -8,17 +9,19 @@ class CRUDCandidateTests extends FakeConnection {
 
     TransactionManager fakeTransactionManager
     CRUDCandidate dbCandidate
+    EntityFactory entityFactory
 
-    CRUDCandidateTests(TransactionManager fakeTransactionManager, Candidate resultSetCandidate = new Candidate([:])) {
+    CRUDCandidateTests(TransactionManager fakeTransactionManager, EntityFactory entityFactory, Candidate resultSetCandidate = new Candidate([:])) {
         super(resultSetCandidate)
         this.fakeTransactionManager = fakeTransactionManager
         this.setGetterResult(resultSetCandidate)
+        this.entityFactory = entityFactory
     }
 
 
     private void setGetterResult(Candidate candidate) {
         this.setResultSet(candidate)
-        this.dbCandidate = new CRUDCandidate(this.connect(), this.fakeTransactionManager) {
+        this.dbCandidate = new CRUDCandidate(this.connect(), this.fakeTransactionManager, entityFactory) {
             @Override
             Integer getPostalCodeId(update) {
                 return 1

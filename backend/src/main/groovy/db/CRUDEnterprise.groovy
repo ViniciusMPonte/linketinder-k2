@@ -1,14 +1,17 @@
 package db
 
-import entities.Enterprise
+import entities.*
 import java.sql.Connection
 import java.sql.SQLException
 
 
 class CRUDEnterprise extends DatabaseUtils {
 
-    CRUDEnterprise(Connection connection, TransactionManager transactionManager) {
+    EntityFactory entityFactory
+
+    CRUDEnterprise(Connection connection, TransactionManager transactionManager, EntityFactory entityFactory) {
         super(connection, transactionManager)
+        this.entityFactory = entityFactory
     }
 
     boolean save(Enterprise enterprise) {
@@ -50,7 +53,7 @@ class CRUDEnterprise extends DatabaseUtils {
                                 state      : resultSet.getString("state"),
                                 postalCode : resultSet.getString("postalCode")
                         ]
-                        return new Enterprise(params)
+                        return this.entityFactory.create('Enterprise', params)
                     } else {
                         return null
                     }

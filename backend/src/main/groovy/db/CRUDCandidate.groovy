@@ -1,14 +1,17 @@
 package db
 
-import entities.Candidate
+import entities.*
 import java.sql.Connection
 import java.sql.SQLException
 
 
 class CRUDCandidate extends DatabaseUtils {
 
-    CRUDCandidate(Connection connection, TransactionManager transactionManager) {
+    EntityFactory entityFactory
+
+    CRUDCandidate(Connection connection, TransactionManager transactionManager, EntityFactory entityFactory) {
         super(connection, transactionManager)
+        this.entityFactory = entityFactory
     }
 
 
@@ -58,7 +61,7 @@ class CRUDCandidate extends DatabaseUtils {
                                 postalCode : resultSet.getString("postalCode"),
                                 skills     : resultSet.getString("skills")?.replaceAll(/[{}]/, '')?.split(',')?.toList() ?: []
                         ]
-                        return new Candidate(params)
+                        return this.entityFactory.create('Candidate', params)
                     } else {
                         return null
                     }

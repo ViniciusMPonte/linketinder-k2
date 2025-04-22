@@ -1,6 +1,7 @@
 package db
 
 import entities.Employment
+import entities.EntityFactory
 import utils.FakeConnection
 import mock.EmploymentMocks
 
@@ -8,17 +9,19 @@ class CRUDEmploymentTests extends FakeConnection {
 
     TransactionManager fakeTransactionManager
     CRUDEmployment dbEmployment
+    EntityFactory entityFactory
 
-    CRUDEmploymentTests(TransactionManager fakeTransactionManager, Employment resultSetEmployment = new Employment([:])) {
+    CRUDEmploymentTests(TransactionManager fakeTransactionManager, EntityFactory entityFactory, Employment resultSetEmployment = new Employment([:])) {
         super(resultSetEmployment)
         this.fakeTransactionManager = fakeTransactionManager
         this.setGetterResult(resultSetEmployment)
+        this.entityFactory = entityFactory
     }
 
 
     private void setGetterResult(Employment employment) {
         this.setResultSet(employment)
-        this.dbEmployment = new CRUDEmployment(this.connect(), this.fakeTransactionManager) {
+        this.dbEmployment = new CRUDEmployment(this.connect(), this.fakeTransactionManager, entityFactory) {
             @Override
             Integer getPostalCodeId(update) {
                 return 1

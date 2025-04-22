@@ -1,6 +1,6 @@
 package entities
 
-class Enterprise {
+class Enterprise implements Entity {
 
     Integer id
     String email

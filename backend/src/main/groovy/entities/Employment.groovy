@@ -1,6 +1,6 @@
 package entities
 
-class Employment {
+class Employment implements Entity {
 
     Integer id
     Integer enterpriseId
@@ -100,6 +100,7 @@ class Employment {
                 ']';
     }
 
+    @Override
     boolean isAllSet() {
         return  getName() != null &&
                 getDescription() != null &&

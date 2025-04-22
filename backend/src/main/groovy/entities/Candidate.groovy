@@ -1,6 +1,6 @@
 package entities
 
-class Candidate {
+class Candidate implements Entity {
 
     Integer id
     String email
@@ -24,14 +24,14 @@ class Candidate {
         this.name = params.name as String
         this.description = params.description as String
         this.cpf = params.cpf as String
-        this.birthday = parseDate(params.birthday)
+        this.birthday = this.parseDate(params.birthday)
         this.country = params.country as String
         this.state = params.state as String
         this.postalCode = params.postalCode as String
         this.skills = params.skills instanceof List ? params.skills as List<String> : []
     }
 
-    private static Date parseDate(Object date) {
+    private Date parseDate(Object date) {
         if (date instanceof Date) {
             return date
         } else if (date instanceof String) {
@@ -106,8 +106,9 @@ class Candidate {
                 ']';
     }
 
+    @Override
     boolean isAllSet() {
-        return  getEmail() != null &&
+        return getEmail() != null &&
                 getPassword() != null &&
                 getName() != null &&
                 getDescription() != null &&

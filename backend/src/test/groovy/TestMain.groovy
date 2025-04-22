@@ -2,6 +2,7 @@ import db.CRUDCandidateTests
 import db.CRUDEmploymentTests
 import db.CRUDEnterpriseTests
 import db.TransactionManager
+import entities.EntityFactory
 
 static void main(String[] args) {
 
@@ -12,9 +13,11 @@ static void main(String[] args) {
         }
     }
 
-    def dbCandidate = new CRUDCandidateTests(fakeTransactionManager)
-    def dbEnterprise = new CRUDEnterpriseTests(fakeTransactionManager)
-    def dbEmployment = new CRUDEmploymentTests(fakeTransactionManager)
+    EntityFactory entityFactory = new EntityFactory()
+
+    def dbCandidate = new CRUDCandidateTests(fakeTransactionManager, entityFactory)
+    def dbEnterprise = new CRUDEnterpriseTests(fakeTransactionManager, entityFactory)
+    def dbEmployment = new CRUDEmploymentTests(fakeTransactionManager, entityFactory)
 
     println((dbCandidate.save()  ? "[PASSED]" : "[FAILED]") + " dbCandidate.save")
     println((dbCandidate.getById()  ? "[PASSED]" : "[FAILED]") + " dbCandidate.getById")
