@@ -4,6 +4,7 @@ package aczg.gradleproject
 import controller.api.Server
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
+import model.api.EnterpriseRoutes
 import model.api.Routes
 import model.entities.EntityFactory
 import controller.services.SectionService
@@ -27,10 +28,10 @@ static void main(String[] args) {
     def dbUtils = new DatabaseUtils(conn, transactionManager)
     Scanner input = new Scanner(System.in)
     def db = [
-            candidate : dbCandidate,
-            enterprise: dbEnterprise,
-            employment: dbEmployment,
-            utils: dbUtils,
+            candidate    : dbCandidate,
+            enterprise   : dbEnterprise,
+            employment   : dbEmployment,
+            utils        : dbUtils,
             entityFactory: entityFactory
     ]
     def section = new SectionService(input, db)
@@ -38,14 +39,24 @@ static void main(String[] args) {
     def enterpriseOptions = new EnterpriseOptions(section)
     def employmentOptions = new EmploymentOptions(section)
     def menu = new Menu(section, [
-            candidate: candidateOptions,
+            candidate : candidateOptions,
             enterprise: enterpriseOptions,
             employment: employmentOptions
     ])
 
     JsonSlurper slurper = new JsonSlurper()
     JsonOutput jsonOutput = new JsonOutput()
-    new Server(new Routes(section, slurper, jsonOutput).getAll()).startServer()
+
+    def jsonTools = [
+            slurper   : slurper,
+            jsonOutput: jsonOutput
+    ]
+
+    Routes routes = new Routes(section, jsonTools)
+    routes.addRoutes(new EnterpriseRoutes(section, jsonTools).getRoutes())
+
+
+    new Server(routes.getAll()).startServer()
 
 //    input.close()
 //    conn.close()
