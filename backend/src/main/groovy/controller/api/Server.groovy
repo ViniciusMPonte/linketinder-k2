@@ -21,7 +21,7 @@ class Server {
         this.startRoutes(server)
 
         server.start()
-        println "Servidor rodando em portas e rotas:"
+        println "Servidor rodando na porta $port.\nRotas:"
         routes.keySet().each { println "  http://localhost:${port}$it" }
     }
 

@@ -2,6 +2,8 @@
 package aczg.gradleproject
 
 import controller.api.Server
+import groovy.json.JsonSlurper
+import groovy.json.JsonOutput
 import model.api.Routes
 import model.entities.EntityFactory
 import controller.services.SectionService
@@ -41,7 +43,9 @@ static void main(String[] args) {
             employment: employmentOptions
     ])
 
-    new Server(new Routes().getAll()).startServer()
+    JsonSlurper slurper = new JsonSlurper()
+    JsonOutput jsonOutput = new JsonOutput()
+    new Server(new Routes(section, slurper, jsonOutput).getAll()).startServer()
 
 //    input.close()
 //    conn.close()
