@@ -6,6 +6,7 @@ import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
 import model.api.EnterpriseRoutes
 import model.api.Routes
+import model.api.CandidateRoutes
 import model.entities.EntityFactory
 import controller.services.SectionService
 import view.CandidateOptions
@@ -54,7 +55,7 @@ static void main(String[] args) {
 
     Routes routes = new Routes(section, jsonTools)
     routes.addRoutes(new EnterpriseRoutes(section, jsonTools).getRoutes())
-
+    routes.addRoutes(new CandidateRoutes(section, jsonTools).getRoutes())
 
     new Server(routes.getAll()).startServer()
 

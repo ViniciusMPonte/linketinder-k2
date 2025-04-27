@@ -6,7 +6,7 @@ import model.db.TransactionManager
 import java.sql.Connection
 import java.sql.SQLException
 
-class DatabaseUtils {
+class DatabaseUtils extends CatchErrors{
 
     Connection connection
     TransactionManager transactionManager

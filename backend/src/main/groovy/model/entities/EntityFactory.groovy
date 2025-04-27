@@ -1,7 +1,5 @@
 package model.entities
 
-
-
 class EntityFactory {
 
     Entity create(String type, params) {

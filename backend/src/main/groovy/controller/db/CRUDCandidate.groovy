@@ -42,6 +42,7 @@ class CRUDCandidate extends DatabaseUtils {
                 return true
             })
         } catch (SQLException e) {
+            this.setMessageError(e.message)
             e.printStackTrace()
             return false
         }

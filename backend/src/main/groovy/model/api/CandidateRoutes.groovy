@@ -4,15 +4,13 @@ import com.sun.net.httpserver.HttpExchange
 import controller.services.SectionService
 import model.api.utils.HandleResponseParams
 import model.entities.Candidate
-import model.entities.Enterprise
 
-class EnterpriseRoutes extends Routes {
-
+class CandidateRoutes extends Routes {
     private Map<String, Map<String, Closure>> routes = [
-            "/enterprise": [
+            "/candidate": [
                     "GET": { HttpExchange exchange ->
 
-                        try{
+                        try {
                             List<Candidate> candidates = []
                             int[] candidatesIds = this.section.db.utils.getCandidateIds()
                             candidatesIds.each { id ->
@@ -26,7 +24,7 @@ class EnterpriseRoutes extends Routes {
                                     message   : this.jsonOutput.toJson(candidates)
                             ] as HandleResponseParams)
 
-                        }catch (Exception e){
+                        } catch (Exception e) {
 
                             handleResponse([
                                     exchange  : exchange,
@@ -47,29 +45,38 @@ class EnterpriseRoutes extends Routes {
                                     password   : req?.password,
                                     name       : req?.name,
                                     description: req?.description,
-                                    cnpj       : req?.cnpj,
+                                    cpf        : req?.cpf,
                                     country    : req?.country,
                                     state      : req?.state,
-                                    postalCode : req?.postalCode
+                                    postalCode : req?.postalCode,
+                                    birthday   : req?.birthday,
+                                    skills     : req?.skills
                             ]
 
-                            Enterprise enterprise = this.section.db.entityFactory.create("Enterprise", params)
-                            if (enterprise.isAllSet() && this.section.db.enterprise.save(enterprise)) {
-                                handleResponse([
-                                        exchange  : exchange,
-                                        statusCode: 201,
-                                        message   : "Empresa cadastrada com sucesso."
-                                ] as HandleResponseParams)
+                            Candidate candidate = this.section.db.entityFactory.create("Candidate", params)
+                            if (candidate.isAllSet()) {
+                                if (this.section.db.candidate.save(candidate)) {
+                                    this.statusCode = 201
+                                } else {
+                                    this.statusCode = 409
+                                    throw new IllegalArgumentException(this.section.db.candidate.getMessageError())
+                                }
                             } else {
+                                this.statusCode = 400
                                 throw new IllegalArgumentException("Campos obrigatórios ausentes.")
                             }
 
-                        } catch (Exception e) {
-
                             handleResponse([
                                     exchange  : exchange,
-                                    statusCode: 400,
-                                    message   : "Falha ao cadastrar empresa. $e.message"
+                                    statusCode: this.statusCode,
+                                    message   : "Candidato cadastrado com sucesso."
+                            ] as HandleResponseParams)
+
+                        } catch (Exception e) {
+                            handleResponse([
+                                    exchange  : exchange,
+                                    statusCode: this.statusCode ? this.statusCode : 500,
+                                    message   : "Falha ao cadastrar candidato. $e.message"
                             ] as HandleResponseParams)
 
                         }
@@ -77,9 +84,9 @@ class EnterpriseRoutes extends Routes {
             ]
     ]
 
-    EnterpriseRoutes(SectionService section, jsonTools){
+    CandidateRoutes(SectionService section, jsonTools) {
         super(section, jsonTools)
     }
 
-    Map<String, Map<String, Closure>> getRoutes(){return this.routes}
+    Map<String, Map<String, Closure>> getRoutes() { return this.routes }
 }

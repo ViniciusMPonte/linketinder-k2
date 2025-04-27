@@ -1,5 +1,8 @@
 package model.entities
 
+import java.text.ParseException
+import java.text.SimpleDateFormat
+
 class Candidate implements Entity {
 
     Integer id
@@ -31,17 +34,27 @@ class Candidate implements Entity {
         this.skills = params.skills instanceof List ? params.skills as List<String> : []
     }
 
-    private Date parseDate(Object date) {
+    Date parseDate(Object date) {
         if (date instanceof Date) {
             return date
-        } else if (date instanceof String) {
-            try {
-                return date.toString() ? Date.parse("yyyy-MM-dd", date.toString()) : null
-            } catch (Exception e) {
-                return null
-            }
         }
-        return null
+        if (!(date instanceof String)) {
+            return null
+        }
+
+        String str = date.trim()
+        if (!str) {
+            return null
+        }
+
+        SimpleDateFormat fmt = new SimpleDateFormat("yyyy-MM-dd")
+        fmt.setLenient(false)
+
+        try {
+            return fmt.parse(str)
+        } catch (ParseException e) {
+            return null
+        }
     }
 
     Integer getId() { return id }
