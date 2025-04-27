@@ -22,6 +22,11 @@ class CRUDEmployment extends DatabaseUtils {
             return false
         }
 
+        if (!employment.getEnterpriseId()) {
+            this.setMessageError("Id da empresa ausente.")
+            return false
+        }
+
         try {
             return this.transactionManager.executeInTransaction({
                 this.connection.createStatement().withCloseable { statement ->
@@ -40,6 +45,7 @@ class CRUDEmployment extends DatabaseUtils {
                 return true
             })
         } catch (SQLException e) {
+            this.setMessageError(e.message)
             e.printStackTrace()
             return false
         }

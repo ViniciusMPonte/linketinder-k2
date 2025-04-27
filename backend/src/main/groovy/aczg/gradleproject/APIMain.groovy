@@ -1,21 +1,14 @@
 //Feito por Vinícius Menezes Pontes
 package aczg.gradleproject
 
-import controller.api.Server
 import groovy.json.JsonSlurper
 import groovy.json.JsonOutput
-import model.api.EnterpriseRoutes
-import model.api.Routes
-import model.api.CandidateRoutes
-import model.entities.EntityFactory
-import controller.services.SectionService
-import view.CandidateOptions
-import view.EmploymentOptions
-import view.EnterpriseOptions
-
-import view.Menu
 import model.db.*
+import model.api.*
+import model.entities.EntityFactory
 import controller.db.*
+import controller.api.Server
+import controller.services.SectionService
 
 static void main(String[] args) {
 
@@ -36,14 +29,6 @@ static void main(String[] args) {
             entityFactory: entityFactory
     ]
     def section = new SectionService(input, db)
-    def candidateOptions = new CandidateOptions(section)
-    def enterpriseOptions = new EnterpriseOptions(section)
-    def employmentOptions = new EmploymentOptions(section)
-    def menu = new Menu(section, [
-            candidate : candidateOptions,
-            enterprise: enterpriseOptions,
-            employment: employmentOptions
-    ])
 
     JsonSlurper slurper = new JsonSlurper()
     JsonOutput jsonOutput = new JsonOutput()
@@ -56,10 +41,8 @@ static void main(String[] args) {
     Routes routes = new Routes(section, jsonTools)
     routes.addRoutes(new EnterpriseRoutes(section, jsonTools).getRoutes())
     routes.addRoutes(new CandidateRoutes(section, jsonTools).getRoutes())
+    routes.addRoutes(new EmploymentRoutes(section, jsonTools).getRoutes())
 
     new Server(routes.getAll()).startServer()
-
-//    input.close()
-//    conn.close()
 }
 

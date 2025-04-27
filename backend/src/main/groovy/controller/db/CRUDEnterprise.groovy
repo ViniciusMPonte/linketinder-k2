@@ -35,6 +35,7 @@ class CRUDEnterprise extends DatabaseUtils {
             })
 
         } catch (SQLException e) {
+            this.setMessageError(e.message)
             e.printStackTrace()
             return false
         }

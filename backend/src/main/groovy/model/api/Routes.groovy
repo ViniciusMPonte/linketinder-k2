@@ -1,12 +1,10 @@
 package model.api
 
-import controller.services.SectionService
+import groovy.json.JsonSlurper
+import java.nio.charset.StandardCharsets
 import groovy.json.JsonOutput
 import model.api.utils.HandleResponseParams
-
-import groovy.json.JsonSlurper
-
-import java.nio.charset.StandardCharsets
+import controller.services.SectionService
 
 class Routes {
 
