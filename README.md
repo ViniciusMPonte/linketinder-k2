@@ -186,3 +186,77 @@ Após executar a aplicação, siga as orientações abaixo:
 - **Navegação:** Utilize números para navegar pelos menus.
 - **Sair:** Pressione `0` para voltar ou sair de qualquer menu.
 
+---
+
+# **API REST Backend**
+
+**Feito por:** Vinícius Menezes Pontes
+
+## Visão geral
+Uma implementação simples de API REST em Groovy usando `com.sun.net.httpserver.HttpServer`, organizando rotas para Candidatos, Empresas e Vagas.
+
+## Pré-requisitos
+
+- Java 8 ou superior
+- Gradle
+- Banco de dados relacional configurado (PostgreSQL)
+
+## Configuração
+
+Abra o arquivo de conexão ao banco em `model/db/DatabaseConnection.groovy` e atualize a URL, usuário e senha conforme seu ambiente.
+
+## Como construir e executar
+
+No terminal, na raiz do projeto:
+
+```bash
+# Baixar dependências e compilar
+gradle build
+
+# Executar a aplicação
+gradle run
+```  
+
+Ao iniciar, o servidor ficará escutando em `http://localhost:8080` e exibirá as rotas disponíveis.
+
+## Endpoints disponíveis
+
+| Método | Rota                                      | Descrição                         |
+|--------|-------------------------------------------|-----------------------------------|
+| POST   | `/candidate/register-candidate`           | Cadastra novo candidato           |
+| POST   | `/enterprise/register-enterprise`         | Cadastra nova empresa             |
+| POST   | `/enterprise/register-employment`        | Cadastra nova vaga                |
+| GET    | `/enterprise/candidates-list`            | Lista todos os candidatos         |
+
+Cada endpoint espera ou retorna JSON simples. Exemplo de requisição para cadastrar candidato:
+
+```bash
+curl -X POST http://localhost:8080/candidate/register-candidate \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email":"user@example.com",
+    "password":"senha123",
+    "name":"João Silva",
+    "description":"Desenvolvedor",
+    "cpf":"12345678900",
+    "country":"Brasil",
+    "state":"SP",
+    "postalCode":"01001000",
+    "birthday":"1990-01-01",
+    "skills":["Java","Groovy"]
+}'
+```
+
+## Estrutura de pacotes
+
+- `controller.api`  – Definição do `Server` e gerenciador de rotas
+- `model.api`       – Classes de rota para cada entidade
+- `controller.services` – Lógica de negócio (SectionService)
+- `model.db`        – Conexão, transações e CRUD genérico
+- `model.entities`  – Fábrica e modelos de entidades
+
+## Observações
+
+- O servidor usa a porta **8080** por padrão.
+- Tratamento básico de erros retorna códigos HTTP adequados (400, 409, 500).
+- Para personalizar caminhos ou comportamentos, edite as classes em `model/api` e `controller/services`.
